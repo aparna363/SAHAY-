@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo_sahay.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAHAY — Official Weather & Disaster Management Portal | Government of Kerala</title>
+    <meta name="description" content="SAHAY - Government of Kerala official disaster portal for real-time cyclone alerts, flood advisories, river level telemetry, emergency response, and shelter locator." />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              emerald: {
+                950: '#03291e',
+                900: '#043e2e',
+                800: '#065f46',
+                700: '#047857',
+                600: '#059669',
+                500: '#10b981',
+                400: '#34d399',
+                100: '#d1fae5',
+                50: '#f0fdf4',
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased font-sans">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
