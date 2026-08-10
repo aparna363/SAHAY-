@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { X, User, Phone, Mail, MapPin, ShieldCheck, Check, Save } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, User, Phone, Mail, MapPin, Check, Save } from 'lucide-react';
+import { getDistricts } from '../services/api';
 
 interface ProfileSettingsModalProps {
   isOpen: boolean;
@@ -20,6 +21,13 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   const [district, setDistrict] = useState(user?.district || 'Idukki');
   const [panchayat, setPanchayat] = useState(user?.panchayat || '');
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [districtsList, setDistrictsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getDistricts().then((data) => {
+      setDistrictsList(data);
+    });
+  }, []);
 
   if (!isOpen) return null;
 
@@ -46,7 +54,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-        
+
         {/* Header */}
         <div className="bg-[#043e2e] text-white px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -70,7 +78,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
 
         {/* Body */}
         <form onSubmit={handleSave} className="p-6 space-y-4">
-          
+
           {savedSuccess && (
             <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-bold flex items-center gap-2 animate-fadeIn">
               <Check className="w-4 h-4 text-emerald-600" />
@@ -132,14 +140,11 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
                   onChange={(e) => setDistrict(e.target.value)}
                   className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-[#059669] focus:outline-none"
                 >
-                  <option value="Idukki">Idukki</option>
-                  <option value="Wayanad">Wayanad</option>
-                  <option value="Ernakulam">Ernakulam</option>
-                  <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                  <option value="Kozhikode">Kozhikode</option>
-                  <option value="Thrissur">Thrissur</option>
-                  <option value="Palakkad">Palakkad</option>
-                  <option value="Kottayam">Kottayam</option>
+                  {districtsList.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

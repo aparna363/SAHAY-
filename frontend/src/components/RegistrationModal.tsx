@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, User, ShieldCheck, CheckCircle2, Phone, Mail, MapPin, KeyRound } from 'lucide-react';
+import { getDistricts, getDesignations } from '../services/api';
 
 interface RegistrationModalProps {
   isOpen: boolean;
@@ -14,6 +15,20 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 }) => {
   const [role, setRole] = useState<'citizen' | 'official'>(initialRole);
   const [submitted, setSubmitted] = useState(false);
+  const [districtsList, setDistrictsList] = useState<string[]>([]);
+  const [designationsList, setDesignationsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getDistricts().then((data) => {
+      setDistrictsList(data);
+      if (data.length > 0 && !formData.district) {
+        setFormData((prev) => ({ ...prev, district: data[0] }));
+      }
+    });
+    getDesignations().then((data) => {
+      setDesignationsList(data);
+    });
+  }, []);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -191,14 +206,11 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                       className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-[#059669] focus:outline-none"
                     >
-                      <option value="Idukki">Idukki</option>
-                      <option value="Wayanad">Wayanad</option>
-                      <option value="Ernakulam">Ernakulam</option>
-                      <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                      <option value="Kozhikode">Kozhikode</option>
-                      <option value="Thrissur">Thrissur</option>
-                      <option value="Palakkad">Palakkad</option>
-                      <option value="Kottayam">Kottayam</option>
+                      {districtsList.map((dist) => (
+                        <option key={dist} value={dist}>
+                          {dist}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -226,12 +238,11 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-[#059669] focus:outline-none"
                     >
-                      <option value="KSDMA Officer">KSDMA Control Room Officer</option>
-                      <option value="District Collectorate">District Collectorate Official</option>
-                      <option value="NDRF Commander">NDRF Response Unit Leader</option>
-                      <option value="Fire Force Commander">Fire & Rescue Force Officer</option>
-                      <option value="Irrigation Engineer">Dam Telemetry Engineer</option>
-                      <option value="Medical Officer">Health Dept Emergency Doctor</option>
+                      {designationsList.map((desig) => (
+                        <option key={desig} value={desig}>
+                          {desig}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 )}

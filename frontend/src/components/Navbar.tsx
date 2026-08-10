@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, User, ShieldCheck, LogIn, Menu, X, Settings, LogOut } from 'lucide-react';
+import { ChevronDown, User, ShieldCheck, LogIn, Menu, X, Settings, LogOut, LayoutDashboard } from 'lucide-react';
 import logoSahay from '../assets/logo_sahay.png';
 import { translations } from '../translations';
 import type { Language } from '../translations';
@@ -13,6 +13,7 @@ interface NavbarProps {
   currentUser?: any;
   onSignOut?: () => void;
   onOpenProfileSettings?: () => void;
+  onOpenOfficialLogin?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -24,6 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   onSignOut,
   onOpenProfileSettings,
+  onOpenOfficialLogin,
 }) => {
   const [isRegisterDropdownOpen, setIsRegisterDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -35,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems = [
     { id: 'home', label: t.navHome },
-    { id: 'weather', label: t.navWeather },
+    
     { id: 'alerts', label: t.navAlerts },
     { id: 'live-map', label: t.navLiveMap },
     { id: 'emergency', label: t.navEmergency },
@@ -62,23 +64,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleRegisterClick = (role: 'citizen' | 'official') => {
     setIsRegisterDropdownOpen(false);
     setIsMobileMenuOpen(false);
-    onOpenRegister(role);
+    if (role === 'official' && onOpenOfficialLogin) {
+      onOpenOfficialLogin();
+    } else {
+      onOpenRegister(role);
+    }
   };
 
   return (
     <nav className="w-full bg-white border-b border-slate-200/80 sticky top-0 z-40 shadow-sm transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-        
+
         {/* Left: SAHAY Brand & Logo */}
-        <div 
+        <div
           onClick={() => setActiveTab('home')}
           className="flex items-center gap-3 cursor-pointer group"
         >
           {/* Circular Logo Wrapper */}
           <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-white border-2 border-[#059669] p-0.5 flex items-center justify-center shadow-md overflow-hidden group-hover:scale-105 transition-transform flex-shrink-0">
-            <img 
-              src={logoSahay} 
-              alt="SAHAY Site Logo" 
+            <img
+              src={logoSahay}
+              alt="SAHAY Site Logo"
               className="w-full h-full object-cover rounded-full transform scale-110"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/logo_sahay.png';
@@ -105,11 +111,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap ${
-                  isActive
-                    ? 'bg-[#059669] text-white shadow-md font-bold'
-                    : 'text-slate-700 hover:text-[#059669] hover:bg-emerald-100/60'
-                }`}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap ${isActive
+                  ? 'bg-[#059669] text-white shadow-md font-bold'
+                  : 'text-slate-700 hover:text-[#059669] hover:bg-emerald-100/60'
+                  }`}
               >
                 {item.label}
               </button>
@@ -150,6 +155,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <button
                       onClick={() => {
                         setIsProfileDropdownOpen(false);
+                        const role = (currentUser?.role || 'citizen').toLowerCase();
+                        if (role === 'collector') setActiveTab('collector_dashboard');
+                        else if (role === 'admin' || role === 'super_admin') setActiveTab('super_admin_dashboard');
+                        else if (role === 'station' || role === 'rescue_team' || role === 'station_admin') {
+                          const status = (currentUser.status || '').toLowerCase();
+                          if (status !== 'approved' && status !== 'active') {
+                            alert(`Your Station account is PENDING APPROVAL by the District Collector of ${currentUser.district || 'your district'}. Station Dashboard access will be granted after Collector approval.`);
+                            setActiveTab('official_login');
+                          } else {
+                            setActiveTab('rescue_dashboard');
+                          }
+                        } else {
+                          setActiveTab('citizen_dashboard');
+                        }
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#059669] flex items-center gap-2 transition-all border-b border-slate-100"
+                    >
+                      <LayoutDashboard className="w-4 h-4 text-[#059669]" />
+                      <span>{currentUser?.role && currentUser.role.toLowerCase() !== 'citizen' ? 'My Official Dashboard' : 'Citizen Dashboard'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileDropdownOpen(false);
                         if (onOpenProfileSettings) onOpenProfileSettings();
                       }}
                       className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#059669] flex items-center gap-2 transition-all"
@@ -178,9 +207,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               {/* Login Button */}
               <button
                 onClick={onOpenLogin}
-                className={`btn-outline text-xs px-4 py-2 flex items-center gap-1.5 font-bold ${
-                  activeTab === 'login' ? 'bg-emerald-100 border-[#059669] text-[#059669]' : ''
-                }`}
+                className={`btn-outline text-xs px-4 py-2 flex items-center gap-1.5 font-bold ${activeTab === 'login' ? 'bg-emerald-100 border-[#059669] text-[#059669]' : ''
+                  }`}
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>{t.login}</span>
@@ -206,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         {currentLang === 'ml' ? 'രജിസ്ട്രേഷൻ മാതൃക തിരഞ്ഞെടുക്കുക' : 'Select Registration Type'}
                       </p>
                     </div>
-                    
+
                     <div className="p-1">
                       {/* Option 1: Citizen Registration */}
                       <button
@@ -273,11 +301,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setActiveTab(item.id);
                   setIsMobileMenuOpen(false);
                 }}
-                className={`px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all ${
-                  activeTab === item.id
-                    ? 'bg-[#059669] text-white font-bold'
-                    : 'text-slate-700 bg-slate-50 hover:bg-emerald-50'
-                }`}
+                className={`px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all ${activeTab === item.id
+                  ? 'bg-[#059669] text-white font-bold'
+                  : 'text-slate-700 bg-slate-50 hover:bg-emerald-50'
+                  }`}
               >
                 {item.label}
               </button>

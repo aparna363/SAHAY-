@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, Phone, CloudRain, Droplets, Wind, ShieldCheck, RefreshCw, MapPin } from 'lucide-react';
 import cycloneBg from '../assets/cyclone.png';
 import { translations } from '../translations';
 import type { Language } from '../translations';
+import { getDistricts } from '../services/api';
+import { useLocation } from '../context/LocationContext';
 
 interface HeroSectionProps {
   currentLang: Language;
@@ -11,12 +13,26 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ currentLang, onOpenAlerts, onOpenContacts }) => {
-  const [selectedDistrict, setSelectedDistrict] = useState('Idukki & Wayanad');
+  const { location, weatherData: globalWeather, refreshLocation, setManualDistrict } = useLocation();
+  const [selectedDistrict, setSelectedDistrict] = useState(globalWeather?.district || 'Kottayam');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [districtsList, setDistrictsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getDistricts().then((data) => {
+      setDistrictsList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (globalWeather?.district) {
+      setSelectedDistrict(globalWeather.district);
+    }
+  }, [globalWeather]);
 
   const t = translations[currentLang];
 
-  const weatherData: Record<string, { temp: string; status: string; humidity: string; wind: string; alert: string; alertBg: string }> = {
+  const weatherDataMap: Record<string, { temp: string; status: string; humidity: string; wind: string; alert: string; alertBg: string }> = {
     'Idukki & Wayanad': {
       temp: '28°C',
       status: currentLang === 'ml' ? 'കനത്ത മഴ' : currentLang === 'hi' ? 'भारी बारिश' : 'Heavy Rain',
@@ -51,10 +67,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ currentLang, onOpenAle
     }
   };
 
-  const currentWeather = weatherData[selectedDistrict] || weatherData['Idukki & Wayanad'];
+  const fallbackWeather = weatherDataMap[selectedDistrict] || weatherDataMap['Idukki & Wayanad'];
+
+  const alertLevel = globalWeather?.alert?.alertLevel;
+
+  const currentWeather = globalWeather && globalWeather.district === selectedDistrict ? {
+    temp: `${Math.round(globalWeather.temperature)}°C`,
+    status: globalWeather.condition,
+    humidity: `${globalWeather.humidity}%`,
+    wind: `${globalWeather.windSpeed} km/h`,
+    alert: alertLevel ? `${alertLevel} ALERT` : 'NORMAL',
+    alertBg: alertLevel === 'RED' ? 'bg-red-100 text-red-700 border-red-200' :
+             alertLevel === 'ORANGE' ? 'bg-orange-100 text-orange-700 border-orange-200' :
+             alertLevel === 'YELLOW' ? 'bg-amber-100 text-amber-700 border-amber-200' :
+             'bg-emerald-100 text-emerald-700 border-emerald-200',
+  } : fallbackWeather;
 
   const handleRefresh = () => {
     setIsRefreshing(true);
+    refreshLocation?.();
     setTimeout(() => setIsRefreshing(false), 700);
   };
 
@@ -164,21 +195,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ currentLang, onOpenAle
               </button>
             </div>
 
-            {/* District Selector Pill */}
+            {/* Location Display & District Selector Pill */}
             <div className="mb-5 flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5">
               <span className="text-xs font-bold text-slate-500 flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {t.location}:
               </span>
-              <select
-                value={selectedDistrict}
-                onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
-              >
-                <option value="Idukki & Wayanad">Idukki & Wayanad</option>
-                <option value="Ernakulam (Kochi)">Ernakulam (Kochi)</option>
-                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                <option value="Kozhikode">Kozhikode</option>
-              </select>
+              {location?.isGPS ? (
+                <span className="text-xs font-black text-emerald-800 truncate max-w-[200px]" title={location.placeName}>
+                  📍 {location.placeName || location.district}
+                </span>
+              ) : (
+                <select
+                  value={selectedDistrict}
+                  onChange={(e) => {
+                    setSelectedDistrict(e.target.value);
+                    setManualDistrict(e.target.value);
+                  }}
+                  className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
+                >
+                  {districtsList.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             {/* Weather Metrics List */}

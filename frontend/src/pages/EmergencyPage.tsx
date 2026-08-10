@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertCircle, PhoneCall, CheckCircle2, Radio } from 'lucide-react';
+import { getDistricts } from '../services/api';
 
 export const EmergencyPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [districtsList, setDistrictsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getDistricts().then((data) => {
+      setDistrictsList(data);
+      if (data.length > 0 && !formData.district) {
+        setFormData((prev) => ({ ...prev, district: data[0] }));
+      }
+    });
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,7 +32,7 @@ export const EmergencyPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 animate-fadeIn">
-      
+
       {/* Header Banner */}
       <div className="bg-red-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-red-900 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -48,7 +60,7 @@ export const EmergencyPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+
         {/* SOS Report Form */}
         <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md">
           {submitted ? (
@@ -123,12 +135,11 @@ export const EmergencyPage: React.FC = () => {
                     onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-red-500 focus:outline-none"
                   >
-                    <option value="Idukki">Idukki</option>
-                    <option value="Wayanad">Wayanad</option>
-                    <option value="Ernakulam">Ernakulam</option>
-                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                    <option value="Kozhikode">Kozhikode</option>
-                    <option value="Thrissur">Thrissur</option>
+                    {districtsList.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -188,13 +199,13 @@ export const EmergencyPage: React.FC = () => {
 
         {/* Right Info Cards */}
         <div className="lg:col-span-5 space-y-6">
-          
+
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-md space-y-4">
             <h3 className="text-lg font-black text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
               <Radio className="w-5 h-5 text-red-600" />
               Primary Disaster Helplines
             </h3>
-            
+
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 rounded-xl bg-red-50 border border-red-200">
                 <span className="text-xs font-bold text-red-900">National Emergency Number</span>

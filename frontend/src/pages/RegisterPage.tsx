@@ -1,24 +1,38 @@
-import React, { useState } from 'react';
-import { User, CheckCircle2, Phone, Mail, MapPin, KeyRound, ArrowRight, UserPlus, AlertCircle, Eye, EyeOff, Lock, LifeBuoy, Building2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, CheckCircle2, Phone, Mail, MapPin, ArrowRight, UserPlus, AlertCircle, Eye, EyeOff, Lock, Building2 } from 'lucide-react';
 import fullLogoSahay from '../assets/full_logo_sahay.png';
 import loginBg from '../assets/loginbg.jpg';
 import type { Language } from '../translations';
-import { registerUser } from '../services/api';
-import type { UserRole } from '../services/api';
+import { registerUser, getDistricts, type UserRole } from '../services/api';
+import { GoogleAuthButton } from '../components/GoogleAuthButton';
 
 interface RegisterPageProps {
   currentLang: Language;
-  initialRole: 'citizen' | 'official';
+  initialRole?: 'citizen' | 'official' | UserRole;
   onNavigateToLogin: () => void;
+  onOpenOfficialLogin?: () => void;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({
+  initialRole = 'citizen',
   onNavigateToLogin,
+  onOpenOfficialLogin,
 }) => {
-  const [role, setRole] = useState<UserRole>('citizen');
+  const role: UserRole = (initialRole === 'official' ? 'station' : initialRole) as UserRole;
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [districtsList, setDistrictsList] = useState<string[]>([]);
+
+  // Fetch district list from PostgreSQL database table
+  useEffect(() => {
+    getDistricts().then((data) => {
+      setDistrictsList(data);
+      if (data.length > 0 && !formData.district) {
+        setFormData((prev) => ({ ...prev, district: data[0] }));
+      }
+    });
+  }, []);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -177,46 +191,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           </div>
         </div>
 
-        {/* Role Toggle Tabs for 3 Roles: Citizen, Rescue Team, Collector */}
-        <div className="bg-emerald-50/50 p-2 border-b border-emerald-100 grid grid-cols-3 gap-1.5">
-          {/* Role 1: Citizen */}
-          <button
-            type="button"
-            onClick={() => { setRole('citizen'); setSubmitted(false); setErrors({}); setServerError(null); }}
-            className={`py-2.5 rounded-xl text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-1 transition-all ${role === 'citizen'
-                ? 'bg-[#059669] text-white shadow-md'
-                : 'text-slate-700 hover:bg-emerald-100/60'
-              }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Citizen</span>
-          </button>
-
-          {/* Role 2: Rescue Team */}
-          <button
-            type="button"
-            onClick={() => { setRole('rescue_team'); setSubmitted(false); setErrors({}); setServerError(null); }}
-            className={`py-2.5 rounded-xl text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-1 transition-all ${role === 'rescue_team'
-                ? 'bg-amber-600 text-white shadow-md'
-                : 'text-slate-700 hover:bg-amber-100/60'
-              }`}
-          >
-            <LifeBuoy className="w-3.5 h-3.5" />
-            <span>Rescue Team</span>
-          </button>
-
-          {/* Role 3: Collector */}
-          <button
-            type="button"
-            onClick={() => { setRole('collector'); setSubmitted(false); setErrors({}); setServerError(null); }}
-            className={`py-2.5 rounded-xl text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-1 transition-all ${role === 'collector'
-                ? 'bg-[#043e2e] text-white shadow-md'
-                : 'text-slate-700 hover:bg-emerald-100/60'
-              }`}
-          >
-            <Building2 className="w-3.5 h-3.5 text-amber-400" />
-            <span>Collector</span>
-          </button>
+        {/* Dedicated Public Citizen Registration Header */}
+        <div className="bg-emerald-50/50 py-3 px-6 border-b border-emerald-100 text-center">
+          <h3 className="text-sm font-extrabold text-emerald-900 uppercase tracking-wider">
+            Public Citizen Registration
+          </h3>
         </div>
 
         {/* Form Body or Clean Success Confirmation */}
@@ -259,13 +238,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder={
-                      role === 'citizen'
-                        ? 'e.g. Rajesh Nair'
-                        : role === 'rescue_team'
-                          ? 'e.g. Capt. Suresh Kumar (NDRF)'
-                          : 'e.g. Dr. Ananya Varma, IAS (District Collector)'
-                    }
+                    placeholder="e.g. Rajesh Nair"
                     value={formData.name}
                     onChange={(e) => {
                       setFormData({ ...formData, name: e.target.value });
@@ -313,13 +286,13 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {role !== 'citizen' ? 'Official Govt Email *' : 'Email Address'}
+                    Email Address
                   </label>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="email"
-                      placeholder={role === 'collector' ? 'collector.idk@kerala.gov.in' : role === 'rescue_team' ? 'ndrf.kerala@gov.in' : 'name@example.com'}
+                      placeholder="name@example.com"
                       value={formData.email}
                       onChange={(e) => {
                         setFormData({ ...formData, email: e.target.value });
@@ -429,84 +402,38 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                       className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-[#059669] focus:outline-none"
                     >
-                      <option value="Idukki">Idukki</option>
-                      <option value="Wayanad">Wayanad</option>
-                      <option value="Ernakulam">Ernakulam</option>
-                      <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                      <option value="Kozhikode">Kozhikode</option>
-                      <option value="Thrissur">Thrissur</option>
-                      <option value="Palakkad">Palakkad</option>
-                      <option value="Kottayam">Kottayam</option>
+                      {districtsList.map((dist) => (
+                        <option key={dist} value={dist}>
+                          {dist}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
-                {role === 'citizen' ? (
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Panchayat / Municipality <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Munnar / Aluva"
-                      value={formData.panchayat}
-                      onChange={(e) => {
-                        setFormData({ ...formData, panchayat: e.target.value });
-                        if (errors.panchayat) setErrors({ ...errors, panchayat: undefined });
-                      }}
-                      className={`w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.panchayat ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400' : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                        }`}
-                    />
-                    {errors.panchayat && (
-                      <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
-                        <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                        <span>{errors.panchayat}</span>
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Official Title / Rank
-                    </label>
-                    <input
-                      type="text"
-                      readOnly
-                      value={role === 'collector' ? 'District Collector & Magistrate' : 'NDRF / Fire Rescue Commander'}
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-700 cursor-not-allowed"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Role Specific Employee Code Field for Rescue Team & Collector */}
-              {role !== 'citizen' && (
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {role === 'collector' ? 'IAS / Collectorate Official Code *' : 'NDRF / Rescue Team Badge ID *'}
+                    Panchayat / Municipality <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative">
-                    <KeyRound className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      placeholder={role === 'collector' ? 'e.g. KLA-IAS-2026-09' : 'e.g. NDRF-4BN-8820'}
-                      value={formData.departmentId}
-                      onChange={(e) => {
-                        setFormData({ ...formData, departmentId: e.target.value });
-                        if (errors.departmentId) setErrors({ ...errors, departmentId: undefined });
-                      }}
-                      className={`w-full pl-9 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.departmentId ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400' : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                        }`}
-                    />
-                  </div>
-                  {errors.departmentId && (
+                  <input
+                    type="text"
+                    placeholder="e.g. Munnar / Aluva"
+                    value={formData.panchayat}
+                    onChange={(e) => {
+                      setFormData({ ...formData, panchayat: e.target.value });
+                      if (errors.panchayat) setErrors({ ...errors, panchayat: undefined });
+                    }}
+                    className={`w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.panchayat ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400' : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
+                      }`}
+                  />
+                  {errors.panchayat && (
                     <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
                       <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                      <span>{errors.departmentId}</span>
+                      <span>{errors.panchayat}</span>
                     </p>
                   )}
                 </div>
-              )}
+              </div>
 
               {/* Terms Checkbox */}
               <div>
@@ -538,12 +465,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full py-3.5 rounded-xl text-sm font-extrabold uppercase tracking-wider text-white shadow-lg transition-all flex items-center justify-center gap-2 ${role === 'collector'
-                      ? 'bg-[#043e2e] hover:bg-[#032e22]'
-                      : role === 'rescue_team'
-                        ? 'bg-amber-600 hover:bg-amber-700'
-                        : 'bg-[#059669] hover:bg-[#047857]'
-                    }`}
+                  className="w-full py-3.5 rounded-xl text-sm font-extrabold uppercase tracking-wider text-white shadow-lg transition-all flex items-center justify-center gap-2 bg-[#059669] hover:bg-[#047857]"
                 >
                   <UserPlus className="w-4 h-4" />
                   <span>{isSubmitting ? 'Registering...' : 'Register'}</span>
@@ -562,19 +484,14 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setSubmitted(true)}
-                    className="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300/90 rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2.5 hover:shadow-sm"
-                  >
-                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                    </svg>
-                    <span>Sign up with Google</span>
-                  </button>
+                  <GoogleAuthButton
+                    mode="register"
+                    label="Sign up with Google"
+                    onSuccess={() => {
+                      setSubmitted(true);
+                    }}
+                    onError={(err) => setServerError(err)}
+                  />
                 </>
               )}
 
@@ -591,6 +508,20 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
               Sign In <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          {/* Official Station Sign Up Access Banner */}
+          {onOpenOfficialLogin && (
+            <div className="mt-3 pt-3 border-t border-slate-100 text-center">
+              <button
+                type="button"
+                onClick={onOpenOfficialLogin}
+                className="w-full py-2.5 px-3 bg-amber-50 hover:bg-amber-100/80 text-amber-900 border border-amber-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-xs"
+              >
+                <Building2 className="w-4 h-4 text-amber-600" />
+                <span>Station Duty Registration & Officer Sign-Up →</span>
+              </button>
+            </div>
+          )}
 
         </div>
 

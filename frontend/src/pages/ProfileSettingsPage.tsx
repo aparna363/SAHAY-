@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Phone, Mail, MapPin, Save, CheckCircle2, ArrowLeft, KeyRound, Lock, ShieldCheck } from 'lucide-react';
 import fullLogoSahay from '../assets/full_logo_sahay.png';
 import loginBg from '../assets/loginbg.jpg';
 import type { Language } from '../translations';
-import { resetPassword } from '../services/api';
+import { resetPassword, getDistricts } from '../services/api';
 
 interface ProfileSettingsPageProps {
   currentLang: Language;
@@ -24,13 +24,20 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
   const [panchayat, setPanchayat] = useState(user?.panchayat || '');
   const [designation] = useState(user?.designation || '');
   const [departmentId] = useState(user?.departmentId || user?.department_id || '');
+  const [districtsList, setDistrictsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getDistricts().then((data) => {
+      setDistrictsList(data);
+    });
+  }, []);
 
   // Password Change state
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passMessage, setPassMessage] = useState<string | null>(null);
   const [passError, setPassError] = useState<string | null>(null);
-  
+
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -81,7 +88,7 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
   };
 
   return (
-    <div 
+    <div
       className="relative min-h-[90vh] py-10 px-4 sm:px-6 lg:px-8 bg-slate-900 bg-cover bg-center bg-no-repeat animate-fadeIn"
       style={{
         backgroundImage: `url(${loginBg})`,
@@ -91,7 +98,7 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/70 to-slate-950/90 backdrop-brightness-[0.8]" />
 
       <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-        
+
         {/* Header Bar */}
         <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 shadow-2xl border border-white/80 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -111,9 +118,9 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
           </div>
 
           <div className="max-w-[160px] hidden sm:block">
-            <img 
-              src={fullLogoSahay} 
-              alt="SAHAY" 
+            <img
+              src={fullLogoSahay}
+              alt="SAHAY"
               className="w-full h-auto object-contain"
               onError={(e) => { (e.target as HTMLImageElement).src = '/full_logo_sahay.png'; }}
             />
@@ -130,7 +137,7 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
 
         {/* Profile Card & Form */}
         <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/80 p-8 space-y-8">
-          
+
           {/* User Badge Top Banner */}
           <div className="flex flex-col sm:flex-row items-center gap-4 p-5 bg-emerald-50/80 border border-emerald-100 rounded-2xl">
             <div className="w-16 h-16 rounded-2xl bg-[#043e2e] text-amber-400 font-black text-2xl flex items-center justify-center shadow-md">
@@ -210,14 +217,11 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
                     onChange={(e) => setDistrict(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-[#059669] focus:outline-none"
                   >
-                    <option value="Idukki">Idukki</option>
-                    <option value="Wayanad">Wayanad</option>
-                    <option value="Ernakulam">Ernakulam</option>
-                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                    <option value="Kozhikode">Kozhikode</option>
-                    <option value="Thrissur">Thrissur</option>
-                    <option value="Palakkad">Palakkad</option>
-                    <option value="Kottayam">Kottayam</option>
+                    {districtsList.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

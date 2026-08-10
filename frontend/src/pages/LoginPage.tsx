@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { LogIn, Lock, Phone, UserCheck, ArrowRight, User, AlertCircle, LifeBuoy, Building2, Eye, EyeOff, KeyRound, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { LogIn, Lock, Phone, UserCheck, ArrowRight, AlertCircle, Building2, Eye, EyeOff, KeyRound, CheckCircle2, ArrowLeft, Mail, Send } from 'lucide-react';
 import fullLogoSahay from '../assets/full_logo_sahay.png';
 import loginBg from '../assets/loginbg.jpg';
 import type { Language } from '../translations';
-import { loginUser, resetPassword } from '../services/api';
-import type { UserRole } from '../services/api';
+import { loginUser, sendResetLink, sendOtp, loginWithOtp } from '../services/api';
+import { GoogleAuthButton } from '../components/GoogleAuthButton';
 
 interface LoginPageProps {
   currentLang: Language;
   onNavigateToRegister: (role: 'citizen' | 'official') => void;
   onLoginSuccess?: (user: any) => void;
+  onOpenOfficialLogin?: () => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLoginSuccess }) => {
-  const [tab, setTab] = useState<UserRole>('citizen');
+export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLoginSuccess, onOpenOfficialLogin }) => {
+  const tab = 'citizen';
   const [citizenLoginMethod, setCitizenLoginMethod] = useState<'password' | 'otp'>('password');
 
   // Login State
@@ -25,9 +26,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
   // Forgot Password State
   const [isResetMode, setIsResetMode] = useState(false);
   const [resetPhoneOrEmail, setResetPhoneOrEmail] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
   const [resetSuccessMsg, setResetSuccessMsg] = useState<string | null>(null);
 
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
@@ -39,26 +37,26 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
-    const trimmedPhoneOrEmail = phoneOrEmail.trim();
+    const trimmedVal = phoneOrEmail.trim();
 
-    if (!trimmedPhoneOrEmail) {
-      newErrors.phoneOrEmail = tab === 'citizen'
-        ? 'Mobile number cannot be empty or spaces only'
-        : 'Govt Email or Employee Service ID cannot be empty or spaces only';
-    } else if (tab === 'citizen') {
-      const cleanPhone = phoneOrEmail.replace(/\D/g, '');
-      if (!cleanPhone || !/^[6-9]\d{9}$/.test(cleanPhone)) {
-        newErrors.phoneOrEmail = 'Please enter a valid 10-digit mobile number';
+    if (!trimmedVal) {
+      newErrors.phoneOrEmail = 'Registered Mobile Number or Email is required';
+    } else if (trimmedVal.includes('@')) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedVal)) {
+        newErrors.phoneOrEmail = 'Please enter a valid email address format';
       }
-    } else if (trimmedPhoneOrEmail.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedPhoneOrEmail)) {
-      newErrors.phoneOrEmail = 'Please enter a valid email address format';
+    } else {
+      const cleanPhone = trimmedVal.replace(/\D/g, '');
+      if (!cleanPhone || cleanPhone.length < 8) {
+        newErrors.phoneOrEmail = 'Please enter a valid mobile number or email address';
+      }
     }
 
     const trimmedSecret = passwordOrOtp.trim();
 
     if (tab === 'citizen' && citizenLoginMethod === 'otp') {
       if (!trimmedSecret) {
-        newErrors.passwordOrOtp = 'OTP code cannot be empty or spaces only';
+        newErrors.passwordOrOtp = '6-digit OTP code is required';
       } else if (!/^\d{6}$/.test(trimmedSecret)) {
         newErrors.passwordOrOtp = 'OTP must be exactly 6 numeric digits';
       }
@@ -74,45 +72,26 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateResetForm = () => {
-    const newErrors: typeof errors = {};
-    const trimmedVal = resetPhoneOrEmail.trim();
 
-    if (!trimmedVal) {
-      newErrors.resetPhoneOrEmail = 'Registered Mobile Phone or Email is required';
-    }
 
-    const trimmedNewPass = newPassword.trim();
-    if (!newPassword || !trimmedNewPass) {
-      newErrors.newPassword = 'New password cannot be empty or spaces only';
-    } else if (trimmedNewPass.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters long';
-    }
-
-    const trimmedConfirm = confirmNewPassword.trim();
-    if (!confirmNewPassword || !trimmedConfirm) {
-      newErrors.confirmNewPassword = 'Please confirm your new password';
-    } else if (newPassword !== confirmNewPassword) {
-      newErrors.confirmNewPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSendOtp = () => {
-    const trimmedPhone = phoneOrEmail.trim();
-    const cleanPhone = phoneOrEmail.replace(/\D/g, '');
-    if (!trimmedPhone) {
-      setErrors({ phoneOrEmail: 'Mobile number cannot be empty or spaces only' });
-      return;
-    }
-    if (!cleanPhone || !/^[6-9]\d{9}$/.test(cleanPhone)) {
-      setErrors({ phoneOrEmail: 'Please enter a valid 10-digit mobile number to receive OTP' });
+  const handleSendOtp = async () => {
+    const trimmed = phoneOrEmail.trim();
+    if (!trimmed) {
+      setErrors({ phoneOrEmail: 'Please enter your Registered Mobile Number or Email first' });
       return;
     }
     setErrors({});
-    setIsOtpSent(true);
+    setServerError(null);
+    setIsSubmitting(true);
+    try {
+      const res = await sendOtp(trimmed);
+      setIsOtpSent(true);
+      setResetSuccessMsg(`${res.message}${res.otp ? ` (Demo OTP Code: ${res.otp})` : ''}`);
+    } catch (err: any) {
+      setServerError(err.message || 'Failed to send OTP code.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -122,11 +101,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
     if (validateForm()) {
       setIsSubmitting(true);
       try {
-        const response = await loginUser({
-          phoneOrEmail: phoneOrEmail.trim(),
-          password: passwordOrOtp.trim(),
-          role: tab,
-        });
+        let response;
+        if (citizenLoginMethod === 'otp') {
+          response = await loginWithOtp(phoneOrEmail.trim(), passwordOrOtp.trim());
+        } else {
+          response = await loginUser({
+            phoneOrEmail: phoneOrEmail.trim(),
+            password: passwordOrOtp.trim(),
+            role: tab,
+          });
+        }
 
         const user = response.user;
         setLoggedInUser(user);
@@ -142,30 +126,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
     }
   };
 
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendResetMail = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setServerError(null);
     setResetSuccessMsg(null);
 
-    if (validateResetForm()) {
-      setIsSubmitting(true);
-      try {
-        const response = await resetPassword({
-          phoneOrEmail: resetPhoneOrEmail.trim(),
-          newPassword: newPassword.trim(),
-        });
+    const trimmedVal = resetPhoneOrEmail.trim();
+    if (!trimmedVal) {
+      setErrors({ resetPhoneOrEmail: 'Registered Mobile Phone or Email is required' });
+      return;
+    }
 
-        setResetSuccessMsg(response.message || 'Password reset successfully! Please sign in.');
-        setPhoneOrEmail(resetPhoneOrEmail.trim());
-        setResetPhoneOrEmail('');
-        setNewPassword('');
-        setConfirmNewPassword('');
-        setIsResetMode(false);
-      } catch (err: any) {
-        setServerError(err.message || 'Failed to reset password.');
-      } finally {
-        setIsSubmitting(false);
-      }
+    try {
+      setIsSubmitting(true);
+      const response = await sendResetLink(trimmedVal);
+      setResetSuccessMsg(response.message);
+    } catch (err: any) {
+      setServerError(err.message || 'Failed to send reset email link.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -192,41 +171,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
             />
           </div>
         </div>
-
-        {/* Tab Switcher for 3 Roles: Citizen, Rescue Team, Collector */}
-        {!isResetMode && !loggedInUser && (
-          <div className="bg-slate-100 p-2 grid grid-cols-3 gap-1 border-b border-slate-200">
-            {/* Citizen */}
-            <button
-              onClick={() => { setTab('citizen'); setLoggedInUser(null); setErrors({}); setServerError(null); }}
-              className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${tab === 'citizen' ? 'bg-[#059669] text-white shadow-sm' : 'text-slate-700 hover:bg-slate-200'
-                }`}
-            >
-              <User className="w-3.5 h-3.5" />
-              <span>Citizen</span>
-            </button>
-
-            {/* Rescue Team */}
-            <button
-              onClick={() => { setTab('rescue_team'); setLoggedInUser(null); setErrors({}); setServerError(null); }}
-              className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${tab === 'rescue_team' ? 'bg-amber-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-200'
-                }`}
-            >
-              <LifeBuoy className="w-3.5 h-3.5" />
-              <span>Rescue</span>
-            </button>
-
-            {/* Collector */}
-            <button
-              onClick={() => { setTab('collector'); setLoggedInUser(null); setErrors({}); setServerError(null); }}
-              className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${tab === 'collector' ? 'bg-[#043e2e] text-white shadow-sm' : 'text-slate-700 hover:bg-slate-200'
-                }`}
-            >
-              <Building2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Collector</span>
-            </button>
-          </div>
-        )}
 
         {/* Form Body */}
         <div className="p-7">
@@ -265,12 +209,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               </div>
             </div>
           ) : isResetMode ? (
-            /* Forgot Password / Reset Password Mode */
-            <form onSubmit={handleResetPassword} className="space-y-4 animate-fadeIn" noValidate>
+            /* Forgot Password / Send Reset Link Mode */
+            <form onSubmit={handleSendResetMail} className="space-y-4 animate-fadeIn" noValidate>
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">
                   <KeyRound className="w-4 h-4 text-[#059669]" />
-                  <span>Reset Your Password</span>
+                  <span>Forgot Password</span>
                 </h3>
                 <button
                   type="button"
@@ -281,13 +225,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                 </button>
               </div>
 
+              <p className="text-xs font-medium text-slate-600">
+                Enter your registered Email or Mobile number below. We will send a secure link to reset your password.
+              </p>
+
               {/* Reset Input 1: Registered Phone or Email */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Registered Mobile / Email *
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Enter phone or email"
@@ -308,74 +256,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                 )}
               </div>
 
-              {/* Reset Input 2: New Password */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  New Password *
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type={showNewPassword ? 'text' : 'password'}
-                    placeholder="Min 6 characters"
-                    value={newPassword}
-                    onChange={(e) => {
-                      setNewPassword(e.target.value);
-                      if (errors.newPassword) setErrors({ ...errors, newPassword: undefined });
-                    }}
-                    className={`w-full pl-10 pr-10 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.newPassword ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400' : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {errors.newPassword && (
-                  <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
-                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    <span>{errors.newPassword}</span>
-                  </p>
-                )}
-              </div>
-
-              {/* Reset Input 3: Confirm New Password */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Confirm New Password *
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type={showNewPassword ? 'text' : 'password'}
-                    placeholder="Re-enter new password"
-                    value={confirmNewPassword}
-                    onChange={(e) => {
-                      setConfirmNewPassword(e.target.value);
-                      if (errors.confirmNewPassword) setErrors({ ...errors, confirmNewPassword: undefined });
-                    }}
-                    className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.confirmNewPassword ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400' : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
-                  />
-                </div>
-                {errors.confirmNewPassword && (
-                  <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
-                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    <span>{errors.confirmNewPassword}</span>
-                  </p>
-                )}
-              </div>
-
-              {/* Submit Reset Button */}
+              {/* Action: Send Reset Link to Mail */}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 bg-[#059669] hover:bg-[#047857] text-white rounded-xl text-xs font-extrabold tracking-wider uppercase shadow-md transition-all mt-2"
+                className="w-full py-3 bg-[#059669] hover:bg-[#047857] text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-70"
               >
-                {isSubmitting ? 'Resetting Password...' : 'Reset Password'}
+                <Send className="w-4 h-4 text-white" />
+                <span>{isSubmitting ? 'Sending Reset Link...' : 'Send Password Reset Link'}</span>
               </button>
             </form>
           ) : (
@@ -407,24 +295,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                 </div>
               )}
 
-              {/* Field 1: Mobile Phone or Govt Email */}
+              {/* Field 1: Mobile Phone or Email */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  {tab === 'citizen' ? 'Registered Mobile Number *' : 'Govt Email / Employee Service ID *'}
+                  Registered Mobile Number or Email *
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder={tab === 'citizen' ? 'e.g. 9876543210' : tab === 'collector' ? 'collector.idk@kerala.gov.in' : 'ndrf.kerala@gov.in'}
+                    placeholder="e.g. 9876543210 or name@gmail.com"
                     value={phoneOrEmail}
                     onChange={(e) => {
                       setPhoneOrEmail(e.target.value);
                       if (errors.phoneOrEmail) setErrors({ ...errors, phoneOrEmail: undefined });
                     }}
                     className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.phoneOrEmail
-                        ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
-                        : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
+                      ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
+                      : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
                       }`}
                   />
                 </div>
@@ -474,8 +362,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                       if (errors.passwordOrOtp) setErrors({ ...errors, passwordOrOtp: undefined });
                     }}
                     className={`w-full pl-10 pr-10 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.passwordOrOtp
-                        ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
-                        : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
+                      ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
+                      : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
                       }`}
                   />
                   {/* Eye Toggle for Password Login */}
@@ -506,15 +394,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-3.5 rounded-xl text-sm font-extrabold tracking-wider uppercase shadow-lg transition-all flex items-center justify-center gap-2 mt-2 text-white ${tab === 'collector'
-                    ? 'bg-[#043e2e] hover:bg-[#032e22]'
-                    : tab === 'rescue_team'
-                      ? 'bg-amber-600 hover:bg-amber-700'
-                      : 'bg-[#059669] hover:bg-[#047857]'
-                  }`}
+                className="w-full py-3.5 rounded-xl text-sm font-extrabold tracking-wider uppercase shadow-lg transition-all flex items-center justify-center gap-2 mt-2 text-white bg-[#059669] hover:bg-[#047857]"
               >
                 <LogIn className="w-4 h-4" />
-                <span>{isSubmitting ? 'Authenticating...' : `Sign In as ${tab.replace('_', ' ')}`}</span>
+                <span>{isSubmitting ? 'Authenticating...' : 'Sign In'}</span>
               </button>
 
               {/* Sign in with Google (Only for Citizen Login) */}
@@ -529,23 +412,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const citizenUser = { name: 'Citizen User', phone: '9876543210', role: 'citizen', district: 'Idukki' };
-                      setLoggedInUser(citizenUser);
-                      if (onLoginSuccess) onLoginSuccess(citizenUser);
+                  <GoogleAuthButton
+                    mode="login"
+                    label="Sign in with Google"
+                    onSuccess={(user) => {
+                      setLoggedInUser(user);
+                      if (onLoginSuccess) onLoginSuccess(user);
                     }}
-                    className="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300/90 rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2.5 hover:shadow-sm"
-                  >
-                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                    </svg>
-                    <span>Sign in with Google</span>
-                  </button>
+                    onError={(err) => setServerError(err)}
+                  />
                 </>
               )}
             </form>
@@ -561,6 +436,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               Register <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          {/* Official Portal Access Banner */}
+          {onOpenOfficialLogin && (
+            <div className="mt-3 pt-3 border-t border-slate-100 text-center">
+              <button
+                type="button"
+                onClick={onOpenOfficialLogin}
+                className="w-full py-2.5 px-3 bg-amber-50 hover:bg-amber-100/80 text-amber-900 border border-amber-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-xs"
+              >
+                <Building2 className="w-4 h-4 text-amber-600" />
+                <span>Govt Official / Station Admin Portal →</span>
+              </button>
+            </div>
+          )}
 
         </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CloudRain, AlertTriangle, CheckCircle, Search } from 'lucide-react';
 import { translations } from '../translations';
 import type { Language } from '../translations';
+import { useLocation } from '../context/LocationContext';
 
 interface LiveWeatherGridProps {
   currentLang?: Language;
@@ -17,15 +18,32 @@ interface DistrictWeather {
   humidity: string;
   alertLevel: 'RED' | 'ORANGE' | 'YELLOW' | 'GREEN';
   advisory: string;
+  isCurrentLocation?: boolean;
 }
 
 export const LiveWeatherGrid: React.FC<LiveWeatherGridProps> = ({ currentLang = 'en' }) => {
+  const { location, weatherData: globalWeather, requestLocation, openPromptModal, loading } = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterAlert, setFilterAlert] = useState<string>('ALL');
 
   const t = translations[currentLang];
 
-  const districts: DistrictWeather[] = [
+  const isGPSActive = !!location?.isGPS;
+
+  const currentGpsCard: DistrictWeather | null = globalWeather && isGPSActive ? {
+    district: globalWeather.placeName || globalWeather.district,
+    region: `${globalWeather.district} District (📍 Your GPS Location)`,
+    temp: `${Math.round(globalWeather.temperature)}°C`,
+    condition: globalWeather.condition,
+    rainfall: `${globalWeather.rainProbability}% Precip`,
+    windSpeed: `${globalWeather.windSpeed} km/h`,
+    humidity: `${globalWeather.humidity}%`,
+    alertLevel: (globalWeather.alert?.alertLevel as any) || 'GREEN',
+    advisory: globalWeather.alert?.description || `Live telemetry verified for your GPS coordinates.`,
+    isCurrentLocation: true
+  } : null;
+
+  const baseDistricts: DistrictWeather[] = [
     {
       district: currentLang === 'ml' ? 'ഇടുക്കി' : 'Idukki',
       region: currentLang === 'ml' ? 'ഹൈറേഞ്ച് & മലയോരം' : 'High Range & Hills',
@@ -94,6 +112,10 @@ export const LiveWeatherGrid: React.FC<LiveWeatherGridProps> = ({ currentLang = 
     }
   ];
 
+  const districts = currentGpsCard
+    ? [currentGpsCard, ...baseDistricts.filter(d => d.district.toLowerCase() !== currentGpsCard.district.toLowerCase())]
+    : baseDistricts;
+
   const filteredDistricts = districts.filter((item) => {
     const matchesSearch = item.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           item.region.toLowerCase().includes(searchQuery.toLowerCase());
@@ -108,7 +130,7 @@ export const LiveWeatherGrid: React.FC<LiveWeatherGridProps> = ({ currentLang = 
       case 'ORANGE':
         return <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-sm">{t.orangeAlert}</span>;
       case 'YELLOW':
-        return <span className="bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-sm">{t.yellowAlert}</span>;
+        return <span className="bg-amber-500 text-[#0f172a] px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-sm">{t.yellowAlert}</span>;
       default:
         return <span className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-sm flex items-center gap-1"><CheckCircle className="w-3 h-3" /> SAFE</span>;
     }
@@ -117,6 +139,32 @@ export const LiveWeatherGrid: React.FC<LiveWeatherGridProps> = ({ currentLang = 
   return (
     <section className="w-full bg-white py-12 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* GPS Location Status Banner when GPS is not granted */}
+        {!isGPSActive && (
+          <div className="mb-8 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-emerald-100 text-emerald-800 rounded-xl font-bold text-sm">
+                📍
+              </div>
+              <div>
+                <h4 className="text-sm font-extrabold text-slate-900">
+                  Location Unavailable — Enable GPS for Local Telemetry
+                </h4>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
+                  SAHAY uses real browser GPS coordinates to detect your exact village, town, or district (e.g., Erumeli South, Kottayam) without IP guessing.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={requestLocation || openPromptModal}
+              disabled={loading}
+              className="px-4 py-2 bg-[#059669] hover:bg-emerald-600 text-white text-xs font-extrabold rounded-xl shadow-sm transition-all whitespace-nowrap self-start sm:self-auto cursor-pointer"
+            >
+              {loading ? 'Detecting GPS...' : 'Enable Location'}
+            </button>
+          </div>
+        )}
         
         {/* Section Title */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
