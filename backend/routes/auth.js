@@ -161,7 +161,9 @@ router.post('/login', async (req, res) => {
       const fallbackQuery = `
         SELECT id, name, phone, email, password_hash AS effective_pass_hash, role, status, district, panchayat, designation, department_id, created_at
         FROM users
-        WHERE (phone IS NOT NULL AND phone = $1) OR (email IS NOT NULL AND LOWER(email) = LOWER($2));
+        WHERE (phone IS NOT NULL AND phone = $1)
+           OR (email IS NOT NULL AND LOWER(email) = LOWER($2))
+           OR (department_id IS NOT NULL AND LOWER(department_id) = LOWER($2));
       `;
 
       const fallbackResult = await pool.query(fallbackQuery, [cleanPhone || inputVal, inputVal]);
@@ -659,6 +661,97 @@ router.get('/designations', async (req, res) => {
     'Dam Telemetry Engineer',
     'Health Dept Emergency Doctor'
   ]);
+});
+
+// -------------------------------------------------------------
+// POST /api/auth/verify-station-unit
+// Verifies Official Unit ID (e.g. arr.frs) against rescue_units table directory
+// -------------------------------------------------------------
+router.post('/verify-station-unit', async (req, res) => {
+  try {
+    const { unitId } = req.body;
+    if (!unitId || !unitId.trim()) {
+      return res.status(400).json({ verified: false, message: 'Official Unit ID is required.' });
+    }
+
+    const cleanUnitId = unitId.trim().toLowerCase();
+
+    // 1. Primary check: Query rescue_units directory table
+    let unitRow = null;
+    const rescueResult = await pool.query(
+      `SELECT id, unit_id, unit_name, unit_type, district, contact_number, email, status, team_leader, team_size, current_location
+       FROM rescue_units
+       WHERE LOWER(unit_id) = $1`,
+      [cleanUnitId]
+    );
+
+    if (rescueResult.rows.length > 0) {
+      const u = rescueResult.rows[0];
+      unitRow = {
+        unitId: u.unit_id,
+        unitName: u.unit_name,
+        agencyType: u.unit_type,
+        unitType: u.unit_type,
+        district: u.district,
+        officialEmail: u.email,
+        contactNumber: u.contact_number,
+        teamLeader: u.team_leader,
+        teamSize: u.team_size,
+        status: u.status
+      };
+    } else {
+      // 2. Secondary fallback: authorized_stations directory
+      const authStationResult = await pool.query(
+        `SELECT id, unit_id, unit_name, agency_type, district, official_email, contact_number, status
+         FROM authorized_stations
+         WHERE LOWER(unit_id) = $1`,
+        [cleanUnitId]
+      );
+      if (authStationResult.rows.length > 0) {
+        const u = authStationResult.rows[0];
+        unitRow = {
+          unitId: u.unit_id,
+          unitName: u.unit_name,
+          agencyType: u.agency_type,
+          unitType: u.agency_type,
+          district: u.district,
+          officialEmail: u.official_email,
+          contactNumber: u.contact_number,
+          teamLeader: null,
+          teamSize: 0,
+          status: u.status || 'Active'
+        };
+      }
+    }
+
+    // Check if unit ID is already registered in users table
+    const regResult = await pool.query(
+      `SELECT id, name, status, district FROM users WHERE LOWER(department_id) = $1 AND role IN ('station', 'station_admin', 'rescue_team')`,
+      [cleanUnitId]
+    );
+
+    const isAlreadyRegistered = regResult.rows.length > 0;
+
+    if (!unitRow) {
+      return res.status(200).json({
+        verified: false,
+        message: `Unit ID '${cleanUnitId}' not found in official rescue_units directory. You may proceed with manual registration for District Collector review.`,
+        isAlreadyRegistered,
+        existingUser: isAlreadyRegistered ? regResult.rows[0] : null
+      });
+    }
+
+    return res.status(200).json({
+      verified: true,
+      message: `✓ Official Unit ID Verified in rescue_units table: ${unitRow.unitName} (${unitRow.unitType}) in ${unitRow.district} District.`,
+      unit: unitRow,
+      isAlreadyRegistered,
+      existingUser: isAlreadyRegistered ? regResult.rows[0] : null
+    });
+  } catch (err) {
+    console.error('Verify Station Unit Error:', err);
+    return res.status(500).json({ verified: false, message: 'Station Unit ID verification failed: ' + err.message });
+  }
 });
 
 module.exports = router;

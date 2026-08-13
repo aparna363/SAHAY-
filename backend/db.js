@@ -279,6 +279,143 @@ const initDb = async () => {
         );
       `);
 
+      // 8. Authorized Officers Table (Development / Verification Directory)
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS authorized_officers (
+          id SERIAL PRIMARY KEY,
+          officer_id VARCHAR(100) NOT NULL UNIQUE,
+          full_name VARCHAR(255) NOT NULL,
+          designation VARCHAR(100) NOT NULL,
+          department VARCHAR(100) NOT NULL,
+          district VARCHAR(100) NOT NULL,
+          official_email VARCHAR(255) NOT NULL,
+          status VARCHAR(50) DEFAULT 'active',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // 8b. Authorized Stations Table (Station Unit Verification Directory)
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS authorized_stations (
+          id SERIAL PRIMARY KEY,
+          unit_id VARCHAR(100) NOT NULL UNIQUE,
+          unit_name VARCHAR(255) NOT NULL,
+          agency_type VARCHAR(100) NOT NULL,
+          district VARCHAR(100) NOT NULL,
+          official_email VARCHAR(255) NOT NULL,
+          contact_number VARCHAR(50),
+          status VARCHAR(50) DEFAULT 'active',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // 9. Audit Logs Table (Platform Security & Audit Trail)
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS audit_logs (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+          role VARCHAR(50),
+          action VARCHAR(100) NOT NULL,
+          entity_type VARCHAR(100),
+          entity_id VARCHAR(100),
+          district VARCHAR(100),
+          details JSONB,
+          ip_address VARCHAR(50),
+          user_agent TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Database-level protection: Enforce maximum 1 active Collector per district
+      try {
+        await client.query(`
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_one_collector_per_district
+          ON users (LOWER(district))
+          WHERE role = 'collector' AND (status IS NULL OR status != 'revoked');
+        `);
+      } catch (idxErr) {
+        console.log(`ℹ️ Unique index note: ${idxErr.message}`);
+      }
+
+      // Seed Demo Authorized Officers for Kerala's 14 Districts if empty
+      const officerCheck = await client.query(`SELECT COUNT(*) FROM authorized_officers;`);
+      if (parseInt(officerCheck.rows[0].count, 10) === 0) {
+        const demoOfficers = [
+          ['KL-DEMO-ALP-001', 'Alex Varghese IAS', 'District Collector & Magistrate', 'Revenue Department', 'Alappuzha', 'collector.alappuzha@kerala.gov.in'],
+          ['KL-DEMO-EKM-001', 'NSK Umesh IAS', 'District Collector & Magistrate', 'Revenue Department', 'Ernakulam', 'collector.ernakulam@kerala.gov.in'],
+          ['KL-DEMO-IDK-001', 'V. Vigneshwari IAS', 'District Collector & Magistrate', 'Revenue Department', 'Idukki', 'collector.idukki@kerala.gov.in'],
+          ['KL-DEMO-KNR-001', 'Arun K Vijayan IAS', 'District Collector & Magistrate', 'Revenue Department', 'Kannur', 'collector.kannur@kerala.gov.in'],
+          ['KL-DEMO-KSD-001', 'K. Inbasekar IAS', 'District Collector & Magistrate', 'Revenue Department', 'Kasaragod', 'collector.kasaragod@kerala.gov.in'],
+          ['KL-DEMO-KLM-001', 'Devidas N IAS', 'District Collector & Magistrate', 'Revenue Department', 'Kollam', 'collector.kollam@kerala.gov.in'],
+          ['KL-DEMO-KTM-001', 'John V Samuel IAS', 'District Collector & Magistrate', 'Revenue Department', 'Kottayam', 'collector.kottayam@kerala.gov.in'],
+          ['KL-DEMO-KKD-001', 'Snehil Kumar Singh IAS', 'District Collector & Magistrate', 'Revenue Department', 'Kozhikode', 'collector.kozhikode@kerala.gov.in'],
+          ['KL-DEMO-MLP-001', 'Vinod VR IAS', 'District Collector & Magistrate', 'Revenue Department', 'Malappuram', 'collector.malappuram@kerala.gov.in'],
+          ['KL-DEMO-PKD-001', 'Dr. S. Chithra IAS', 'District Collector & Magistrate', 'Revenue Department', 'Palakkad', 'collector.palakkad@kerala.gov.in'],
+          ['KL-DEMO-PTA-001', 'A. Shibu IAS', 'District Collector & Magistrate', 'Revenue Department', 'Pathanamthitta', 'collector.pathanamthitta@kerala.gov.in'],
+          ['KL-DEMO-TVM-001', 'Geromic George IAS', 'District Collector & Magistrate', 'Revenue Department', 'Thiruvananthapuram', 'collector.tvm@kerala.gov.in'],
+          ['KL-DEMO-TCR-001', 'Arjun Pandian IAS', 'District Collector & Magistrate', 'Revenue Department', 'Thrissur', 'collector.thrissur@kerala.gov.in'],
+          ['KL-DEMO-WYD-001', 'D.R. Meghashree IAS', 'District Collector & Magistrate', 'Revenue Department', 'Wayanad', 'collector.wayanad@kerala.gov.in']
+        ];
+
+        for (const [id, name, desig, dept, dist, email] of demoOfficers) {
+          await client.query(`
+            INSERT INTO authorized_officers (officer_id, full_name, designation, department, district, official_email)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (officer_id) DO NOTHING;
+          `, [id, name, desig, dept, dist, email]);
+        }
+        console.log(`📋 Seeded 14 Demo Authorized Officers for Kerala Districts`);
+      }
+
+      // 8c. Rescue Units Table (Official Rescue Unit Directory as requested)
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS rescue_units (
+            id SERIAL PRIMARY KEY,
+            unit_id VARCHAR(30) UNIQUE NOT NULL,
+            unit_name VARCHAR(150) NOT NULL,
+            unit_type VARCHAR(30) NOT NULL
+                CHECK (unit_type IN ('Fire & Safety', 'Police', 'NDRF', 'KSDMA')),
+            district VARCHAR(50) NOT NULL,
+            contact_number VARCHAR(20),
+            email VARCHAR(100),
+            status VARCHAR(20) DEFAULT 'Active'
+                CHECK (status IN ('Active', 'Inactive', 'Busy', 'Offline')),
+            latitude DECIMAL(10, 7),
+            longitude DECIMAL(10, 7),
+            team_leader VARCHAR(100),
+            team_size INTEGER DEFAULT 0,
+            current_location VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Seed Demo Rescue Units for Unit ID Verification if empty
+      const rescueUnitCheck = await client.query(`SELECT COUNT(*) FROM rescue_units;`);
+      if (parseInt(rescueUnitCheck.rows[0].count, 10) === 0) {
+        const demoRescueUnits = [
+          ['arr.frs', 'Adoor Fire & Safety Station', 'Fire & Safety', 'Pathanamthitta', '04734-222101', 'arr.frs@kerala.gov.in', 'Active', 9.1554, 76.7335, 'Officer Rajesh Kumar', 15, 'Adoor Town Center'],
+          ['idk.frs', 'Munnar Fire & Safety Unit', 'Fire & Safety', 'Idukki', '04865-230201', 'munnar.frs@kerala.gov.in', 'Active', 10.0889, 77.0595, 'Inspector Suresh Nair', 12, 'Munnar Hill Station'],
+          ['ekm.ndrf', 'Ernakulam 10th NDRF Battalion', 'NDRF', 'Ernakulam', '0484-2422001', 'ndrf.ernakulam@ndrf.gov.in', 'Active', 9.9816, 76.2999, 'Commandant A.K. Sharma', 45, 'Kalamassery Base'],
+          ['tvm.pol', 'Thiruvananthapuram Central Police Unit', 'Police', 'Thiruvananthapuram', '0471-2338100', 'controlroom.tvm@keralapolice.gov.in', 'Active', 8.5241, 76.9366, 'ACP Thomas Philip', 30, 'Trivandrum City'],
+          ['wyd.frs', 'Kalpetta Fire & Safety Station', 'Fire & Safety', 'Wayanad', '04936-202201', 'kalpetta.frs@kerala.gov.in', 'Active', 11.6103, 76.0827, 'Station Officer M. Roy', 18, 'Kalpetta Town'],
+          ['kkd.ksdma', 'Kozhikode District Emergency Cell', 'KSDMA', 'Kozhikode', '0495-2371000', 'deoc.kozhikode@kerala.gov.in', 'Active', 11.2588, 75.7804, 'Nodal Officer Anjali Menon', 20, 'Kozhikode Civil Station'],
+          ['pta.frs', 'Pathanamthitta Central Fire & Safety', 'Fire & Safety', 'Pathanamthitta', '0468-2222301', 'pta.frs@kerala.gov.in', 'Active', 9.2648, 76.7870, 'Officer V. George', 16, 'Pathanamthitta HQ'],
+          ['tcr.frs', 'Thrissur Main Fire & Safety Unit', 'Fire & Safety', 'Thrissur', '0487-2423101', 'thrissur.frs@kerala.gov.in', 'Active', 10.5276, 76.2144, 'Station Commander K. Das', 22, 'Thrissur Round'],
+          ['pkd.pol', 'Palakkad Disaster Response Police Unit', 'Police', 'Palakkad', '0491-2534000', 'policeresponse.pkd@keralapolice.gov.in', 'Active', 10.7867, 76.6548, 'DYSP Radhakrishnan', 25, 'Palakkad Fort'],
+          ['ksd.frs', 'Kasaragod Central Fire & Safety', 'Fire & Safety', 'Kasaragod', '04994-220101', 'kasaragod.frs@kerala.gov.in', 'Active', 12.4996, 74.9869, 'Officer B. Hegde', 14, 'Kasaragod Bus Stand']
+        ];
+
+        for (const [uid, uname, utype, dist, phone, email, st, lat, lng, leader, size, loc] of demoRescueUnits) {
+          await client.query(`
+            INSERT INTO rescue_units (unit_id, unit_name, unit_type, district, contact_number, email, status, latitude, longitude, team_leader, team_size, current_location)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            ON CONFLICT (unit_id) DO NOTHING;
+          `, [uid, uname, utype, dist, phone, email, st, lat, lng, leader, size, loc]);
+        }
+        console.log(`📋 Seeded Demo Rescue Units in rescue_units Table`);
+      }
+
 
       // Migration: If legacy phone_or_email column exists, migrate data into separate phone & email columns
       const hasPhoneOrEmail = await client.query(`

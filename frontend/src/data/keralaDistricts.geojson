@@ -1,0 +1,331 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Kasaragod",
+        "DISTRICT": "Kasaragod",
+        "code": "KSD"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [74.85, 12.80],
+            [75.15, 12.75],
+            [75.38, 12.60],
+            [75.40, 12.35],
+            [75.25, 12.20],
+            [75.05, 12.25],
+            [74.92, 12.50],
+            [74.85, 12.80]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Kannur",
+        "DISTRICT": "Kannur",
+        "code": "KNR"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [75.25, 12.20],
+            [75.40, 12.35],
+            [75.75, 12.15],
+            [75.95, 11.95],
+            [75.70, 11.75],
+            [75.45, 11.70],
+            [75.28, 11.90],
+            [75.25, 12.20]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Wayanad",
+        "DISTRICT": "Wayanad",
+        "code": "WYD"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [75.75, 12.15],
+            [76.15, 11.98],
+            [76.42, 11.85],
+            [76.38, 11.55],
+            [76.05, 11.50],
+            [75.85, 11.65],
+            [75.70, 11.75],
+            [75.95, 11.95],
+            [75.75, 12.15]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Kozhikode",
+        "DISTRICT": "Kozhikode",
+        "code": "KKD"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [75.45, 11.70],
+            [75.70, 11.75],
+            [75.85, 11.65],
+            [76.05, 11.50],
+            [76.12, 11.28],
+            [75.90, 11.15],
+            [75.72, 11.22],
+            [75.55, 11.50],
+            [75.45, 11.70]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Malappuram",
+        "DISTRICT": "Malappuram",
+        "code": "MLP"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [75.90, 11.15],
+            [76.12, 11.28],
+            [76.35, 11.35],
+            [76.52, 11.15],
+            [76.45, 10.82],
+            [76.05, 10.75],
+            [75.80, 10.95],
+            [75.72, 11.22],
+            [75.90, 11.15]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Palakkad",
+        "DISTRICT": "Palakkad",
+        "code": "PKD"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.35, 11.35],
+            [76.72, 11.20],
+            [76.92, 11.02],
+            [76.85, 10.55],
+            [76.55, 10.40],
+            [76.25, 10.58],
+            [76.45, 10.82],
+            [76.52, 11.15],
+            [76.35, 11.35]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Thrissur",
+        "DISTRICT": "Thrissur",
+        "code": "TCR"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [75.95, 10.70],
+            [76.05, 10.75],
+            [76.25, 10.58],
+            [76.55, 10.40],
+            [76.62, 10.22],
+            [76.35, 10.15],
+            [76.12, 10.28],
+            [75.95, 10.45],
+            [75.95, 10.70]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Ernakulam",
+        "DISTRICT": "Ernakulam",
+        "code": "EKM"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.12, 10.28],
+            [76.35, 10.15],
+            [76.62, 10.22],
+            [76.82, 10.05],
+            [76.75, 9.82],
+            [76.45, 9.75],
+            [76.20, 9.90],
+            [76.15, 10.10],
+            [76.12, 10.28]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Idukki",
+        "DISTRICT": "Idukki",
+        "code": "IDK"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.62, 10.22],
+            [76.85, 10.32],
+            [77.38, 10.20],
+            [77.32, 9.60],
+            [76.95, 9.50],
+            [76.75, 9.82],
+            [76.82, 10.05],
+            [76.62, 10.22]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Kottayam",
+        "DISTRICT": "Kottayam",
+        "code": "KTM"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.45, 9.75],
+            [76.75, 9.82],
+            [76.95, 9.50],
+            [76.72, 9.40],
+            [76.48, 9.45],
+            [76.38, 9.60],
+            [76.45, 9.75]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Alappuzha",
+        "DISTRICT": "Alappuzha",
+        "code": "ALP"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.20, 9.90],
+            [76.45, 9.75],
+            [76.38, 9.60],
+            [76.48, 9.45],
+            [76.52, 9.20],
+            [76.32, 9.15],
+            [76.28, 9.50],
+            [76.20, 9.90]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Pathanamthitta",
+        "DISTRICT": "Pathanamthitta",
+        "code": "PTA"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.72, 9.40],
+            [76.95, 9.50],
+            [77.28, 9.38],
+            [77.18, 9.10],
+            [76.85, 9.08],
+            [76.52, 9.20],
+            [76.48, 9.45],
+            [76.72, 9.40]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Kollam",
+        "DISTRICT": "Kollam",
+        "code": "KLM"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.32, 9.15],
+            [76.52, 9.20],
+            [76.85, 9.08],
+            [77.25, 9.00],
+            [77.15, 8.75],
+            [76.70, 8.72],
+            [76.52, 8.88],
+            [76.32, 9.15]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district": "Thiruvananthapuram",
+        "DISTRICT": "Thiruvananthapuram",
+        "code": "TVM"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.70, 8.72],
+            [77.15, 8.75],
+            [77.35, 8.52],
+            [77.12, 8.28],
+            [76.82, 8.35],
+            [76.90, 8.55],
+            [76.70, 8.72]
+          ]
+        ]
+      }
+    }
+  ]
+}

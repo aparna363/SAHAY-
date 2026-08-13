@@ -157,5 +157,89 @@ CREATE TABLE IF NOT EXISTS volunteers (
   skills TEXT
 );
 
+-- 12. Rescue Units Table (Official Station / Emergency Response Directory)
+CREATE TABLE IF NOT EXISTS rescue_units (
+    id SERIAL PRIMARY KEY,
+    unit_id VARCHAR(30) UNIQUE NOT NULL,
+    unit_name VARCHAR(150) NOT NULL,
+    unit_type VARCHAR(30) NOT NULL
+        CHECK (unit_type IN ('Fire & Safety', 'Police', 'NDRF', 'KSDMA')),
+    district VARCHAR(50) NOT NULL,
+    contact_number VARCHAR(20),
+    email VARCHAR(100),
+    status VARCHAR(20) DEFAULT 'Active'
+        CHECK (status IN ('Active', 'Inactive', 'Busy', 'Offline')),
+    latitude DECIMAL(10, 7),
+    longitude DECIMAL(10, 7),
+    team_leader VARCHAR(100),
+    team_size INTEGER DEFAULT 0,
+    current_location VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- 13. Rescue Team Members Table (Roster & Availability)
+CREATE TABLE IF NOT EXISTS rescue_team_members (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    unit_id VARCHAR(100),
+    district VARCHAR(100) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    employee_service_id VARCHAR(100),
+    agency_type_code VARCHAR(50),
+    designation VARCHAR(150),
+    specialization VARCHAR(150),
+    role VARCHAR(100) NOT NULL,
+    contact_number VARCHAR(20) NOT NULL,
+    email VARCHAR(255),
+    experience VARCHAR(50),
+    availability VARCHAR(50) DEFAULT 'Available',
+    current_assignment VARCHAR(255) DEFAULT 'Base Station',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+-- 14. Agency Types Table
+CREATE TABLE IF NOT EXISTS agency_types (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+-- 15. Agency Designations Table
+CREATE TABLE IF NOT EXISTS agency_designations (
+    id SERIAL PRIMARY KEY,
+    agency_type_code VARCHAR(50) NOT NULL,
+    designation_name VARCHAR(150) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 16. Agency Specializations Table
+CREATE TABLE IF NOT EXISTS agency_specializations (
+    id SERIAL PRIMARY KEY,
+    agency_type_code VARCHAR(50) NOT NULL,
+    specialization_name VARCHAR(150) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 17. Agency Resources Table
+CREATE TABLE IF NOT EXISTS agency_resources (
+    id SERIAL PRIMARY KEY,
+    agency_type_code VARCHAR(50) NOT NULL,
+    resource_name VARCHAR(200) NOT NULL,
+    resource_category VARCHAR(100) DEFAULT 'General',
+    status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 18. Operational Roles Table
+CREATE TABLE IF NOT EXISTS operational_roles (
+    id SERIAL PRIMARY KEY,
+    role_name VARCHAR(150) UNIQUE NOT NULL,
+    description TEXT,
+    status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

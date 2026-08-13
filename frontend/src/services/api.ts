@@ -440,6 +440,164 @@ export async function approveStationAdmin(stationAdminId: number, action: 'appro
   return data;
 }
 
+// -------------------------------------------------------------
+// COLLECTOR & ADMIN SECURITY INTEGRATION APIS
+// -------------------------------------------------------------
+
+export interface VerifiedOfficer {
+  officerId: string;
+  fullName: string;
+  designation: string;
+  department: string;
+  district: string;
+  officialEmail: string;
+}
+
+export interface DistrictStatusItem {
+  district: string;
+  isAssigned: boolean;
+  collector: AuthUser | null;
+}
+
+export interface AuditLogItem {
+  id: number;
+  user_id: number | null;
+  user_name?: string;
+  role: string;
+  action: string;
+  entity_type: string | null;
+  entity_id: string | null;
+  district: string | null;
+  details: any;
+  ip_address: string;
+  created_at: string;
+}
+
+// Verify Officer ID (Admin)
+export async function verifyOfficer(officerId: string): Promise<{
+  verified: boolean;
+  officer?: VerifiedOfficer;
+  districtAvailable?: boolean;
+  assignedCollector?: any;
+  message?: string;
+}> {
+  const response = await fetchWithFallback('/admin/verify-officer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ officerId }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || data.error || 'Failed to verify Officer ID');
+  }
+
+  return data;
+}
+
+// Get Districts Assignment Status (Admin)
+export async function getDistrictsStatus(): Promise<{
+  districts: DistrictStatusItem[];
+  totalDistricts: number;
+  assignedCount: number;
+  allAssigned: boolean;
+}> {
+  const response = await fetchWithFallback('/admin/districts-status', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch district assignment status');
+  }
+
+  return data;
+}
+
+// Replace / Transfer Collector (Admin)
+export async function replaceCollector(payload: {
+  district: string;
+  newOfficerId?: string;
+  newPassword: string;
+  newPhone?: string;
+  newEmail?: string;
+}): Promise<{ message: string; previousOfficer: string; newOfficer: string }> {
+  const response = await fetchWithFallback('/admin/replace-collector', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to replace Collector');
+  }
+
+  return data;
+}
+
+// Get Audit Logs (Admin)
+export async function getAuditLogs(): Promise<{ logs: AuditLogItem[] }> {
+  const response = await fetchWithFallback('/admin/audit-logs', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch audit logs');
+  }
+
+  return data;
+}
+
+// Get Collector Dashboard Stats (Collector / Admin)
+export async function getCollectorDashboardStats(district?: string): Promise<{
+  district: string;
+  stats: {
+    activeIncidents: number;
+    pendingRescueTeams: number;
+    activeRescueTeams: number;
+    shelters: number;
+    activeAlerts: number;
+    sosReports: number;
+  };
+}> {
+  const query = district ? `?district=${encodeURIComponent(district)}` : '';
+  const response = await fetchWithFallback(`/collector/dashboard-stats${query}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch collector dashboard stats');
+  }
+
+  return data;
+}
+
+// Assign Rescue Team to Incident (Collector / Admin)
+export async function assignRescueTeamToIncident(
+  incidentId: string | number,
+  rescueTeamId: number,
+  remarks?: string
+): Promise<{ message: string; status: string; assignedTeam: string }> {
+  const response = await fetchWithFallback('/collector/assign-rescue-team', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ incidentId, rescueTeamId, remarks }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to assign rescue team');
+  }
+
+  return data;
+}
+
 // 8. Get Admin Overview
 export async function getAdminOverview(): Promise<{
   overview: {
@@ -876,6 +1034,411 @@ export async function markAllNotificationsReadApi(): Promise<boolean> {
     return false;
   }
 }
+
+export interface VerifiedStationUnit {
+  unitId: string;
+  unitName: string;
+  agencyType: string;
+  unitType?: string;
+  district: string;
+  officialEmail: string;
+  contactNumber?: string;
+  teamLeader?: string;
+  teamSize?: number;
+  status?: string;
+}
+
+export async function verifyStationUnit(unitId: string): Promise<{
+  verified: boolean;
+  message: string;
+  unit?: VerifiedStationUnit;
+  isAlreadyRegistered?: boolean;
+}> {
+  try {
+    const response = await fetchWithFallback('/auth/verify-station-unit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ unitId }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (err: any) {
+    return {
+      verified: false,
+      message: err.message || 'Station Unit ID verification failed.',
+    };
+  }
+}
+
+// -------------------------------------------------------------
+// Rescue Team Operational APIs
+// -------------------------------------------------------------
+
+export interface RescueDashboardStats {
+  newAssignments: number;
+  activeOperations: number;
+  completedOperations: number;
+  teamStatus: string;
+  availableMembers: number;
+  totalMembers: number;
+  availableResources: number;
+  totalResources: number;
+  criticalAlerts: number;
+  pendingRequests: number;
+}
+
+export async function getRescueDashboardStats(district?: string): Promise<{
+  district: string;
+  stats: RescueDashboardStats;
+}> {
+  try {
+    const query = district ? `?district=${encodeURIComponent(district)}` : '';
+    const response = await fetchWithFallback(`/rescue/dashboard-stats${query}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return { district: data.district || district || 'Kottayam', stats: data.stats };
+    }
+  } catch (err) {
+    console.warn('Backend fetch for rescue stats failed, returning defaults:', err);
+  }
+  return {
+    district: district || 'Kottayam',
+    stats: {
+      newAssignments: 3,
+      activeOperations: 2,
+      completedOperations: 14,
+      teamStatus: 'Available',
+      availableMembers: 8,
+      totalMembers: 10,
+      availableResources: 24,
+      totalResources: 30,
+      criticalAlerts: 2,
+      pendingRequests: 1
+    }
+  };
+}
+
+export async function updateRescueOperationStatus(
+  incidentId: string | number,
+  status: string,
+  remarks?: string,
+  rescuedCount?: number
+): Promise<{ message: string; status: string }> {
+  const response = await fetchWithFallback(`/rescue/operations/${incidentId}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status, remarks, rescuedCount }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update operation status');
+  }
+
+  return data;
+}
+
+export async function submitEmergencySupportRequest(payload: {
+  requestType: string;
+  priority: string;
+  incidentId?: string;
+  quantity?: number;
+  reason: string;
+  notes?: string;
+}): Promise<{ message: string; request: any }> {
+  const response = await fetchWithFallback('/rescue/emergency-requests', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to submit support request');
+  }
+
+  return data;
+}
+
+export interface RescueProfileData {
+  userId: number;
+  role: string;
+  agencyType: string;
+  agencyTypeName: string;
+  unitName: string;
+  officialUnitId: string;
+  district: string;
+  email: string;
+  phone: string;
+  verificationStatus: 'approved' | 'pending' | 'rejected' | string;
+}
+
+export interface RescueAgencyConfig {
+  agencyType: string;
+  agencyTypeName: string;
+  agencyTypes: { code: string; name: string }[];
+  designations: string[];
+  specializations: string[];
+  resources: { name: string; category: string }[];
+  operationalRoles: string[];
+}
+
+export async function getRescueProfile(): Promise<{ profile: RescueProfileData }> {
+  try {
+    const response = await fetchWithFallback('/rescue/profile', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return { profile: data.profile };
+    }
+  } catch (err) {
+    console.warn('Failed to fetch rescue profile:', err);
+  }
+  return {
+    profile: {
+      userId: 0,
+      role: 'rescue_team',
+      agencyType: 'FIRE_RESCUE',
+      agencyTypeName: 'Fire & Rescue Services',
+      unitName: 'Kottayam Fire & Rescue Station',
+      officialUnitId: 'FRS-KTM-001',
+      district: 'Kottayam',
+      email: 'rescue@kerala.gov.in',
+      phone: '+91 94471 23456',
+      verificationStatus: 'approved'
+    }
+  };
+}
+
+export function normalizeAgencyCode(input?: string): string {
+  if (!input) return 'FIRE_RESCUE';
+  const str = String(input).trim().toUpperCase();
+  if (str.includes('NDRF') || str.includes('NATIONAL DISASTER')) return 'NDRF';
+  if (str.includes('POLICE')) return 'POLICE';
+  if (str.includes('KSDMA') || str.includes('SDMA')) return 'KSDMA';
+  if (str.includes('CIVIL')) return 'CIVIL_DEFENCE';
+  if (str.includes('FIRE') || str.includes('SAFETY') || str.includes('RESCUE')) return 'FIRE_RESCUE';
+  return str || 'OTHER';
+}
+
+export async function getRescueAgencyConfig(agencyType?: string): Promise<RescueAgencyConfig> {
+  const normAgency = normalizeAgencyCode(agencyType);
+
+  const defaultDesignations: Record<string, string[]> = {
+    'FIRE_RESCUE': ['Station Officer', 'Assistant Station Officer', 'Fire & Rescue Officer', 'Fire & Rescue Operator', 'Driver / Operator'],
+    'NDRF': ['Commandant', 'Deputy Commandant', 'Assistant Commandant', 'Inspector', 'Sub-Inspector', 'Head Constable', 'Constable'],
+    'POLICE': ['Inspector', 'Sub-Inspector', 'Assistant Sub-Inspector', 'Head Constable', 'Civil Police Officer'],
+    'KSDMA': ['Disaster Management Officer', 'Emergency Operations Officer', 'Technical Officer', 'Field Officer'],
+    'CIVIL_DEFENCE': ['Chief Warden', 'Deputy Warden', 'Warden', 'Volunteer'],
+    'OTHER': ['Rescue Coordinator', 'Response Specialist', 'Field Operator', 'Medical Responder']
+  };
+
+  const defaultSpecializations: Record<string, string[]> = {
+    'FIRE_RESCUE': ['Fire Fighting', 'Flood Rescue', 'Swift Water Rescue', 'Rope Rescue', 'Search & Rescue', 'First Aid'],
+    'NDRF': ['Search & Rescue', 'Flood Rescue', 'Mountain Rescue', 'Medical Assistance', 'Disaster Response', 'Communications', 'CBRN Response'],
+    'POLICE': ['Evacuation Support', 'Traffic Control', 'Crowd Management', 'Search & Rescue', 'Security', 'Missing Persons'],
+    'KSDMA': ['EOC Management', 'Logistics & Distribution', 'Damage Assessment', 'Shelter Coordination'],
+    'CIVIL_DEFENCE': ['First Aid & Trauma Care', 'Evacuation Assistance', 'Community Relief', 'Communication Operations'],
+    'OTHER': ['General Search & Rescue', 'First Aid', 'Equipment Operation', 'Transport & Evacuation']
+  };
+
+  const defaultResources: Record<string, { name: string; category: string }[]> = {
+    'FIRE_RESCUE': [
+      { name: 'Fire Engine & Water Tender', category: 'Vehicles' },
+      { name: 'Heavy Rescue Tenders & Cutters', category: 'Vehicles' },
+      { name: 'Inflatable Rescue Boat with OBM', category: 'Marine' },
+      { name: 'Self-Contained Breathing Apparatus (SCBA)', category: 'Safety' }
+    ],
+    'NDRF': [
+      { name: 'Inflatable Rubber Boat (IRB)', category: 'Marine' },
+      { name: 'SOLAS Certified Life Jackets', category: 'Safety' },
+      { name: 'Concrete Cutter & Hydraulic Spreader', category: 'Breaching' },
+      { name: 'Satellite Phone Terminal (Inmarsat)', category: 'Comms' }
+    ],
+    'POLICE': [
+      { name: 'Patrol SUV / Quick Response Vehicle', category: 'Vehicles' },
+      { name: 'Crowd Control Barricades', category: 'Security' },
+      { name: 'Wireless Communication Walkie-Talkies', category: 'Comms' }
+    ],
+    'KSDMA': [
+      { name: 'Mobile Command Vehicle', category: 'Vehicles' },
+      { name: 'Satellite Comms Hub', category: 'Comms' }
+    ],
+    'CIVIL_DEFENCE': [
+      { name: 'Trauma First Aid Kit', category: 'Medical' },
+      { name: 'Handheld Megaphones', category: 'Comms' }
+    ],
+    'OTHER': [
+      { name: 'General Rescue Equipment Kit', category: 'General' }
+    ]
+  };
+
+  const mapNames: Record<string, string> = {
+    'FIRE_RESCUE': 'Fire & Rescue Services',
+    'NDRF': 'National Disaster Response Force (NDRF)',
+    'POLICE': 'Kerala Police (Disaster Response Wing)',
+    'KSDMA': 'KSDMA / SDMA Control Room',
+    'CIVIL_DEFENCE': 'Civil Defence Volunteers',
+    'OTHER': 'Other Authorized Rescue Agency'
+  };
+
+  try {
+    const query = normAgency ? `?agencyType=${encodeURIComponent(normAgency)}` : '';
+    const response = await fetchWithFallback(`/rescue/agency-config${query}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (err) {
+    console.warn('Failed to fetch agency config:', err);
+  }
+
+  return {
+    agencyType: normAgency,
+    agencyTypeName: mapNames[normAgency] || 'Fire & Rescue Services',
+    agencyTypes: [
+      { code: 'FIRE_RESCUE', name: 'Fire & Rescue Services' },
+      { code: 'NDRF', name: 'National Disaster Response Force (NDRF)' },
+      { code: 'POLICE', name: 'Kerala Police (Disaster Response Wing)' },
+      { code: 'KSDMA', name: 'KSDMA / SDMA Control Room' },
+      { code: 'CIVIL_DEFENCE', name: 'Civil Defence Volunteers' },
+      { code: 'OTHER', name: 'Other Authorized Rescue Agency' }
+    ],
+    designations: defaultDesignations[normAgency] || defaultDesignations['FIRE_RESCUE'],
+    specializations: defaultSpecializations[normAgency] || defaultSpecializations['FIRE_RESCUE'],
+    resources: defaultResources[normAgency] || defaultResources['FIRE_RESCUE'],
+    operationalRoles: [
+      'Team Leader',
+      'Rescue Member',
+      'Driver',
+      'Medical Support',
+      'Communication Support',
+      'Incident Coordinator',
+      'Search Team',
+      'Evacuation Support'
+    ]
+  };
+}
+
+export interface RescueTeamMember {
+  id: number;
+  name: string;
+  employeeServiceId?: string;
+  agencyTypeCode?: string;
+  designation: string;
+  specialization?: string;
+  role: string;
+  contact: string;
+  email?: string;
+  experience?: string;
+  availability: 'Available' | 'On Operation' | 'Standby' | 'Unavailable' | string;
+  currentAssignment: string;
+  unitId?: string;
+  district?: string;
+}
+
+export async function getTeamMembers(district?: string): Promise<{ teamMembers: RescueTeamMember[] }> {
+  try {
+    const query = district ? `?district=${encodeURIComponent(district)}` : '';
+    const response = await fetchWithFallback(`/rescue/team-members${query}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return { teamMembers: data.teamMembers || [] };
+    }
+  } catch (err) {
+    console.warn('Backend fetch for team members failed, returning fallback roster:', err);
+  }
+  return { teamMembers: [] };
+}
+
+export async function getAssignedIncidents(district?: string): Promise<{ incidents: any[] }> {
+  try {
+    const query = district ? `?district=${encodeURIComponent(district)}` : '';
+    const response = await fetchWithFallback(`/rescue/assigned-incidents${query}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return { incidents: data.incidents || [] };
+    }
+  } catch (err) {
+    console.warn('Backend fetch for assigned incidents failed:', err);
+  }
+  return { incidents: [] };
+}
+
+export async function addTeamMember(payload: {
+  name: string;
+  employeeServiceId?: string;
+  agencyTypeCode?: string;
+  designation?: string;
+  specialization?: string;
+  role: string;
+  contact: string;
+  email?: string;
+  experience?: string;
+  availability?: string;
+  currentAssignment?: string;
+}): Promise<{ message: string; member: RescueTeamMember }> {
+  const response = await fetchWithFallback('/rescue/team-members', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to add team member');
+  }
+
+  return data;
+}
+
+export async function updateTeamMemberAvailability(
+  id: number,
+  availability: string,
+  currentAssignment?: string
+): Promise<{ message: string; member: RescueTeamMember }> {
+  const response = await fetchWithFallback(`/rescue/team-members/${id}/availability`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ availability, currentAssignment }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update member availability');
+  }
+
+  return data;
+}
+
+export async function deleteTeamMember(id: number): Promise<{ message: string }> {
+  const response = await fetchWithFallback(`/rescue/team-members/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to remove team member');
+  }
+
+  return data;
+}
+
 
 
 

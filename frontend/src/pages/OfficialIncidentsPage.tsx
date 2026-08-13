@@ -14,9 +14,15 @@ import type { IncidentReport, IncidentStats, IncidentType } from '../services/ap
 
 interface OfficialIncidentsPageProps {
   onViewIncident: (id: string) => void;
+  district?: string;
+  lockDistrict?: boolean;
 }
 
-export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ onViewIncident }) => {
+export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({
+  onViewIncident,
+  district,
+  lockDistrict = false
+}) => {
   const [incidents, setIncidents] = useState<IncidentReport[]>([]);
   const [stats, setStats] = useState<IncidentStats | undefined>();
   const [types, setTypes] = useState<IncidentType[]>([]);
@@ -26,9 +32,17 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
   const [selectedType, setSelectedType] = useState<string>('');
   const [selectedSeverity, setSelectedSeverity] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('');
-  const [selectedDistrict, setSelectedDistrict] = useState<string>('');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>(district || '');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('newest');
+
+  useEffect(() => {
+    if (district) {
+      setSelectedDistrict(district);
+    }
+  }, [district]);
+
+  const activeDistrict = lockDistrict ? (district || selectedDistrict) : selectedDistrict;
 
   const loadData = async () => {
     setLoading(true);
@@ -36,7 +50,7 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
       type: selectedType,
       severity: selectedSeverity,
       status: selectedStatus,
-      district: selectedDistrict,
+      district: activeDistrict,
       search: searchQuery,
       sortBy
     });
@@ -51,7 +65,7 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
 
   useEffect(() => {
     loadData();
-  }, [selectedType, selectedSeverity, selectedStatus, selectedDistrict, sortBy]);
+  }, [selectedType, selectedSeverity, selectedStatus, selectedDistrict, district, lockDistrict, sortBy]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,13 +102,15 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
         <div>
           <div className="inline-flex items-center gap-2 bg-[#065f46] px-3.5 py-1 rounded-full text-xs font-bold text-emerald-200 mb-2">
             <ShieldAlert className="w-4 h-4 text-emerald-400" />
-            <span>Official Incident Control Center</span>
+            <span>Official Incident Control Center &bull; {activeDistrict ? `${activeDistrict} District` : 'Statewide Kerala'}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Incoming Citizen Reports & Operations
+            {activeDistrict ? `${activeDistrict} District Incident Operations` : 'Incoming Citizen Reports & Operations'}
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200 mt-1 max-w-2xl font-normal">
-            Real-time incident verification, dispatch assignment, status lifecycle tracking, and official Remarks management.
+            {activeDistrict
+              ? `Real-time incident verification, dispatch assignment, status lifecycle tracking, and official remarks management for ${activeDistrict} District.`
+              : 'Real-time incident verification, dispatch assignment, status lifecycle tracking, and official Remarks management.'}
           </p>
         </div>
 
@@ -126,7 +142,7 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
       </div>
 
       {/* Filter & Search Toolbar (Requirement Section 25) */}
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
+      <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-4 text-slate-900">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <input
@@ -134,13 +150,13 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by Incident Code (e.g. INC-2026-000124), description, or citizen name..."
-              className="w-full bg-slate-50 border border-slate-300 rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+              className="w-full bg-slate-50 border border-slate-300 rounded-2xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
           </div>
           <button
             type="submit"
-            className="bg-[#043e2e] hover:bg-[#065f46] text-white px-6 py-2.5 rounded-2xl font-bold text-xs sm:text-sm shadow-md transition-all shrink-0"
+            className="bg-[#043e2e] hover:bg-[#065f46] text-white px-6 py-2.5 rounded-2xl font-bold text-xs sm:text-sm shadow-xs transition-all shrink-0"
           >
             Search
           </button>
@@ -194,22 +210,35 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
             <option value="REJECTED">REJECTED</option>
           </select>
 
-          {/* District Filter */}
-          <select
-            value={selectedDistrict}
-            onChange={(e) => setSelectedDistrict(e.target.value)}
-            className="bg-slate-100 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
-          >
-            <option value="">All Districts</option>
-            <option value="Wayanad">Wayanad</option>
-            <option value="Idukki">Idukki</option>
-            <option value="Kottayam">Kottayam</option>
-            <option value="Ernakulam">Ernakulam</option>
-            <option value="Thrissur">Thrissur</option>
-            <option value="Palakkad">Palakkad</option>
-            <option value="Malappuram">Malappuram</option>
-            <option value="Kozhikode">Kozhikode</option>
-          </select>
+          {/* District Filter / Jurisdiction Badge */}
+          {lockDistrict ? (
+            <div className="flex items-center gap-1.5 bg-emerald-100 text-emerald-950 border border-emerald-300 rounded-xl px-3 py-1.5 text-xs font-black">
+              <MapPin className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+              <span>District Jurisdiction: {activeDistrict}</span>
+            </div>
+          ) : (
+            <select
+              value={selectedDistrict}
+              onChange={(e) => setSelectedDistrict(e.target.value)}
+              className="bg-slate-100 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+            >
+              <option value="">All Districts</option>
+              <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+              <option value="Kollam">Kollam</option>
+              <option value="Pathanamthitta">Pathanamthitta</option>
+              <option value="Alappuzha">Alappuzha</option>
+              <option value="Kottayam">Kottayam</option>
+              <option value="Idukki">Idukki</option>
+              <option value="Ernakulam">Ernakulam</option>
+              <option value="Thrissur">Thrissur</option>
+              <option value="Palakkad">Palakkad</option>
+              <option value="Malappuram">Malappuram</option>
+              <option value="Kozhikode">Kozhikode</option>
+              <option value="Wayanad">Wayanad</option>
+              <option value="Kannur">Kannur</option>
+              <option value="Kasaragod">Kasaragod</option>
+            </select>
+          )}
 
           {/* Sort By */}
           <div className="ml-auto flex items-center gap-1.5">
@@ -229,18 +258,18 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
 
       {/* Incident Table (Requirement Section 25) */}
       {loading ? (
-        <div className="bg-white rounded-3xl p-12 text-center text-slate-400 space-y-3">
+        <div className="bg-white rounded-3xl p-12 text-center text-slate-400 space-y-3 border border-slate-200">
           <RefreshCw className="w-8 h-8 animate-spin text-emerald-600 mx-auto" />
           <p className="font-bold text-sm">Loading incident registry records...</p>
         </div>
       ) : incidents.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 text-center text-slate-500 space-y-3 border border-slate-200">
+        <div className="bg-white rounded-3xl p-12 text-center text-slate-500 space-y-3 border border-slate-200 shadow-xs">
           <AlertTriangle className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="text-lg font-black text-slate-800">No Incidents Found</h3>
+          <h3 className="text-lg font-black text-slate-900">No Incidents Found</h3>
           <p className="text-xs text-slate-500">No reports match your selected filters or search query.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+        <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="bg-slate-900 text-white uppercase text-[11px] font-black tracking-wider">
@@ -289,7 +318,7 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({ on
                     <td className="py-4 px-4 text-right">
                       <button
                         onClick={() => onViewIncident(inc.incidentCode)}
-                        className="inline-flex items-center gap-1 bg-[#043e2e] hover:bg-[#065f46] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm"
+                        className="inline-flex items-center gap-1 bg-[#043e2e] hover:bg-[#065f46] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span>Review</span>

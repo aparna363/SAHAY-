@@ -3,6 +3,110 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const pool = require('../db');
 const { sendCollectorCredentialsEmail, ADMIN_EMAIL } = require('../services/email');
+const { createAuditLog } = require('../utils/auditLogger');
+
+// -------------------------------------------------------------
+// POST /api/admin/verify-officer
+// Verifies Officer ID against authorized_officers directory and checks district assignment
+// -------------------------------------------------------------
+router.post('/verify-officer', async (req, res) => {
+  try {
+    const { officerId } = req.body;
+    if (!officerId || !officerId.trim()) {
+      return res.status(400).json({ verified: false, message: 'Officer ID is required.' });
+    }
+
+    const cleanId = officerId.trim().toUpperCase();
+    const result = await pool.query(
+      `SELECT a.id, a.officer_id, a.full_name, a.designation, a.department, a.official_email, a.status,
+              d.name as district
+       FROM authorized_officers a
+       LEFT JOIN districts d ON a.district_id = d.id
+       WHERE UPPER(a.officer_id) = $1 AND (LOWER(a.status) = 'active' OR a.status IS NULL)`,
+      [cleanId]
+    );
+
+    if (result.rows.length === 0) {
+      await createAuditLog(req, 'VERIFY_OFFICER_FAILED', 'Officer', cleanId, null, { reason: 'ID not found in authorized directory' });
+      return res.status(404).json({ verified: false, message: 'Officer ID could not be verified in official directory.' });
+    }
+
+    const officer = result.rows[0];
+
+    // Check if district already has an active collector account
+    const districtCheck = await pool.query(
+      "SELECT id, name, email FROM users WHERE role = 'collector' AND LOWER(district) = LOWER($1) AND (status IS NULL OR status != 'revoked')",
+      [officer.district]
+    );
+
+    const isAssigned = districtCheck.rows.length > 0;
+
+    await createAuditLog(req, 'OFFICER_VERIFIED', 'Officer', officer.officer_id, officer.district, {
+      fullName: officer.full_name,
+      districtAvailable: !isAssigned
+    });
+
+    return res.status(200).json({
+      verified: true,
+      officer: {
+        officerId: officer.officer_id,
+        fullName: officer.full_name,
+        designation: officer.designation,
+        department: officer.department,
+        district: officer.district,
+        officialEmail: officer.official_email
+      },
+      districtAvailable: !isAssigned,
+      assignedCollector: isAssigned ? districtCheck.rows[0] : null
+    });
+  } catch (err) {
+    console.error('Verify Officer Error:', err);
+    return res.status(500).json({ verified: false, message: 'Officer verification failed: ' + err.message });
+  }
+});
+
+// -------------------------------------------------------------
+// GET /api/admin/districts-status
+// Returns assignment status for all 14 Kerala districts
+// -------------------------------------------------------------
+router.get('/districts-status', async (req, res) => {
+  try {
+    const KERALA_DISTRICTS = [
+      'Alappuzha', 'Ernakulam', 'Idukki', 'Kannur', 'Kasaragod',
+      'Kollam', 'Kottayam', 'Kozhikode', 'Malappuram', 'Palakkad',
+      'Pathanamthitta', 'Thiruvananthapuram', 'Thrissur', 'Wayanad'
+    ];
+
+    const collectorsRes = await pool.query(
+      "SELECT id, name, phone, email, district, designation, department_id, created_at FROM users WHERE role = 'collector' AND (status IS NULL OR status != 'revoked')"
+    );
+
+    const collectorsMap = {};
+    collectorsRes.rows.forEach(c => {
+      collectorsMap[(c.district || '').toLowerCase()] = c;
+    });
+
+    const statusList = KERALA_DISTRICTS.map(d => {
+      const col = collectorsMap[d.toLowerCase()];
+      return {
+        district: d,
+        isAssigned: !!col,
+        collector: col || null
+      };
+    });
+
+    const assignedCount = statusList.filter(s => s.isAssigned).length;
+
+    return res.status(200).json({
+      districts: statusList,
+      totalDistricts: 14,
+      assignedCount,
+      allAssigned: assignedCount >= 14
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to fetch district status: ' + err.message });
+  }
+});
 
 // -------------------------------------------------------------
 // POST /api/admin/create-collector
@@ -17,6 +121,18 @@ router.post('/create-collector', async (req, res) => {
     if (!phone || !phone.trim()) return res.status(400).json({ error: 'Mobile Phone is required' });
     if (!password || password.trim().length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
     if (!district || !district.trim()) return res.status(400).json({ error: 'Assigned District is required' });
+
+    // Enforce 1 Collector per district rule
+    const districtCheck = await client.query(
+      "SELECT id, name FROM users WHERE role = 'collector' AND LOWER(district) = LOWER($1) AND (status IS NULL OR status != 'revoked')",
+      [district.trim()]
+    );
+
+    if (districtCheck.rows.length > 0) {
+      return res.status(400).json({
+        error: `District ${district} already has an active Collector account (${districtCheck.rows[0].name}). Only 1 Collector account per district is permitted.`
+      });
+    }
 
     const cleanPhone = phone.replace(/\D/g, '');
     const userEmail = email ? email.trim().toLowerCase() : `${cleanPhone}@collector.sahay.gov.in`;
@@ -64,6 +180,12 @@ router.post('/create-collector', async (req, res) => {
 
     await client.query('COMMIT');
 
+    await createAuditLog(req, 'COLLECTOR_CREATED', 'Collector', newCollector.id, newCollector.district, {
+      name: newCollector.name,
+      email: newCollector.email,
+      departmentId: newCollector.department_id
+    });
+
     // Trigger sending credentials email from official admin email sahayapp26@gmail.com
     const emailResult = await sendCollectorCredentialsEmail({
       recipientEmail: userEmail,
@@ -82,6 +204,112 @@ router.post('/create-collector', async (req, res) => {
     await client.query('ROLLBACK');
     console.error('Create Collector Error:', err);
     return res.status(500).json({ error: 'Failed to create District Collector: ' + err.message });
+  } finally {
+    client.release();
+  }
+});
+
+// -------------------------------------------------------------
+// POST /api/admin/replace-collector
+// Admin endpoint: Transfer/replace an officer for an existing district Collector account
+// -------------------------------------------------------------
+router.post('/replace-collector', async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { district, newOfficerId, newPassword, newPhone, newEmail } = req.body;
+    if (!district || !district.trim()) return res.status(400).json({ error: 'District is required' });
+    if (!newPassword || newPassword.trim().length < 6) return res.status(400).json({ error: 'New Password must be at least 6 characters' });
+
+    let officerName = 'New Appointed Collector';
+    let designation = 'District Collector & Magistrate';
+    let deptId = `IAS-KLA-${district.substring(0, 3).toUpperCase()}`;
+    let officialEmail = newEmail;
+
+    if (newOfficerId && newOfficerId.trim()) {
+      const officerRes = await client.query(
+        `SELECT a.id, a.officer_id, a.full_name, a.designation, a.department, a.official_email, a.status,
+                d.name as district
+         FROM authorized_officers a
+         LEFT JOIN districts d ON a.district_id = d.id
+         WHERE UPPER(a.officer_id) = $1`,
+        [newOfficerId.trim().toUpperCase()]
+      );
+      if (officerRes.rows.length > 0) {
+        const off = officerRes.rows[0];
+        officerName = off.full_name;
+        designation = off.designation;
+        deptId = off.officer_id;
+        officialEmail = off.official_email || newEmail;
+      }
+    }
+
+    const existingAcc = await client.query(
+      "SELECT id, name, email, phone FROM users WHERE role = 'collector' AND LOWER(district) = LOWER($1)",
+      [district.trim()]
+    );
+
+    if (existingAcc.rows.length === 0) {
+      return res.status(404).json({ error: `No Collector account exists for district ${district}. Use Add Collector instead.` });
+    }
+
+    const collectorId = existingAcc.rows[0].id;
+    const oldName = existingAcc.rows[0].name;
+
+    await client.query('BEGIN');
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(newPassword.trim(), salt);
+    const cleanPhone = newPhone ? newPhone.replace(/\D/g, '') : existingAcc.rows[0].phone;
+    const userEmail = officialEmail ? officialEmail.trim().toLowerCase() : existingAcc.rows[0].email;
+
+    await client.query(`
+      UPDATE users SET 
+        name = $1, 
+        phone = $2, 
+        email = $3, 
+        password_hash = $4, 
+        designation = $5, 
+        department_id = $6, 
+        status = 'approved',
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $7;
+    `, [officerName, cleanPhone, userEmail, passwordHash, designation, deptId, collectorId]);
+
+    await client.query(`
+      UPDATE login SET 
+        phone = $1, 
+        email = $2, 
+        password_hash = $3, 
+        status = 'approved'
+      WHERE user_id = $4;
+    `, [cleanPhone, userEmail, passwordHash, collectorId]);
+
+    await client.query('COMMIT');
+
+    await createAuditLog(req, 'COLLECTOR_REPLACED', 'Collector', collectorId, district, {
+      previousOfficer: oldName,
+      newOfficer: officerName,
+      newOfficerId: newOfficerId || 'DIRECT_TRANSFER'
+    });
+
+    const emailResult = await sendCollectorCredentialsEmail({
+      recipientEmail: userEmail,
+      recipientName: officerName,
+      district: district,
+      password: newPassword.trim()
+    });
+
+    return res.status(200).json({
+      message: `District Collector for ${district} successfully transferred to ${officerName}. Access credentials sent to ${userEmail}.`,
+      previousOfficer: oldName,
+      newOfficer: officerName,
+      emailStatus: emailResult
+    });
+
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Replace Collector Error:', err);
+    return res.status(500).json({ error: 'Failed to replace Collector: ' + err.message });
   } finally {
     client.release();
   }
@@ -158,6 +386,11 @@ router.post('/approve-station-admin', async (req, res) => {
 
     const updatedUser = updateResult.rows[0];
 
+    await createAuditLog(req, action === 'approve' ? 'RESCUE_TEAM_APPROVED' : 'RESCUE_TEAM_REJECTED', 'RescueTeam', updatedUser.id, updatedUser.district, {
+      stationName: updatedUser.name,
+      status: newStatus
+    });
+
     return res.status(200).json({
       message: `Station user ${updatedUser.name} has been ${newStatus.toUpperCase()} successfully.`,
       user: updatedUser
@@ -166,6 +399,25 @@ router.post('/approve-station-admin', async (req, res) => {
   } catch (err) {
     console.error('Approve Station Error:', err);
     return res.status(500).json({ error: 'Failed to update approval status: ' + err.message });
+  }
+});
+
+// -------------------------------------------------------------
+// GET /api/admin/audit-logs
+// Returns list of platform security & audit logs
+// -------------------------------------------------------------
+router.get('/audit-logs', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT a.id, a.user_id, a.role, a.action, a.entity_type, a.entity_id, a.district, a.details, a.ip_address, a.created_at, u.name as user_name
+       FROM audit_logs a
+       LEFT JOIN users u ON a.user_id = u.id
+       ORDER BY a.created_at DESC
+       LIMIT 100`
+    );
+    return res.status(200).json({ logs: result.rows });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to fetch audit logs: ' + err.message });
   }
 });
 

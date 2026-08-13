@@ -22,13 +22,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const collectorRoutes = require('./routes/collector');
 const weatherRoutes = require('./routes/weather');
 const incidentRoutes = require('./routes/incidentRoutes');
 const incidentTypeRoutes = require('./routes/incidentTypeRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const rescueRoutes = require('./routes/rescue');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/collector', collectorRoutes);
+app.use('/api/rescue', rescueRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/incidents', incidentRoutes);
 app.use('/api/incident-types', incidentTypeRoutes);

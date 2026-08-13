@@ -428,19 +428,21 @@ const getAllIncidents = async (req, res) => {
 
     const result = await pool.query(mainQuery, [...params, parseInt(limit, 10), offset]);
 
-    // Dashboard Aggregate Statistics Query
+    // Dashboard Aggregate Statistics Query - scoped by same filters (district, severity, etc.)
     const statsQuery = `
       SELECT 
         COUNT(*) AS total_incidents,
-        COUNT(*) FILTER (WHERE status = 'SUBMITTED') AS new_reports,
-        COUNT(*) FILTER (WHERE status = 'UNDER_REVIEW') AS under_review,
-        COUNT(*) FILTER (WHERE status = 'VERIFIED') AS verified,
-        COUNT(*) FILTER (WHERE severity IN ('HIGH', 'CRITICAL')) AS high_critical,
-        COUNT(*) FILTER (WHERE status = 'IN_PROGRESS') AS in_progress,
-        COUNT(*) FILTER (WHERE status = 'RESOLVED') AS resolved
-      FROM incidents;
+        COUNT(*) FILTER (WHERE i.status = 'SUBMITTED') AS new_reports,
+        COUNT(*) FILTER (WHERE i.status = 'UNDER_REVIEW') AS under_review,
+        COUNT(*) FILTER (WHERE i.status = 'VERIFIED') AS verified,
+        COUNT(*) FILTER (WHERE i.severity IN ('HIGH', 'CRITICAL')) AS high_critical,
+        COUNT(*) FILTER (WHERE i.status = 'IN_PROGRESS') AS in_progress,
+        COUNT(*) FILTER (WHERE i.status = 'RESOLVED') AS resolved
+      FROM incidents i
+      LEFT JOIN users u ON i.user_id = u.id
+      ${whereSQL};
     `;
-    const statsResult = await pool.query(statsQuery);
+    const statsResult = await pool.query(statsQuery, params);
 
     return res.status(200).json({
       success: true,

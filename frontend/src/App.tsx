@@ -189,7 +189,7 @@ export function App() {
       case 'weather':
         return <WeatherPage />;
       case 'alerts':
-        return <AlertsPage />;
+        return <AlertsPage onNavigateToMap={() => handleTabChange('live-map')} />;
       case 'live-map':
         return <LiveMapPage />;
       case 'emergency':
@@ -356,12 +356,14 @@ export function App() {
           {renderCurrentView()}
         </main>
 
-        {/* 5. Footer */}
-        <Footer
-          currentLang={currentLang}
-          onOpenContacts={() => setIsContactsOpen(true)}
-          onOpenRegister={handleOpenRegister}
-        />
+        {/* 5. Footer (Hidden on Official & Admin Dashboards) */}
+        {!['super_admin_dashboard', 'collector_dashboard', 'rescue_dashboard'].includes(activeTab) && (
+          <Footer
+            currentLang={currentLang}
+            onOpenContacts={() => setIsContactsOpen(true)}
+            onOpenRegister={handleOpenRegister}
+          />
+        )}
 
         {/* Emergency Contacts Quick Modal */}
         <EmergencyContactsModal
