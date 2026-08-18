@@ -277,8 +277,20 @@ router.post('/reset-password', async (req, res) => {
   try {
     const { token, phoneOrEmail, newPassword } = req.body;
 
-    if (!newPassword || newPassword.trim().length < 6) {
-      return res.status(400).json({ error: 'New password must be at least 6 characters long' });
+    if (!newPassword) {
+      return res.status(400).json({ error: 'New password is required.' });
+    }
+    if (newPassword.includes(' ')) {
+      return res.status(400).json({ error: 'Password cannot contain spaces.' });
+    }
+    if (/---|___|\.\.\./.test(newPassword)) {
+      return res.status(400).json({ error: 'Password cannot contain filler patterns like "---".' });
+    }
+    if (newPassword.length < 8) {
+      return res.status(400).json({ error: 'New password must be at least 8 characters long.' });
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(newPassword)) {
+      return res.status(400).json({ error: 'Password must contain uppercase (A-Z), lowercase (a-z), number (0-9), and special symbol (@,#,$,!,etc.).' });
     }
 
     let user;

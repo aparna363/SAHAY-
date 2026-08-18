@@ -16,6 +16,70 @@ try {
   // Ignore fallback icon override warnings
 }
 
+// Helper: Reverse Geocode coordinates to human readable address using OpenStreetMap Nominatim
+export const reverseGeocodeCoords = async (lat: number, lng: number): Promise<string> => {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&zoom=18&addressdetails=1`,
+      {
+        headers: { 'Accept-Language': 'en' },
+        signal: controller.signal
+      }
+    );
+    clearTimeout(timeoutId);
+
+    if (response.ok) {
+      const data = await response.json();
+      const addr = data.address || {};
+
+      const place =
+        addr.village ||
+        addr.suburb ||
+        addr.town ||
+        addr.city ||
+        addr.neighbourhood ||
+        addr.hamlet ||
+        addr.quarter ||
+        addr.road ||
+        addr.amenity ||
+        addr.building ||
+        null;
+
+      const district =
+        addr.state_district ||
+        addr.district ||
+        addr.county ||
+        null;
+
+      const state = addr.state || 'Kerala';
+
+      const parts: string[] = [];
+      if (place) parts.push(place);
+      if (district && district.toLowerCase() !== (place || '').toLowerCase()) {
+        parts.push(district.replace(/\s+district\b/gi, ''));
+      }
+      if (state && !parts.join(', ').toLowerCase().includes(state.toLowerCase())) {
+        parts.push(state);
+      }
+
+      if (parts.length > 0) {
+        return parts.join(', ');
+      }
+
+      if (data.display_name) {
+        return data.display_name.split(',').slice(0, 3).map((s: string) => s.trim()).join(', ');
+      }
+    }
+  } catch (err) {
+    console.warn('[IncidentMapPicker] Reverse geocoding fetch error:', err);
+  }
+
+  return `Location (${lat.toFixed(4)}°, ${lng.toFixed(4)}°)`;
+};
+
 // Development Presets for testing (Requirement Section 7 & 44)
 export const DEV_TEST_LOCATIONS = [
   { name: 'Kottayam (Kanjirappally)', lat: 9.5558, lng: 76.7884, address: 'Kanjirappally, Kottayam, Kerala' },
@@ -65,12 +129,13 @@ export const IncidentMapPicker: React.FC<IncidentMapPickerProps> = ({
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
-      // Map Click Event listener
-      map.on('click', (e: L.LeafletMouseEvent) => {
+      // Map Click Event listener with automatic reverse geocoding
+      map.on('click', async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
-        const addr = `Selected on Map (${lat.toFixed(4)}°, ${lng.toFixed(4)}°)`;
-        setManualAddress(addr);
-        onLocationSelect(lat, lng, addr);
+        setManualAddress(`Resolving address for ${lat.toFixed(4)}°, ${lng.toFixed(4)}°...`);
+        const resolvedAddr = await reverseGeocodeCoords(lat, lng);
+        setManualAddress(resolvedAddr);
+        onLocationSelect(lat, lng, resolvedAddr);
       });
 
       mapInstanceRef.current = map;
@@ -111,7 +176,7 @@ export const IncidentMapPicker: React.FC<IncidentMapPickerProps> = ({
     }
   }, [latitude, longitude]);
 
-  // Method 1: Request Browser Geolocation
+  // Method 1: Request Browser Geolocation with reverse geocoding
   const handleGetBrowserLocation = () => {
     setIsLocating(true);
     setGpsError(null);
@@ -123,12 +188,17 @@ export const IncidentMapPicker: React.FC<IncidentMapPickerProps> = ({
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        setIsLocating(false);
         setGpsError(null);
-        onLocationSelect(lat, lng, 'Browser Live GPS Position');
+        setManualAddress(`Detecting location address (${lat.toFixed(4)}°, ${lng.toFixed(4)}°)...`);
+        
+        // Reverse geocode to get actual place name
+        const address = await reverseGeocodeCoords(lat, lng);
+        setIsLocating(false);
+        setManualAddress(address);
+        onLocationSelect(lat, lng, address);
       },
       (error) => {
         setIsLocating(false);

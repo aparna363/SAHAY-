@@ -63,9 +63,22 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({
     fetchIncidentTypes().then(setTypes);
   }, []);
 
+  const hasActiveFilters = Boolean(selectedType || selectedSeverity || selectedStatus || (!lockDistrict && selectedDistrict) || searchQuery);
+
+  const handleResetFilters = () => {
+    setSelectedType('');
+    setSelectedSeverity('');
+    setSelectedStatus('');
+    if (!lockDistrict) setSelectedDistrict('');
+    setSearchQuery('');
+  };
+
   useEffect(() => {
-    loadData();
-  }, [selectedType, selectedSeverity, selectedStatus, selectedDistrict, district, lockDistrict, sortBy]);
+    const timer = setTimeout(() => {
+      loadData();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [selectedType, selectedSeverity, selectedStatus, selectedDistrict, district, lockDistrict, sortBy, searchQuery]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,6 +251,16 @@ export const OfficialIncidentsPage: React.FC<OfficialIncidentsPageProps> = ({
               <option value="Kannur">Kannur</option>
               <option value="Kasaragod">Kasaragod</option>
             </select>
+          )}
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="text-xs text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl border border-red-200 font-bold transition-all"
+            >
+              Clear Filters
+            </button>
           )}
 
           {/* Sort By */}

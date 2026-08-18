@@ -5,6 +5,29 @@ const pool = require('../db');
 const { sendCollectorCredentialsEmail, ADMIN_EMAIL } = require('../services/email');
 const { createAuditLog } = require('../utils/auditLogger');
 
+// Helper function for strict Indian Mobile Phone validation
+function validateIndianMobileNumber(phone) {
+  if (!phone || !phone.trim()) return 'Mobile Phone is required.';
+  const cleanPhone = phone.replace(/\D/g, '');
+  if (cleanPhone.length !== 10) {
+    return `Mobile Phone must be exactly 10 digits (${cleanPhone.length}/10 entered).`;
+  }
+  if (!/^[6-9]/.test(cleanPhone)) {
+    return 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+  }
+  if (/^(\d)\1{9}$/.test(cleanPhone)) {
+    return 'Mobile phone cannot be a single repeated digit (e.g. 8888888888).';
+  }
+  if (/(\d)\1{4,}/.test(cleanPhone)) {
+    return 'Invalid mobile phone number: Dummy repeated digit patterns (e.g. 8000000000) are not permitted.';
+  }
+  const dummySequences = ['1234567890', '9876543210', '0123456789', '0987654321', '2345678901'];
+  if (dummySequences.includes(cleanPhone)) {
+    return 'Sequential dummy phone numbers (e.g. 1234567890) are not allowed.';
+  }
+  return null;
+}
+
 // -------------------------------------------------------------
 // POST /api/admin/verify-officer
 // Verifies Officer ID against authorized_officers directory and checks district assignment
@@ -117,10 +140,61 @@ router.post('/create-collector', async (req, res) => {
   try {
     const { name, phone, email, password, district, designation, departmentId } = req.body;
 
-    if (!name || !name.trim()) return res.status(400).json({ error: 'Collector Full Name is required' });
-    if (!phone || !phone.trim()) return res.status(400).json({ error: 'Mobile Phone is required' });
-    if (!password || password.trim().length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
-    if (!district || !district.trim()) return res.status(400).json({ error: 'Assigned District is required' });
+    const KERALA_DISTRICTS = [
+      'Alappuzha', 'Ernakulam', 'Idukki', 'Kannur', 'Kasaragod',
+      'Kollam', 'Kottayam', 'Kozhikode', 'Malappuram', 'Palakkad',
+      'Pathanamthitta', 'Thiruvananthapuram', 'Thrissur', 'Wayanad'
+    ];
+
+    if (!name || !name.trim()) return res.status(400).json({ error: 'Collector Full Name is required.' });
+    const trimmedName = name.trim();
+    if (trimmedName.length < 3 || trimmedName.length > 100) {
+      return res.status(400).json({ error: 'Collector Full Name must be between 3 and 100 characters.' });
+    }
+    if (!/^[a-zA-Z\s\.\-']+$/.test(trimmedName)) {
+      return res.status(400).json({ error: 'Collector Full Name contains invalid characters. Only letters, spaces, dots, hyphens, and apostrophes are allowed.' });
+    }
+
+    if (!district || !district.trim()) return res.status(400).json({ error: 'Assigned District is required.' });
+    const trimmedDistrict = district.trim();
+    if (!KERALA_DISTRICTS.some(d => d.toLowerCase() === trimmedDistrict.toLowerCase())) {
+      return res.status(400).json({ error: 'Assigned District must be one of the 14 valid Kerala districts.' });
+    }
+
+    const phoneErr = validateIndianMobileNumber(phone);
+    if (phoneErr) return res.status(400).json({ error: phoneErr });
+    const cleanPhone = phone.replace(/\D/g, '');
+
+    if (email && email.trim()) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email.trim())) {
+        return res.status(400).json({ error: 'Official Govt Email address is invalid.' });
+      }
+    }
+
+    if (!password || !password.trim()) return res.status(400).json({ error: 'Initial Password is required.' });
+    const trimmedPassword = password.trim();
+    if (trimmedPassword.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters long.' });
+    }
+    if (!/[A-Z]/.test(trimmedPassword)) {
+      return res.status(400).json({ error: 'Password must contain at least one uppercase letter (A-Z).' });
+    }
+    if (!/[a-z]/.test(trimmedPassword)) {
+      return res.status(400).json({ error: 'Password must contain at least one lowercase letter (a-z).' });
+    }
+    if (!/[0-9]/.test(trimmedPassword)) {
+      return res.status(400).json({ error: 'Password must contain at least one number (0-9).' });
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(trimmedPassword)) {
+      return res.status(400).json({ error: 'Password must contain at least one special character (e.g. @, #, $, !).' });
+    }
+
+    if (departmentId && departmentId.trim()) {
+      if (departmentId.trim().length > 30 || !/^[a-zA-Z0-9\-\/\s]+$/.test(departmentId.trim())) {
+        return res.status(400).json({ error: 'IAS / Service Badge ID contains invalid characters or exceeds 30 characters.' });
+      }
+    }
 
     // Enforce 1 Collector per district rule
     const districtCheck = await client.query(
@@ -134,8 +208,7 @@ router.post('/create-collector', async (req, res) => {
       });
     }
 
-    const cleanPhone = phone.replace(/\D/g, '');
-    const userEmail = email ? email.trim().toLowerCase() : `${cleanPhone}@collector.sahay.gov.in`;
+    const userEmail = email && email.trim() ? email.trim().toLowerCase() : `${cleanPhone}@collector.sahay.gov.in`;
 
     const existing = await client.query(
       'SELECT id FROM users WHERE phone = $1 OR (email IS NOT NULL AND LOWER(email) = $2)',

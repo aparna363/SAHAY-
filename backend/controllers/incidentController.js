@@ -3,6 +3,17 @@ const { validateIncidentSubmission, sanitizeInput } = require('../validators/inc
 const { generateIncidentCode } = require('../utils/incidentCode');
 const { evaluateIncidentRisk } = require('../services/riskService');
 const { notifyCitizenStatusUpdate } = require('../services/notificationService');
+const { reverseGeocode } = require('../services/locationService');
+
+const cleanLocationAddress = (address, lat, lng) => {
+  if (address && !address.includes('Browser Live GPS Position') && !address.startsWith('Selected on Map')) {
+    return address;
+  }
+  if (lat != null && lng != null && !isNaN(lat) && !isNaN(lng)) {
+    return `Location (${parseFloat(lat).toFixed(4)}°, ${parseFloat(lng).toFixed(4)}°)`;
+  }
+  return address || 'Unknown location';
+};
 
 /**
  * POST /api/incidents
@@ -25,7 +36,22 @@ const submitIncident = async (req, res) => {
 
     const { incident_type_id, severity, description, latitude, longitude, location_address } = validation.data;
     const cleanDescription = sanitizeInput(description);
-    const cleanAddress = location_address ? sanitizeInput(location_address) : null;
+    let cleanAddress = location_address ? sanitizeInput(location_address) : null;
+
+    // Automatic reverse geocoding fallback if location address is empty or generic string
+    if (!cleanAddress || cleanAddress === 'Browser Live GPS Position' || cleanAddress.startsWith('Browser Live GPS Position') || cleanAddress.startsWith('Selected on Map')) {
+      try {
+        const geoResult = await reverseGeocode(latitude, longitude);
+        if (geoResult && geoResult.placeName && geoResult.placeName !== 'Unknown location' && geoResult.placeName !== 'Location detected, address unavailable') {
+          cleanAddress = geoResult.placeName;
+        } else {
+          cleanAddress = `Location (${parseFloat(latitude).toFixed(4)}°, ${parseFloat(longitude).toFixed(4)}°)`;
+        }
+      } catch (geoErr) {
+        console.warn('Backend reverse geocode fallback failed:', geoErr.message);
+        cleanAddress = `Location (${parseFloat(latitude).toFixed(4)}°, ${parseFloat(longitude).toFixed(4)}°)`;
+      }
+    }
 
     // 2. Database Transaction
     await client.query('BEGIN');
@@ -188,6 +214,24 @@ const getMyIncidents = async (req, res) => {
 
     const result = await pool.query(query, [userId]);
 
+    // Resolve location names asynchronously for any reports with missing or generic location text
+    await Promise.all(
+      result.rows.map(async (row) => {
+        const addr = row.location_address;
+        if (!addr || addr.includes('Browser Live') || addr.startsWith('Location (') || addr.startsWith('Selected on Map')) {
+          try {
+            const geo = await reverseGeocode(row.latitude, row.longitude);
+            if (geo && geo.placeName && geo.placeName !== 'Unknown location' && geo.placeName !== 'Location detected, address unavailable') {
+              row.location_address = geo.placeName;
+              pool.query('UPDATE incidents SET location_address = $1 WHERE id = $2', [geo.placeName, row.id]).catch(() => {});
+            }
+          } catch (e) {
+            // Ignore individual reverse geocode errors
+          }
+        }
+      })
+    );
+
     return res.status(200).json({
       success: true,
       count: result.rows.length,
@@ -199,7 +243,7 @@ const getMyIncidents = async (req, res) => {
         description: row.description,
         latitude: parseFloat(row.latitude),
         longitude: parseFloat(row.longitude),
-        locationAddress: row.location_address,
+        locationAddress: row.location_address || `Location (${parseFloat(row.latitude).toFixed(4)}°, ${parseFloat(row.longitude).toFixed(4)}°)`,
         status: row.status,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
@@ -365,8 +409,14 @@ const getAllIncidents = async (req, res) => {
     const params = [];
 
     if (type) {
-      params.push(parseInt(type, 10));
-      whereClauses.push(`i.incident_type_id = $${params.length}`);
+      const typeStr = String(type).trim();
+      if (/^\d+$/.test(typeStr)) {
+        params.push(parseInt(typeStr, 10));
+        whereClauses.push(`i.incident_type_id = $${params.length}`);
+      } else {
+        params.push(`%${typeStr}%`);
+        whereClauses.push(`(it.name ILIKE $${params.length} OR it.code ILIKE $${params.length})`);
+      }
     }
 
     if (severity) {
@@ -386,7 +436,7 @@ const getAllIncidents = async (req, res) => {
 
     if (search) {
       params.push(`%${search.trim()}%`);
-      whereClauses.push(`(i.incident_code ILIKE $${params.length} OR i.description ILIKE $${params.length} OR u.name ILIKE $${params.length})`);
+      whereClauses.push(`(i.incident_code ILIKE $${params.length} OR i.description ILIKE $${params.length} OR u.name ILIKE $${params.length} OR it.name ILIKE $${params.length})`);
     }
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
@@ -428,7 +478,7 @@ const getAllIncidents = async (req, res) => {
 
     const result = await pool.query(mainQuery, [...params, parseInt(limit, 10), offset]);
 
-    // Dashboard Aggregate Statistics Query - scoped by same filters (district, severity, etc.)
+    // Dashboard Aggregate Statistics Query - scoped by same filters (district, severity, type, etc.)
     const statsQuery = `
       SELECT 
         COUNT(*) AS total_incidents,
@@ -440,6 +490,7 @@ const getAllIncidents = async (req, res) => {
         COUNT(*) FILTER (WHERE i.status = 'RESOLVED') AS resolved
       FROM incidents i
       LEFT JOIN users u ON i.user_id = u.id
+      LEFT JOIN incident_types it ON i.incident_type_id = it.id
       ${whereSQL};
     `;
     const statsResult = await pool.query(statsQuery, params);

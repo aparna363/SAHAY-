@@ -227,228 +227,75 @@ function getHazardPriority(severity) {
  * Dynamic Weather Alert Engine
  * ============================================================
  *
- * Evaluates weather information and creates a dynamic alert.
+ * /**
+ * ============================================================
+ * Local Risk Analysis Engine (Open-Meteo + GPS + Hazard Zones)
+ * ============================================================
+ *
+ * Evaluates weather telemetry and location hazard zones to produce
+ * a LOCAL RISK level (LOW, MODERATE, HIGH, CRITICAL).
+ *
+ * CRITICAL RULE: Local Risk Analysis MUST NOT alter or overwrite
+ * the Official IMD/KSDMA Alert level!
  */
 
-function computeDynamicAlert(
-  districtName,
-  weatherInfo = {}
-) {
+function computeLocalRisk(districtName, weatherInfo = {}, locationHazard = {}) {
   const district = cleanDistrictName(districtName);
 
-  const temp = Number(
-    weatherInfo.temperature ?? 28
-  );
+  const temp = Number(weatherInfo.temperature ?? 28);
+  const humidity = Number(weatherInfo.humidity ?? 80);
+  const windSpeed = Number(weatherInfo.windSpeed ?? 15);
+  const rainProb = Number(weatherInfo.rainProbability ?? 40);
+  const weatherCode = Number(weatherInfo.weatherCode ?? 0);
 
-  const humidity = Number(
-    weatherInfo.humidity ?? 80
-  );
+  let riskLevel = 'LOW';
+  let reason = `Normal weather conditions detected in ${district} (${temp}°C, ${rainProb}% rain probability).`;
 
-  const windSpeed = Number(
-    weatherInfo.windSpeed ?? 15
-  );
-
-  const rainProb = Number(
-    weatherInfo.rainProbability ?? 40
-  );
-
-  const condition = String(
-    weatherInfo.condition || 'Cloudy'
-  );
-
-  const weatherCode = Number(
-    weatherInfo.weatherCode ?? 0
-  );
-
-  const distLower = district.toLowerCase();
-
-  /**
-   * Kerala geographical classifications
-   */
-
-  const isHighRange = [
-    'idukki',
-    'wayanad'
-  ].includes(distLower);
-
-  const isRiverBasin = [
-    'ernakulam',
-    'pathanamthitta',
-    'kottayam',
-    'thrissur',
-    'malappuram'
-  ].includes(distLower);
-
-  const isCoastal = [
-    'thiruvananthapuram',
-    'kollam',
-    'alappuzha',
-    'kozhikode',
-    'kannur',
-    'kasaragod'
-  ].includes(distLower);
-
-  let alertLevel = 'GREEN';
-
-  let alertType =
-    'Normal Weather Conditions';
-
-  let description =
-    `No active disaster warning. Normal weather conditions in ${district} ` +
-    `(${temp}°C, ${rainProb}% precipitation probability).`;
-
-  /**
-   * ==========================================================
-   * RED ALERT
-   * ==========================================================
-   */
-
-  if (
-    rainProb >= 85 ||
-    [65, 82, 95, 96, 99].includes(weatherCode) ||
-    windSpeed >= 40
-  ) {
-    alertLevel = 'RED';
-
-    if (isHighRange) {
-      alertType =
-        'Heavy Rainfall & Landslide Warning';
-
-      description =
-        `Red Alert conditions detected for ${district} high ranges. ` +
-        `Heavy rainfall expected (${rainProb}% rain probability, ` +
-        `${windSpeed} km/h wind). High risk of landslides and flash floods. ` +
-        `Avoid unnecessary travel.`;
-    } else if (isRiverBasin) {
-      alertType =
-        'Flood Warning & High River Inundation';
-
-      description =
-        `Red Alert conditions detected for ${district}. ` +
-        `Heavy rainfall may cause rapid river-level rise ` +
-        `(${rainProb}% rain probability). Residents in low-lying areas ` +
-        `should remain on high alert.`;
-    } else if (isCoastal) {
-      alertType =
-        'Urban Inundation & Sea Surge Warning';
-
-      description =
-        `Red Alert conditions detected along ${district} coastal and ` +
-        `urban areas. Heavy rainfall (${rainProb}%) and strong winds ` +
-        `(${windSpeed} km/h) are possible. Avoid coastal waters.`;
-    } else {
-      alertType =
-        'Extremely Heavy Downpour Warning';
-
-      description =
-        `Red Alert conditions detected in ${district}. ` +
-        `Heavy rainfall (${rainProb}% precipitation probability) ` +
-        `is expected. Follow local safety instructions.`;
-    }
+  if (locationHazard.hasHazard && locationHazard.highestSeverity === 'CRITICAL') {
+    riskLevel = 'CRITICAL';
+    reason = `Critical ${locationHazard.nearestHazard?.hazardType || 'hazard'} zone detected at user location.`;
+  } else if (rainProb >= 80 || [65, 82, 95, 96, 99].includes(weatherCode) || windSpeed >= 40) {
+    riskLevel = 'CRITICAL';
+    reason = `Heavy downpour probability (${rainProb}%) and squally winds (${windSpeed} km/h) detected from local telemetry.`;
+  } else if (locationHazard.hasHazard && locationHazard.highestSeverity === 'HIGH') {
+    riskLevel = 'HIGH';
+    reason = `High-risk ${locationHazard.nearestHazard?.hazardType || 'hazard'} zone near user location.`;
+  } else if (rainProb >= 60 || [63, 81].includes(weatherCode) || windSpeed >= 25) {
+    riskLevel = 'HIGH';
+    reason = `High precipitation probability (${rainProb}%) and moderate wind (${windSpeed} km/h) detected.`;
+  } else if (rainProb >= 35 || [53, 55, 61, 80].includes(weatherCode) || humidity >= 85) {
+    riskLevel = 'MODERATE';
+    reason = `Moderate precipitation probability (${rainProb}%) and high moisture (${humidity}% humidity) detected.`;
   }
-
-  /**
-   * ==========================================================
-   * ORANGE ALERT
-   * ==========================================================
-   */
-
-  else if (
-    rainProb >= 65 ||
-    [63, 81].includes(weatherCode) ||
-    windSpeed >= 25
-  ) {
-    alertLevel = 'ORANGE';
-
-    if (isHighRange) {
-      alertType =
-        'Heavy Downpour & Slopewatch Advisory';
-
-      description =
-        `Orange Alert conditions detected for ${district} hills. ` +
-        `Persistent heavy showers (${rainProb}% rain probability, ` +
-        `${temp}°C). Watch for soil movement on steep slopes.`;
-    } else if (isRiverBasin) {
-      alertType =
-        'Heavy Rain & River Discharge Alert';
-
-      description =
-        `Orange Alert conditions detected for ${district} river basins. ` +
-        `Heavy rainfall (${rainProb}% probability) may cause waterlogging ` +
-        `in low-lying areas.`;
-    } else if (isCoastal) {
-      alertType =
-        'High Waves & Squally Wind Advisory';
-
-      description =
-        `Orange Alert conditions detected for ${district}. ` +
-        `Rough sea conditions and gusty winds (${windSpeed} km/h) ` +
-        `may occur. Coastal residents should remain cautious.`;
-    } else {
-      alertType =
-        'Heavy Rain & Waterlogging Advisory';
-
-      description =
-        `Orange Alert conditions detected for ${district}. ` +
-        `Substantial rainfall expected (${rainProb}% probability). ` +
-        `Local drainage systems may be affected.`;
-    }
-  }
-
-  /**
-   * ==========================================================
-   * YELLOW ALERT
-   * ==========================================================
-   */
-
-  else if (
-    rainProb >= 40 ||
-    [53, 55, 61, 80].includes(weatherCode) ||
-    humidity >= 85
-  ) {
-    alertLevel = 'YELLOW';
-
-    alertType =
-      'Moderate Showers & Weather Watch';
-
-    description =
-      `Yellow Alert conditions detected for ${district}. ` +
-      `Moderate rainfall with possible gusty breezes expected ` +
-      `(${rainProb}% rain probability, ${windSpeed} km/h wind). ` +
-      `Stay updated.`;
-  }
-
-  /**
-   * ==========================================================
-   * Return weather alert
-   * ==========================================================
-   */
 
   return {
+    level: riskLevel, // LOW | MODERATE | HIGH | CRITICAL
+    reason,
     district,
-    alertLevel,
-    alertType,
-    description,
-
-    source:
-      'Dynamic Weather Telemetry',
-
-    startTime:
-      new Date().toISOString(),
-
-    endTime:
-      new Date(
-        Date.now() + 24 * 3600 * 1000
-      ).toISOString(),
-
-    weather: {
+    metrics: {
       temperature: temp,
       humidity,
       windSpeed,
       rainProbability: rainProb,
-      condition,
       weatherCode
     }
+  };
+}
+
+/**
+ * Kept for backward compatibility
+ */
+function computeDynamicAlert(districtName, weatherInfo = {}) {
+  const risk = computeLocalRisk(districtName, weatherInfo);
+  return {
+    district: cleanDistrictName(districtName),
+    alertLevel: 'GREEN', // Official alert level defaults to GREEN
+    alertType: 'Normal Weather Conditions',
+    description: `No active official disaster warning in effect. Local telemetry risk: ${risk.level}`,
+    source: 'Dynamic Weather Telemetry',
+    startTime: new Date().toISOString(),
+    endTime: new Date(Date.now() + 24 * 3600 * 1000).toISOString(),
+    localRisk: risk
   };
 }
 
@@ -456,34 +303,13 @@ function computeDynamicAlert(
  * ============================================================
  * Get Nearby Hazard Zones
  * ============================================================
- *
- * Uses PostGIS to find:
- *
- * 1. Hazard zones containing the user
- * 2. Hazard zones near the user
- *
- * radiusMeters defaults to 5 km.
  */
-
-async function getNearbyHazardAlerts(
-  latitude,
-  longitude,
-  radiusMeters = 5000
-) {
+async function getNearbyHazardAlerts(latitude, longitude, radiusMeters = 5000) {
   const lat = Number(latitude);
   const lon = Number(longitude);
   const radius = Number(radiusMeters);
 
-  if (
-    !isValidCoordinates(lat, lon)
-  ) {
-    return [];
-  }
-
-  if (
-    !Number.isFinite(radius) ||
-    radius <= 0
-  ) {
+  if (!isValidCoordinates(lat, lon) || !Number.isFinite(radius) || radius <= 0) {
     return [];
   }
 
@@ -498,61 +324,20 @@ async function getNearbyHazardAlerts(
         description,
         source,
         active,
-
         CASE
-          WHEN ST_Covers(
-            geometry,
-            ST_SetSRID(
-              ST_Point($1, $2),
-              4326
-            )
-          )
-          THEN TRUE
-          ELSE FALSE
+          WHEN ST_Covers(geometry, ST_SetSRID(ST_Point($1, $2), 4326))
+          THEN TRUE ELSE FALSE
         END AS "insideZone",
-
-        ROUND(
-          ST_Distance(
-            geometry::geography,
-            ST_SetSRID(
-              ST_Point($1, $2),
-              4326
-            )::geography
-          )::numeric,
-          2
-        ) AS "distanceMeters"
-
+        ROUND(ST_Distance(geometry::geography, ST_SetSRID(ST_Point($1, $2), 4326)::geography)::numeric, 2) AS "distanceMeters"
       FROM hazard_zones
-
-      WHERE active = TRUE
-
-      AND ST_DWithin(
-        geometry::geography,
-        ST_SetSRID(
-          ST_Point($1, $2),
-          4326
-        )::geography,
-        $3
-      )
-
-      ORDER BY
-        "insideZone" DESC,
-        "distanceMeters" ASC
+      WHERE active = TRUE AND ST_DWithin(geometry::geography, ST_SetSRID(ST_Point($1, $2), 4326)::geography, $3)
+      ORDER BY "insideZone" DESC, "distanceMeters" ASC
       `,
-      [
-        lon,
-        lat,
-        radius
-      ]
+      [lon, lat, radius]
     );
-
     return result.rows;
   } catch (error) {
-    console.error(
-      '[AlertService] Hazard zone query failed:',
-      error.message
-    );
-
+    console.error('[AlertService] Hazard zone query failed:', error.message);
     return [];
   }
 }
@@ -562,17 +347,8 @@ async function getNearbyHazardAlerts(
  * Get Location Hazard Alert
  * ============================================================
  */
-
-async function getLocationHazardAlert(
-  latitude,
-  longitude
-) {
-  const hazards =
-    await getNearbyHazardAlerts(
-      latitude,
-      longitude,
-      5000
-    );
+async function getLocationHazardAlert(latitude, longitude) {
+  const hazards = await getNearbyHazardAlerts(latitude, longitude, 5000);
 
   if (!hazards.length) {
     return {
@@ -583,50 +359,20 @@ async function getLocationHazardAlert(
     };
   }
 
-  /**
-   * Sort by severity first and then distance.
-   */
+  const sortedHazards = [...hazards].sort((a, b) => {
+    const severityDifference = getHazardPriority(b.severity) - getHazardPriority(a.severity);
+    if (severityDifference !== 0) return severityDifference;
+    return Number(a.distanceMeters || 0) - Number(b.distanceMeters || 0);
+  });
 
-  const sortedHazards =
-    [...hazards].sort(
-      (a, b) => {
-        const severityDifference =
-          getHazardPriority(b.severity) -
-          getHazardPriority(a.severity);
-
-        if (
-          severityDifference !== 0
-        ) {
-          return severityDifference;
-        }
-
-        return (
-          Number(a.distanceMeters || 0) -
-          Number(b.distanceMeters || 0)
-        );
-      }
-    );
-
-  const highest =
-    sortedHazards[0];
-
-  const nearest =
-    [...hazards].sort(
-      (a, b) =>
-        Number(a.distanceMeters || 0) -
-        Number(b.distanceMeters || 0)
-    )[0];
+  const highest = sortedHazards[0];
+  const nearest = [...hazards].sort((a, b) => Number(a.distanceMeters || 0) - Number(b.distanceMeters || 0))[0];
 
   return {
     hasHazard: true,
-
-    highestSeverity:
-      highest.severity,
-
+    highestSeverity: highest.severity,
     nearestHazard: nearest,
-
-    hazards:
-      sortedHazards
+    hazards: sortedHazards
   };
 }
 
@@ -635,161 +381,99 @@ async function getLocationHazardAlert(
  * Get Current Alert
  * ============================================================
  *
- * Supports both:
+ * Separates OFFICIAL IMD/KSDMA DISASTER ALERT from LOCAL WEATHER RISK ANALYSIS.
  *
- * Existing usage:
- *
- * getCurrentAlert(
- *   districtName,
- *   weatherInfo
- * )
- *
- * New location-aware usage:
- *
- * getCurrentAlert(
- *   districtName,
- *   weatherInfo,
- *   latitude,
- *   longitude
- * )
- *
- * GPS coordinates take priority for weather lookup.
+ * Rules:
+ * 1. Official Alert is derived strictly from DB disaster_alerts / IMD feed.
+ * 2. If no active official warning is found, Official Alert MUST default to GREEN.
+ * 3. Open-Meteo telemetry / local thresholds NEVER override Official Alert to RED.
+ * 4. Local Risk Analysis (LOW, MODERATE, HIGH, CRITICAL) is calculated separately.
  */
 
-async function getCurrentAlert(
-  districtName,
-  weatherInfo = null,
-  latitude = null,
-  longitude = null
-) {
-  const district =
-    cleanDistrictName(
-      districtName
-    );
+async function getCurrentAlert(districtName, weatherInfo = null, latitude = null, longitude = null) {
+  const district = cleanDistrictName(districtName);
 
   /**
-   * ==========================================================
-   * 1. Get Official District Alert
-   * ==========================================================
+   * 1. Get Active Official District Alert from Database
    */
-
   let districtAlert = null;
-
   try {
-    const result =
-      await pool.query(
-        `
-        SELECT
-          district,
-          alert_level AS "alertLevel",
-          alert_type AS "alertType",
-          description,
-          source,
-          start_time AS "startTime",
-          end_time AS "endTime"
-        FROM disaster_alerts
-        WHERE LOWER(district) = LOWER($1)
-          AND (
-            end_time IS NULL
-            OR end_time > NOW()
-          )
-        ORDER BY
-          CASE UPPER(alert_level)
-            WHEN 'RED' THEN 3
-            WHEN 'ORANGE' THEN 2
-            WHEN 'YELLOW' THEN 1
-            ELSE 0
-          END DESC,
-          start_time DESC
-        LIMIT 1
-        `,
-        [district]
-      );
+    const result = await pool.query(
+      `
+      SELECT
+        district,
+        alert_level AS "alertLevel",
+        alert_type AS "alertType",
+        description,
+        source,
+        start_time AS "startTime",
+        end_time AS "endTime"
+      FROM disaster_alerts
+      WHERE (LOWER(district) = LOWER($1) OR LOWER(district) = 'kerala' OR LOWER(district) = 'all')
+        AND (start_time IS NULL OR start_time <= NOW())
+        AND (end_time IS NULL OR end_time >= NOW())
+      ORDER BY
+        CASE UPPER(alert_level)
+          WHEN 'RED' THEN 4
+          WHEN 'ORANGE' THEN 3
+          WHEN 'YELLOW' THEN 2
+          WHEN 'GREEN' THEN 1
+          ELSE 0
+        END DESC,
+        start_time DESC
+      LIMIT 1
+      `,
+      [district]
+    );
 
-    if (
-      result.rows.length > 0
-    ) {
+    if (result.rows.length > 0) {
       districtAlert = {
         district,
         ...result.rows[0]
       };
     }
   } catch (error) {
-    console.warn(
-      '[AlertService] District alert query failed:',
-      error.message
-    );
+    console.warn('[AlertService] District alert query failed:', error.message);
   }
 
   /**
-   * ==========================================================
-   * 2. Get Weather Telemetry
-   * ==========================================================
-   *
-   * Priority:
-   *
-   * 1. weatherInfo supplied by caller
-   * 2. actual user GPS
-   * 3. district center
+   * 2. Official Alert Level (DEFAULT TO GREEN IF NO ACTIVE OFFICIAL WARNING)
    */
+  const activeOfficialAlert = districtAlert;
+  const officialAlertLevel = activeOfficialAlert
+    ? String(activeOfficialAlert.alertLevel).toUpperCase()
+    : 'GREEN';
 
-  let telemetry =
-    weatherInfo;
+  const officialAlertType = activeOfficialAlert
+    ? activeOfficialAlert.alertType
+    : 'Normal Weather Conditions';
+
+  const officialDescription = activeOfficialAlert
+    ? activeOfficialAlert.description
+    : `No active official IMD / KSDMA disaster warning. Normal weather conditions in ${district}.`;
+
+  const officialSource = activeOfficialAlert
+    ? activeOfficialAlert.source
+    : 'IMD / KSDMA Official Feed';
 
   /**
-   * If no weather information was supplied,
-   * first try exact GPS.
+   * 3. Get Weather Telemetry
    */
-
-  if (
-    !telemetry ||
-    typeof telemetry !== 'object'
-  ) {
-    if (
-      isValidCoordinates(
-        latitude,
-        longitude
-      )
-    ) {
+  let telemetry = weatherInfo;
+  if (!telemetry || typeof telemetry !== 'object') {
+    if (isValidCoordinates(latitude, longitude)) {
       try {
-        telemetry =
-          await fetchWeatherData(
-            Number(latitude),
-            Number(longitude)
-          );
+        telemetry = await fetchWeatherData(Number(latitude), Number(longitude));
       } catch (error) {
-        console.warn(
-          '[AlertService] Exact location weather failed:',
-          error.message
-        );
-
         telemetry = null;
       }
     }
-
-    /**
-     * Fallback to district-center weather.
-     */
-
     if (!telemetry) {
-      const coords =
-        DISTRICT_COORDS[
-          district.toLowerCase()
-        ];
-
+      const coords = DISTRICT_COORDS[district.toLowerCase()];
       if (coords) {
         try {
-          telemetry =
-            await fetchWeatherData(
-              coords.lat,
-              coords.lon
-            );
+          telemetry = await fetchWeatherData(coords.lat, coords.lon);
         } catch (error) {
-          console.warn(
-            '[AlertService] District weather failed:',
-            error.message
-          );
-
           telemetry = null;
         }
       }
@@ -797,23 +481,8 @@ async function getCurrentAlert(
   }
 
   /**
-   * ==========================================================
-   * 3. Calculate Dynamic Weather Alert
-   * ==========================================================
-   */
-
-  const weatherAlert =
-    computeDynamicAlert(
-      district,
-      telemetry || {}
-    );
-
-  /**
-   * ==========================================================
    * 4. Find Location Hazard Zones
-   * ==========================================================
    */
-
   let locationHazard = {
     hasHazard: false,
     highestSeverity: null,
@@ -821,282 +490,69 @@ async function getCurrentAlert(
     hazards: []
   };
 
-  if (
-    isValidCoordinates(
-      latitude,
-      longitude
-    )
-  ) {
-    locationHazard =
-      await getLocationHazardAlert(
-        Number(latitude),
-        Number(longitude)
-      );
+  if (isValidCoordinates(latitude, longitude)) {
+    locationHazard = await getLocationHazardAlert(Number(latitude), Number(longitude));
   }
 
   /**
-   * ==========================================================
-   * 5. Select Base Alert
-   * ==========================================================
-   *
-   * Compare:
-   *
-   * Official district alert
-   * vs
-   * Dynamic weather alert
+   * 5. Calculate Local Risk Analysis (SEPARATED FROM OFFICIAL ALERT)
    */
-
-  let finalAlert =
-    districtAlert ||
-    weatherAlert;
-
-  if (districtAlert) {
-    const districtLevel =
-      String(
-        districtAlert.alertLevel ||
-          'GREEN'
-      ).toUpperCase();
-
-    const weatherLevel =
-      String(
-        weatherAlert.alertLevel ||
-          'GREEN'
-      ).toUpperCase();
-
-    if (
-      getAlertPriority(
-        weatherLevel
-      ) >
-      getAlertPriority(
-        districtLevel
-      )
-    ) {
-      finalAlert =
-        weatherAlert;
-    }
-  }
+  const localRisk = computeLocalRisk(district, telemetry || {}, locationHazard);
 
   /**
-   * ==========================================================
-   * 6. Apply Hazard Zone Priority
-   * ==========================================================
-   *
-   * HIGH / CRITICAL hazard zones can increase
-   * the final alert level.
+   * MANDATORY DEBUG LOGGING
    */
-
-  if (
-    locationHazard.hasHazard &&
-    locationHazard.highestSeverity
-  ) {
-    const highestHazard =
-      locationHazard.hazards[0];
-
-    const severity =
-      String(
-        locationHazard.highestSeverity
-      ).toUpperCase();
-
-    /**
-     * CRITICAL → RED
-     */
-
-    if (
-      severity === 'CRITICAL'
-    ) {
-      finalAlert = {
-        ...finalAlert,
-
-        alertLevel: 'RED',
-
-        alertType:
-          `Critical ${
-            highestHazard.hazardType
-          } Risk`,
-
-        description:
-          highestHazard.insideZone
-            ? `You are currently inside a critical ${
-                String(
-                  highestHazard.hazardType
-                ).toLowerCase()
-              } hazard zone. ${
-                highestHazard.description ||
-                'Follow local safety instructions immediately.'
-              }`
-            : `A critical ${
-                String(
-                  highestHazard.hazardType
-                ).toLowerCase()
-              } hazard zone has been detected near your location. ${
-                highestHazard.description ||
-                'Follow local safety instructions.'
-              }`
-      };
-    }
-
-    /**
-     * HIGH → RED if user is inside the zone
-     * or ORANGE if merely nearby.
-     */
-
-    else if (
-      severity === 'HIGH'
-    ) {
-      const newLevel =
-        highestHazard.insideZone
-          ? 'RED'
-          : 'ORANGE';
-
-      if (
-        getAlertPriority(
-          newLevel
-        ) >=
-        getAlertPriority(
-          finalAlert.alertLevel
-        )
-      ) {
-        finalAlert = {
-          ...finalAlert,
-
-          alertLevel:
-            newLevel,
-
-          alertType:
-            `High ${
-              highestHazard.hazardType
-            } Risk`,
-
-          description:
-            highestHazard.insideZone
-              ? `Your current location is inside a high-risk ${
-                  String(
-                    highestHazard.hazardType
-                  ).toLowerCase()
-                } hazard zone. ${
-                  highestHazard.description ||
-                  'Take necessary safety precautions.'
-                }`
-              : `A high-risk ${
-                  String(
-                    highestHazard.hazardType
-                  ).toLowerCase()
-                } hazard zone is approximately ${
-                  Math.round(
-                    Number(
-                      highestHazard.distanceMeters
-                    )
-                  )
-                } metres from your current location. ${
-                  highestHazard.description ||
-                  'Stay alert and follow local safety instructions.'
-                }`
-        };
-      }
-    }
-
-    /**
-     * MEDIUM → at least YELLOW
-     */
-
-    else if (
-      severity === 'MEDIUM'
-    ) {
-      if (
-        getAlertPriority(
-          finalAlert.alertLevel
-        ) < 1
-      ) {
-        finalAlert = {
-          ...finalAlert,
-
-          alertLevel: 'YELLOW',
-
-          alertType:
-            `Nearby ${
-              highestHazard.hazardType
-            } Risk`,
-
-          description:
-            `A ${
-              String(
-                highestHazard.hazardType
-              ).toLowerCase()
-            } hazard zone is approximately ${
-              Math.round(
-                Number(
-                  highestHazard.distanceMeters
-                )
-              )
-            } metres from your current location.`
-        };
-      }
-    }
-  }
+  console.log('[SAHAY ALERT] Current district:', district);
+  console.log('[SAHAY ALERT] Active official alerts:', activeOfficialAlert ? [activeOfficialAlert] : []);
+  console.log('[SAHAY ALERT] Selected official alert:', activeOfficialAlert || null);
+  console.log('[SAHAY ALERT] Official level:', officialAlertLevel);
+  console.log('[SAHAY ALERT] Local risk:', localRisk.level);
 
   /**
-   * ==========================================================
-   * 7. Build Final SAHAY Response
-   * ==========================================================
+   * 6. Build Separated Response
    */
-
   return {
-    ...finalAlert,
+    district,
 
-    /**
-     * Current GPS location
-     */
-
-    location: {
-      latitude:
-        isValidCoordinates(
-          latitude,
-          longitude
-        )
-          ? Number(latitude)
-          : null,
-
-      longitude:
-        isValidCoordinates(
-          latitude,
-          longitude
-        )
-          ? Number(longitude)
-          : null
+    // Official IMD/KSDMA Alert
+    officialAlert: {
+      alertLevel: officialAlertLevel,
+      alertType: officialAlertType,
+      description: officialDescription,
+      source: officialSource,
+      startTime: activeOfficialAlert ? activeOfficialAlert.startTime : new Date().toISOString(),
+      endTime: activeOfficialAlert ? activeOfficialAlert.endTime : null,
+      hasOfficialAlert: !!activeOfficialAlert
     },
 
-    /**
-     * Weather information used by the alert engine
-     */
+    // Top-level fields (strictly reflecting official alert for backward compatibility)
+    alertLevel: officialAlertLevel,
+    alertType: officialAlertType,
+    description: officialDescription,
+    source: officialSource,
 
-    weather:
-      telemetry || null,
+    // Local Weather & Risk Analysis
+    localRisk: {
+      level: localRisk.level,
+      reason: localRisk.reason,
+      weather: telemetry || null,
+      locationHazardDetected: locationHazard.hasHazard,
+      locationHazards: locationHazard.hazards,
+      nearestHazard: locationHazard.nearestHazard
+    },
 
-    /**
-     * Location-specific hazards
-     */
+    location: {
+      latitude: isValidCoordinates(latitude, longitude) ? Number(latitude) : null,
+      longitude: isValidCoordinates(latitude, longitude) ? Number(longitude) : null
+    },
 
-    locationHazardDetected:
-      locationHazard.hasHazard,
+    weather: telemetry || null,
 
-    locationHazards:
-      locationHazard.hazards,
+    locationHazardDetected: locationHazard.hasHazard,
+    locationHazards: locationHazard.hazards,
+    nearestHazard: locationHazard.nearestHazard,
 
-    nearestHazard:
-      locationHazard.nearestHazard,
-
-    /**
-     * Indicates whether exact GPS weather
-     * was used.
-     */
-
-    weatherLocation:
-      isValidCoordinates(
-        latitude,
-        longitude
-      )
-        ? 'USER_LOCATION'
-        : 'DISTRICT_CENTER'
+    weatherLocation: isValidCoordinates(latitude, longitude) ? 'USER_LOCATION' : 'DISTRICT_CENTER'
   };
 }
 
@@ -1104,137 +560,93 @@ async function getCurrentAlert(
  * ============================================================
  * Get All Kerala Alerts
  * ============================================================
- *
- * Fetches:
- * 1. Database alerts first
- * 2. Dynamic weather alerts for districts without DB alerts
  */
-
 async function getAllKeralaAlerts() {
   let dbAlertsMap = {};
 
-  /**
-   * ==========================================================
-   * Get database alerts
-   * ==========================================================
-   */
-
   try {
-    const result =
-      await pool.query(
-        `
-        SELECT
-          district,
-          alert_level AS "alertLevel",
-          alert_type AS "alertType",
-          description,
-          source,
-          start_time AS "startTime",
-          end_time AS "endTime"
-        FROM disaster_alerts
-        WHERE (
-          end_time IS NULL
-          OR end_time > NOW()
-        )
-        ORDER BY
-          CASE UPPER(alert_level)
-            WHEN 'RED' THEN 3
-            WHEN 'ORANGE' THEN 2
-            WHEN 'YELLOW' THEN 1
-            ELSE 0
-          END DESC,
-          start_time DESC
-        `
-      );
+    const result = await pool.query(
+      `
+      SELECT
+        district,
+        alert_level AS "alertLevel",
+        alert_type AS "alertType",
+        description,
+        source,
+        start_time AS "startTime",
+        end_time AS "endTime"
+      FROM disaster_alerts
+      WHERE (start_time IS NULL OR start_time <= NOW())
+        AND (end_time IS NULL OR end_time >= NOW())
+      ORDER BY
+        CASE UPPER(alert_level)
+          WHEN 'RED' THEN 4
+          WHEN 'ORANGE' THEN 3
+          WHEN 'YELLOW' THEN 2
+          WHEN 'GREEN' THEN 1
+          ELSE 0
+        END DESC,
+        start_time DESC
+      `
+    );
 
-    for (
-      const row of result.rows
-    ) {
-      const key =
-        cleanDistrictName(
-          row.district
-        ).toLowerCase();
-
-      /**
-       * Keep the highest-priority/latest
-       * alert for each district.
-       */
-
-      if (
-        !dbAlertsMap[key]
-      ) {
-        dbAlertsMap[key] =
-          row;
+    for (const row of result.rows) {
+      const key = cleanDistrictName(row.district).toLowerCase();
+      if (!dbAlertsMap[key]) {
+        dbAlertsMap[key] = row;
       }
     }
   } catch (error) {
-    console.warn(
-      '[AlertService] getAllKeralaAlerts DB query failed:',
-      error.message
-    );
+    console.warn('[AlertService] getAllKeralaAlerts DB query failed:', error.message);
   }
-
-  /**
-   * ==========================================================
-   * Generate alerts for all districts
-   * ==========================================================
-   */
 
   const allAlerts = [];
 
-  for (
-    const district of KERALA_DISTRICTS
-  ) {
-    const key =
-      district.toLowerCase();
+  for (const district of KERALA_DISTRICTS) {
+    const key = district.toLowerCase();
 
-    /**
-     * Official database alert exists
-     */
-
-    if (
-      dbAlertsMap[key]
-    ) {
+    if (dbAlertsMap[key]) {
+      const item = dbAlertsMap[key];
       allAlerts.push({
         district,
-        ...dbAlertsMap[key]
+        alertLevel: String(item.alertLevel).toUpperCase(),
+        alertType: item.alertType,
+        description: item.description,
+        source: item.source || 'IMD / KSDMA Official Feed',
+        startTime: item.startTime,
+        endTime: item.endTime,
+        officialAlert: {
+          alertLevel: String(item.alertLevel).toUpperCase(),
+          alertType: item.alertType,
+          description: item.description,
+          source: item.source || 'IMD / KSDMA Official Feed',
+          hasOfficialAlert: true
+        },
+        localRisk: {
+          level: 'LOW',
+          reason: `Official ${item.alertLevel} alert active for ${district}.`
+        }
       });
-
-      continue;
-    }
-
-    /**
-     * Otherwise use district-center weather.
-     */
-
-    const coords =
-      DISTRICT_COORDS[key];
-
-    let weather = null;
-
-    if (coords) {
-      try {
-        weather =
-          await fetchWeatherData(
-            coords.lat,
-            coords.lon
-          );
-      } catch (error) {
-        console.warn(
-          `[AlertService] Weather failed for ${district}:`,
-          error.message
-        );
-
-        weather = null;
-      }
-    }
-
-    allAlerts.push(
-      computeDynamicAlert(
+    } else {
+      allAlerts.push({
         district,
-        weather || {}
-      )
-    );
+        alertLevel: 'GREEN',
+        alertType: 'Normal Weather Conditions',
+        description: `No active official disaster warning in effect for ${district}.`,
+        source: 'IMD / KSDMA Official Feed',
+        officialAlert: {
+          alertLevel: 'GREEN',
+          alertType: 'Normal Weather Conditions',
+          description: `No active official disaster warning in effect for ${district}.`,
+          source: 'IMD / KSDMA Official Feed',
+          hasOfficialAlert: false
+        },
+        localRisk: {
+          level: 'LOW',
+          reason: `No active official warning. Normal conditions in ${district}.`
+        }
+      });
+    }
   }
 
   return allAlerts;

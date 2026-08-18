@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FileText, MapPin, ArrowLeft, RefreshCw, Eye, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { fetchMyIncidentReports } from '../services/api';
 import type { IncidentReport } from '../services/api';
+import { reverseGeocodeCoords } from '../components/IncidentMapPicker';
 
 interface MyReportsPageProps {
   onBackToDashboard: () => void;
@@ -17,6 +18,7 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({
   const [reports, setReports] = useState<IncidentReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
+  const [resolvedLocations, setResolvedLocations] = useState<Record<string | number, string>>({});
 
   const loadReports = async () => {
     setLoading(true);
@@ -28,6 +30,24 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({
   useEffect(() => {
     loadReports();
   }, []);
+
+  // Asynchronously resolve coordinates to human readable place names
+  useEffect(() => {
+    if (reports.length === 0) return;
+    reports.forEach(async (report) => {
+      const addr = report.locationAddress;
+      if (!addr || addr.includes('Browser Live') || addr.startsWith('Selected on Map') || addr.startsWith('Location (')) {
+        try {
+          const resolved = await reverseGeocodeCoords(report.latitude, report.longitude);
+          if (resolved) {
+            setResolvedLocations(prev => ({ ...prev, [report.id]: resolved }));
+          }
+        } catch (e) {
+          // Ignore resolution errors
+        }
+      }
+    });
+  }, [reports]);
 
   const filteredReports = reports.filter(r => {
     if (filterStatus === 'ALL') return true;
@@ -55,6 +75,20 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({
       default:
         return 'bg-slate-100 text-slate-800 border-slate-300';
     }
+  };
+
+  const getDisplayLocation = (report: IncidentReport) => {
+    if (resolvedLocations[report.id]) {
+      return resolvedLocations[report.id];
+    }
+    const addr = report.locationAddress;
+    if (addr && !addr.includes('Browser Live GPS Position') && !addr.startsWith('Selected on Map') && !addr.startsWith('Location (')) {
+      return addr;
+    }
+    if (report.latitude != null && report.longitude != null) {
+      return `Location (${report.latitude.toFixed(4)}°, ${report.longitude.toFixed(4)}°)`;
+    }
+    return addr || 'Unknown Location';
   };
 
   const getSeverityBadge = (sev: string) => {
@@ -172,9 +206,9 @@ export const MyReportsPage: React.FC<MyReportsPageProps> = ({
                       </span>
                     </td>
                     <td className="py-4 px-4 text-slate-700 max-w-xs truncate">
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 font-medium">
                         <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                        {report.locationAddress || `${report.latitude.toFixed(3)}°, ${report.longitude.toFixed(3)}°`}
+                        {getDisplayLocation(report)}
                       </span>
                     </td>
                     <td className="py-4 px-4 text-slate-500 font-mono text-xs">

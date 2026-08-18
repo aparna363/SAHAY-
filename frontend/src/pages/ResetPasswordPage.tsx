@@ -25,18 +25,34 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
     setToken(tokenFromUrl);
   }, []);
 
+  // Password Validation Checklist Rules
+  const passChecks = {
+    length: newPassword.length >= 8,
+    hasUpper: /[A-Z]/.test(newPassword),
+    hasLower: /[a-z]/.test(newPassword),
+    hasNumber: /[0-9]/.test(newPassword),
+    hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(newPassword),
+    noSpaceOrFiller: newPassword.length > 0 && !newPassword.includes(' ') && !/---|___|\.\.\./.test(newPassword)
+  };
+
   const validateForm = (): boolean => {
     const newErrs: { newPassword?: string; confirmNewPassword?: string } = {};
 
     if (!newPassword) {
       newErrs.newPassword = 'New Password is required';
-    } else if (newPassword.trim().length < 6) {
-      newErrs.newPassword = 'Password must be at least 6 characters long';
+    } else if (newPassword.includes(' ')) {
+      newErrs.newPassword = 'Password cannot contain spaces';
+    } else if (/---|___|\.\.\./.test(newPassword)) {
+      newErrs.newPassword = 'Password cannot contain filler patterns like "---"';
+    } else if (newPassword.length < 8) {
+      newErrs.newPassword = 'Password must be at least 8 characters long';
+    } else if (!passChecks.hasUpper || !passChecks.hasLower || !passChecks.hasNumber || !passChecks.hasSymbol) {
+      newErrs.newPassword = 'Password must contain uppercase (A-Z), lowercase (a-z), number (0-9), and a special symbol (@,#,$,!,etc.)';
     }
 
     if (!confirmNewPassword) {
       newErrs.confirmNewPassword = 'Please confirm your new password';
-    } else if (newPassword.trim() !== confirmNewPassword.trim()) {
+    } else if (newPassword !== confirmNewPassword) {
       newErrs.confirmNewPassword = 'Passwords do not match';
     }
 
@@ -59,7 +75,7 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
         setIsSubmitting(true);
         const res = await resetPassword({
           token,
-          newPassword: newPassword.trim()
+          newPassword
         });
 
         setSuccessMsg(res.message || 'Password reset successfully! Please sign in with your new password.');
@@ -165,8 +181,8 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
 
           {!successMsg && (
             <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn" noValidate>
-              <p className="text-xs text-slate-600 font-medium">
-                Please choose a strong password with at least 6 characters to secure your SAHAY Emergency Portal account.
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                Please choose a strong password with at least 8 characters, uppercase, lowercase, numbers, and special symbols (@, #, $, etc.).
               </p>
 
               {/* New Password Input */}
@@ -178,7 +194,7 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type={showNewPassword ? 'text' : 'password'}
-                    placeholder="At least 6 characters"
+                    placeholder="Min 8 chars, e.g. Pass@2026"
                     value={newPassword}
                     onChange={(e) => {
                       setNewPassword(e.target.value);
@@ -204,6 +220,30 @@ export const ResetPasswordPage: React.FC<ResetPasswordPageProps> = ({ onNavigate
                     <span>{errors.newPassword}</span>
                   </p>
                 )}
+
+                {/* Live Password Requirements Checklist */}
+                <div className="mt-2.5 p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-[11px] space-y-1">
+                  <p className="font-bold text-slate-600 mb-1">Password Requirements:</p>
+                  <div className="grid grid-cols-2 gap-1 font-semibold">
+                    <span className={passChecks.length ? 'text-emerald-700 font-bold' : 'text-slate-400'}>
+                      {passChecks.length ? '✓' : '•'} At least 8 characters
+                    </span>
+                    <span className={passChecks.hasUpper && passChecks.hasLower ? 'text-emerald-700 font-bold' : 'text-slate-400'}>
+                      {passChecks.hasUpper && passChecks.hasLower ? '✓' : '•'} Upper (A-Z) & Lower (a-z)
+                    </span>
+                    <span className={passChecks.hasNumber ? 'text-emerald-700 font-bold' : 'text-slate-400'}>
+                      {passChecks.hasNumber ? '✓' : '•'} Number (0-9)
+                    </span>
+                    <span className={passChecks.hasSymbol ? 'text-emerald-700 font-bold' : 'text-slate-400'}>
+                      {passChecks.hasSymbol ? '✓' : '•'} Symbol (@, #, $, !, %, etc.)
+                    </span>
+                  </div>
+                  <div className="pt-1 text-[10px]">
+                    <span className={newPassword.length > 0 && passChecks.noSpaceOrFiller ? 'text-emerald-700 font-bold' : 'text-slate-400'}>
+                      {newPassword.length > 0 && passChecks.noSpaceOrFiller ? '✓' : '•'} No spaces or filler patterns (e.g. "---")
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* Confirm New Password Input */}

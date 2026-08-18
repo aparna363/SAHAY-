@@ -9,8 +9,7 @@ interface LoginModalProps {
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [tab, setTab] = useState<'citizen' | 'official'>('citizen');
   const [phoneOrEmail, setPhoneOrEmail] = useState('');
-  const [passwordOrOtp, setPasswordOrOtp] = useState('');
-  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
 
   if (!isOpen) return null;
@@ -22,7 +21,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   const handleReset = () => {
     setLoggedIn(false);
-    setIsOtpSent(false);
     onClose();
   };
 
@@ -91,14 +89,14 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  {tab === 'citizen' ? 'Registered Mobile Number' : 'Govt Email / Employee Code'}
+                  {tab === 'citizen' ? 'Registered Mobile Number or Email' : 'Govt Email / Employee Code'}
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     required
-                    placeholder={tab === 'citizen' ? '+91 98765 43210' : 'officer@kerala.gov.in'}
+                    placeholder={tab === 'citizen' ? '9876543210 or name@gmail.com' : 'officer@kerala.gov.in'}
                     value={phoneOrEmail}
                     onChange={(e) => setPhoneOrEmail(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-[#059669] focus:outline-none"
@@ -109,34 +107,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-bold text-slate-700">
-                    {tab === 'citizen' ? 'Enter OTP Code' : 'Password'}
+                    Account Password *
                   </label>
-                  {tab === 'citizen' && (
-                    <button
-                      type="button"
-                      onClick={() => setIsOtpSent(true)}
-                      className="text-[11px] font-bold text-[#059669] hover:underline"
-                    >
-                      {isOtpSent ? 'Resend OTP' : 'Send OTP via SMS'}
-                    </button>
-                  )}
                 </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
-                    type={tab === 'citizen' ? 'text' : 'password'}
+                    type="password"
                     required
-                    placeholder={tab === 'citizen' ? '6-digit OTP code' : '••••••••'}
-                    value={passwordOrOtp}
-                    onChange={(e) => setPasswordOrOtp(e.target.value)}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-[#059669] focus:outline-none"
                   />
                 </div>
-                {isOtpSent && (
-                  <p className="text-[11px] text-emerald-600 font-semibold mt-1">
-                    ✓ OTP code sent to your mobile phone!
-                  </p>
-                )}
               </div>
 
               <button

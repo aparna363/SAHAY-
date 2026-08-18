@@ -26,7 +26,6 @@ import {
   ShieldAlert,
   Megaphone,
   Plus,
-  Send,
   Printer,
   FileSpreadsheet,
   PhoneCall,
@@ -41,6 +40,8 @@ import {
 import type { AuthUser, AuditLogItem } from '../services/api';
 import { OfficialIncidentsPage } from './OfficialIncidentsPage';
 import { OfficialIncidentDetailsPage } from './OfficialIncidentDetailsPage';
+import { CollectorWeatherAlerts } from '../components/CollectorWeatherAlerts';
+import { ActiveOperationsListView } from '../components/ActiveOperationsListView';
 
 interface CollectorDashboardProps {
   user?: any;
@@ -90,12 +91,7 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
   const [actionMsg, setActionMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [processingId, setProcessingId] = useState<number | null>(null);
 
-  // Alert State
-  const [alertType, setAlertType] = useState('Heavy Rainfall & Landslide Warning');
-  const [alertLevel, setAlertLevel] = useState<'RED' | 'ORANGE' | 'YELLOW'>('RED');
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
-  const [customAlerts, setCustomAlerts] = useState<any[]>([]);
+
 
   // Shelter Management State
   const [shelterList, setShelterList] = useState([
@@ -186,25 +182,6 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
     } finally {
       setProcessingId(null);
     }
-  };
-
-  const handleBroadcastAlert = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!alertMessage.trim()) return;
-    const newAlert = {
-      id: Date.now(),
-      type: alertType,
-      level: alertLevel,
-      message: alertMessage,
-      district,
-      time: 'Just Now',
-      status: 'ACTIVE'
-    };
-    setCustomAlerts([newAlert, ...customAlerts]);
-    setAlertSuccess(`Emergency ${alertLevel} Alert successfully broadcasted to ${district} District!`);
-    setAlertMessage('');
-    setStats(prev => ({ ...prev, activeAlerts: prev.activeAlerts + 1 }));
-    setTimeout(() => setAlertSuccess(null), 5000);
   };
 
   const handleAddShelter = (e: React.FormEvent) => {
@@ -579,118 +556,8 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
         {/* VIEW 2: ALERTS */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'alerts' && (
-          <div className="space-y-6 animate-fadeIn">
-            {/* Broadcast Form */}
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                    <Megaphone className="w-6 h-6 text-red-600" />
-                    <span>Broadcast Emergency Disaster Alert</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-1 font-medium">
-                    Issue official Weather Warning or Disaster Advisory to all citizen mobile apps and station portals in {district} District.
-                  </p>
-                </div>
-              </div>
-
-              {alertSuccess && (
-                <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-2xl text-emerald-900 text-xs font-bold flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                  <span>{alertSuccess}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleBroadcastAlert} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Alert Category</label>
-                    <select
-                      value={alertType}
-                      onChange={(e) => setAlertType(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value="Heavy Rainfall & Landslide Warning">Heavy Rainfall & Landslide Warning</option>
-                      <option value="Flash Flood Alert">Flash Flood Alert</option>
-                      <option value="Severe Windstorm / Cyclone Advisory">Severe Windstorm / Cyclone Advisory</option>
-                      <option value="High Range Evacuation Order">High Range Evacuation Order</option>
-                      <option value="Dam Water Release Advisory">Dam Water Release Advisory</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Alert Severity Level</label>
-                    <select
-                      value={alertLevel}
-                      onChange={(e) => setAlertLevel(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value="RED">RED ALERT (Extreme Danger / Immediate Evacuation)</option>
-                      <option value="ORANGE">ORANGE ALERT (High Preparedness Required)</option>
-                      <option value="YELLOW">YELLOW ALERT (General Caution Advisory)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Broadcast Instructions & Advisory Details</label>
-                  <textarea
-                    rows={3}
-                    value={alertMessage}
-                    onChange={(e) => setAlertMessage(e.target.value)}
-                    placeholder={`Type official advisory instructions for citizens and rescue teams in ${district} District...`}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-2xl p-4 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-black text-xs shadow-sm transition-all flex items-center gap-2"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Broadcast Alert to {district} District Now</span>
-                </button>
-              </form>
-            </div>
-
-            {/* Active Alerts List */}
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-xs">
-              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                <Bell className="w-5 h-5 text-emerald-600" />
-                <span>Active Broadcast Advisories in {district}</span>
-              </h3>
-
-              {customAlerts.length === 0 ? (
-                <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs font-semibold">
-                  No active emergency alerts broadcasted today for {district}. Use the console above to broadcast.
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {customAlerts.map((alt) => (
-                    <div key={alt.id} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                            alt.level === 'RED' ? 'bg-red-600 text-white' : alt.level === 'ORANGE' ? 'bg-orange-500 text-white' : 'bg-yellow-500 text-slate-950'
-                          }`}>
-                            {alt.level} ALERT
-                          </span>
-                          <span className="font-bold text-slate-900 text-sm">{alt.type}</span>
-                        </div>
-                        <p className="text-xs text-slate-700 font-medium">{alt.message}</p>
-                        <div className="text-[10px] text-slate-500 font-medium">Target: {alt.district} District &bull; {alt.time}</div>
-                      </div>
-                      <button
-                        onClick={() => setCustomAlerts(customAlerts.filter(a => a.id !== alt.id))}
-                        className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-[11px] font-bold"
-                      >
-                        Deactivate
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+          <div className="animate-fadeIn">
+            <CollectorWeatherAlerts district={district} />
           </div>
         )}
 
@@ -756,51 +623,18 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
         {/* VIEW 5: RESCUE OPERATIONS */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'rescue_ops' && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xs">
-              <div>
-                <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                  <LifeBuoy className="w-6 h-6 text-amber-600" />
-                  <span>Rescue Field Operations Command & Dispatch</span>
-                </h2>
-                <p className="text-xs text-slate-500 mt-1 font-medium">
-                  Directly assign verified stations and emergency responder units to active incident sites in {district}.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                  <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Approved District Response Stations</span>
-                  </h3>
-                  <div className="text-2xl font-black text-emerald-700 font-mono">{approvedStations.length} Units Ready</div>
-                  <p className="text-xs text-slate-600">Panchayat stations & Fire/NDRF units ready for dispatch in {district}.</p>
-                  <button
-                    onClick={() => setActiveTab('rescue_teams')}
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold w-full"
-                  >
-                    Manage Station Roster
-                  </button>
-                </div>
-
-                <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                  <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600" />
-                    <span>Active Incidents Awaiting Dispatch</span>
-                  </h3>
-                  <div className="text-2xl font-black text-amber-600 font-mono">{stats.activeIncidents} Active</div>
-                  <p className="text-xs text-slate-600">Citizen emergency reports requiring official responder unit assignment.</p>
-                  <button
-                    onClick={() => setActiveTab('incidents')}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold w-full shadow-xs"
-                  >
-                    Go to Incident Dispatch Board
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          selectedIncidentId ? (
+            <OfficialIncidentDetailsPage
+              incidentId={selectedIncidentId}
+              onBack={() => setSelectedIncidentId(null)}
+            />
+          ) : (
+            <ActiveOperationsListView
+              userRole="collector"
+              userDistrict={district}
+              onSelectIncident={(id) => setSelectedIncidentId(id)}
+            />
+          )
         )}
 
         {/* ------------------------------------------------------------- */}

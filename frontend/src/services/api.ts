@@ -1439,6 +1439,121 @@ export async function deleteTeamMember(id: number): Promise<{ message: string }>
   return data;
 }
 
+// ============================================================================
+// FAMILY SAFETY MEMBER MANAGEMENT APIS
+// ============================================================================
+
+export interface FamilyMember {
+  id: number;
+  user_id?: number;
+  name: string;
+  relation: string;
+  age?: number | null;
+  gender?: string;
+  phone?: string | null;
+  blood_group?: string;
+  medical_needs?: string;
+  is_emergency_contact?: boolean;
+  status: 'Safe' | 'In Shelter' | 'In Distress' | 'Missing' | string;
+  location?: string;
+  govt_id?: string | null;
+  notes?: string | null;
+  last_checkin?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FamilyMemberPayload {
+  name: string;
+  relation: string;
+  age?: number | string | null;
+  gender?: string;
+  phone?: string | null;
+  blood_group?: string;
+  medical_needs?: string;
+  is_emergency_contact?: boolean;
+  status?: string;
+  location?: string;
+  govt_id?: string | null;
+  notes?: string | null;
+}
+
+export async function fetchFamilyMembers(): Promise<FamilyMember[]> {
+  const response = await fetchWithFallback('/family-members', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch family members');
+  }
+
+  return data.familyMembers || [];
+}
+
+export async function createFamilyMember(payload: FamilyMemberPayload): Promise<FamilyMember> {
+  const response = await fetchWithFallback('/family-members', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to register family member');
+  }
+
+  return data.familyMember;
+}
+
+export async function updateFamilyMember(id: number, payload: FamilyMemberPayload): Promise<FamilyMember> {
+  const response = await fetchWithFallback(`/family-members/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update family member');
+  }
+
+  return data.familyMember;
+}
+
+export async function patchFamilyMemberStatus(
+  id: number,
+  status: string,
+  location?: string
+): Promise<FamilyMember> {
+  const response = await fetchWithFallback(`/family-members/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status, location }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update safety status');
+  }
+
+  return data.familyMember;
+}
+
+export async function deleteFamilyMemberRecord(id: number): Promise<void> {
+  const response = await fetchWithFallback(`/family-members/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to delete family member');
+  }
+}
+
+
 
 
 

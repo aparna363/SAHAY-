@@ -424,23 +424,58 @@ export const WeatherPage: React.FC = () => {
                 <span className="text-xs font-bold text-slate-400">IMD / KSDMA Feed</span>
               </div>
 
-              <div className={`p-5 rounded-2xl border ${weather.alert?.alertLevel === 'RED' ? 'bg-red-50 border-red-200 text-red-900' :
-                  weather.alert?.alertLevel === 'ORANGE' ? 'bg-orange-50 border-orange-200 text-orange-900' :
-                    weather.alert?.alertLevel === 'YELLOW' ? 'bg-amber-50 border-amber-200 text-amber-900' :
+              {/* Official IMD/KSDMA Disaster Alert */}
+              {(() => {
+                const alertAny = weather.alert as any;
+                const officialAlertLevel = alertAny?.officialAlert?.alertLevel || alertAny?.alertLevel;
+                const officialSource = alertAny?.officialAlert?.source || alertAny?.source || 'IMD / KSDMA';
+                const officialDesc = alertAny?.officialAlert?.description || alertAny?.description || `No official disaster warning issued for ${weather.district}.`;
+                const localLevel = alertAny?.localRisk?.level || 'LOW';
+                const localReason = alertAny?.localRisk?.reason || `Normal weather conditions detected from local sensors.`;
+
+                return (
+                  <>
+                    <div className={`p-5 rounded-2xl border ${
+                      officialAlertLevel === 'RED' ? 'bg-red-50 border-red-200 text-red-900' :
+                      officialAlertLevel === 'ORANGE' ? 'bg-amber-50 border-amber-200 text-amber-900' :
+                      officialAlertLevel === 'YELLOW' ? 'bg-yellow-50 border-yellow-200 text-yellow-900' :
                       'bg-emerald-50 border-emerald-200 text-emerald-900'
-                }`}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-black tracking-wider uppercase">
-                    {weather.alert?.alertType || 'Normal Weather Conditions'}
-                  </span>
-                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-white/80 shadow-xs">
-                    Source: {weather.alert?.source || 'IMD / KSDMA'}
-                  </span>
-                </div>
-                <p className="text-xs leading-relaxed font-semibold mt-2">
-                  {weather.alert?.description || `No severe weather advisory issued for ${weather.district}.`}
-                </p>
-              </div>
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-black tracking-wider uppercase flex items-center gap-1.5">
+                          Official Alert: {officialAlertLevel || 'GREEN'}
+                        </span>
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-white/80 shadow-xs">
+                          Source: {officialSource}
+                        </span>
+                      </div>
+                      <p className="text-xs leading-relaxed font-semibold mt-2">
+                        {officialDesc}
+                      </p>
+                    </div>
+
+                    {/* Local Weather Risk Analysis */}
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
+                          Local Telemetry Risk:
+                        </span>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase ${
+                          localLevel === 'CRITICAL' ? 'bg-red-100 text-red-800' :
+                          localLevel === 'HIGH' ? 'bg-amber-100 text-amber-800' :
+                          localLevel === 'MODERATE' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-emerald-100 text-emerald-800'
+                        }`}>
+                          {localLevel} RISK
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 font-medium italic">
+                        {localReason}
+                      </p>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             {/* Telemetry Summary Metadata Footer */}

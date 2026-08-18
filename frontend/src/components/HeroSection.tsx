@@ -32,56 +32,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ currentLang, onOpenAle
 
   const t = translations[currentLang];
 
-  const weatherDataMap: Record<string, { temp: string; status: string; humidity: string; wind: string; alert: string; alertBg: string }> = {
-    'Idukki & Wayanad': {
-      temp: '28°C',
-      status: currentLang === 'ml' ? 'കനത്ത മഴ' : currentLang === 'hi' ? 'भारी बारिश' : 'Heavy Rain',
-      humidity: '89%',
-      wind: '14 km/h',
-      alert: t.redAlert,
-      alertBg: 'bg-red-100 text-red-700 border-red-200'
-    },
-    'Ernakulam (Kochi)': {
-      temp: '30°C',
-      status: currentLang === 'ml' ? 'ഇടത്തരം മഴ' : currentLang === 'hi' ? 'मध्यम बारिश' : 'Moderate Rain',
-      humidity: '82%',
-      wind: '18 km/h',
-      alert: t.orangeAlert,
-      alertBg: 'bg-orange-100 text-orange-700 border-orange-200'
-    },
-    'Thiruvananthapuram': {
-      temp: '31°C',
-      status: currentLang === 'ml' ? 'ചാറ്റൽമഴ' : currentLang === 'hi' ? 'हल्की बूंदबांदी' : 'Light Drizzle',
-      humidity: '76%',
-      wind: '22 km/h',
-      alert: t.yellowAlert,
-      alertBg: 'bg-amber-100 text-amber-700 border-amber-200'
-    },
-    'Kozhikode': {
-      temp: '29°C',
-      status: currentLang === 'ml' ? 'ശക്തമായ മഴ' : currentLang === 'hi' ? 'मूसलाधार बारिश' : 'Heavy Downpour',
-      humidity: '87%',
-      wind: '16 km/h',
-      alert: t.redAlert,
-      alertBg: 'bg-red-100 text-red-700 border-red-200'
-    }
+  const alertObj = (globalWeather?.alert as any);
+  const officialLevel = alertObj?.officialAlert?.alertLevel || alertObj?.alertLevel || 'GREEN';
+  const localRiskLevel = alertObj?.localRisk?.level || 'LOW';
+  const localRiskReason = alertObj?.localRisk?.reason || 'Normal weather telemetry in location.';
+
+  const currentWeather = {
+    temp: globalWeather ? `${Math.round(globalWeather.temperature)}°C` : '28°C',
+    status: globalWeather?.condition || 'Partly Cloudy',
+    humidity: globalWeather ? `${globalWeather.humidity}%` : '81%',
+    wind: globalWeather ? `${globalWeather.windSpeed} km/h` : '9.4 km/h',
+    officialAlert: officialLevel,
+    officialAlertLabel: officialLevel === 'RED' ? '🔴 RED ALERT' :
+                        officialLevel === 'ORANGE' ? '🟠 ORANGE ALERT' :
+                        officialLevel === 'YELLOW' ? '🟡 YELLOW ALERT' :
+                        '🟢 GREEN (No Warning)',
+    officialAlertBg: officialLevel === 'RED' ? 'bg-red-100 text-red-800 border-red-300' :
+                       officialLevel === 'ORANGE' ? 'bg-amber-100 text-amber-800 border-amber-300' :
+                       officialLevel === 'YELLOW' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
+                       'bg-emerald-100 text-emerald-800 border-emerald-300',
+    localRisk: localRiskLevel,
+    localRiskLabel: localRiskLevel === 'CRITICAL' ? '🔴 CRITICAL RISK' :
+                    localRiskLevel === 'HIGH' ? '🟠 HIGH RISK' :
+                    localRiskLevel === 'MODERATE' ? '🟡 MODERATE RISK' :
+                    '🟢 LOW RISK',
+    localRiskBg: localRiskLevel === 'CRITICAL' ? 'bg-red-50 text-red-700 border-red-200' :
+                 localRiskLevel === 'HIGH' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                 localRiskLevel === 'MODERATE' ? 'bg-yellow-50 text-yellow-800 border-yellow-200' :
+                 'bg-slate-100 text-slate-700 border-slate-200',
+    localRiskReason
   };
-
-  const fallbackWeather = weatherDataMap[selectedDistrict] || weatherDataMap['Idukki & Wayanad'];
-
-  const alertLevel = globalWeather?.alert?.alertLevel;
-
-  const currentWeather = globalWeather && globalWeather.district === selectedDistrict ? {
-    temp: `${Math.round(globalWeather.temperature)}°C`,
-    status: globalWeather.condition,
-    humidity: `${globalWeather.humidity}%`,
-    wind: `${globalWeather.windSpeed} km/h`,
-    alert: alertLevel ? `${alertLevel} ALERT` : 'NORMAL',
-    alertBg: alertLevel === 'RED' ? 'bg-red-100 text-red-700 border-red-200' :
-             alertLevel === 'ORANGE' ? 'bg-orange-100 text-orange-700 border-orange-200' :
-             alertLevel === 'YELLOW' ? 'bg-amber-100 text-amber-700 border-amber-200' :
-             'bg-emerald-100 text-emerald-700 border-emerald-200',
-  } : fallbackWeather;
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -246,20 +226,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ currentLang, onOpenAle
                 </span>
               </div>
 
-              {/* Alert Level */}
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-sm font-semibold text-slate-600">
-                  {t.alertLevel}
-                </span>
-                <span className={`px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase border shadow-sm ${currentWeather.alertBg}`}>
-                  {currentWeather.alert}
+              {/* Single Clean Alert Level Badge */}
+              <div className="flex flex-col pt-1 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-700">Alert Level</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase border shadow-sm ${currentWeather.officialAlertBg}`}>
+                    {currentWeather.officialAlertLabel}
+                  </span>
+                </div>
+                <span className="text-[11px] text-slate-400 font-medium">
+                  Official IMD Feed • Sensor Telemetry: {currentWeather.localRiskLabel}
                 </span>
               </div>
             </div>
 
             {/* Live Weather Source Footer */}
             <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-              <span>{t.sourceImd}</span>
+              <span>IMD / KSDMA Official Feed</span>
               <span className="text-emerald-600 font-semibold">{t.updatedAgo}</span>
             </div>
 

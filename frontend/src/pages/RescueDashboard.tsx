@@ -29,7 +29,15 @@ import {
   Lock,
   Plus,
   Trash2,
-  UserPlus
+  UserPlus,
+  Minus,
+  ChevronRight,
+  Search,
+  Filter,
+  ArrowRight,
+  Clock,
+  ExternalLink,
+  Check
 } from 'lucide-react';
 import {
   getRescueDashboardStats,
@@ -43,12 +51,14 @@ import {
   getRescueAgencyConfig,
   normalizeAgencyCode,
   getAssignedIncidents,
+  fetchOfficialIncidents,
   type RescueTeamMember,
   type RescueProfileData,
   type RescueAgencyConfig
 } from '../services/api';
 import { OfficialIncidentDetailsPage } from './OfficialIncidentDetailsPage';
 import { KeralaAlertMap } from '../components/KeralaAlertMap';
+import { ActiveOperationsListView } from '../components/ActiveOperationsListView';
 
 interface RescueDashboardProps {
   user?: any;
@@ -150,63 +160,12 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
   const [currentTeamStatus, setCurrentTeamStatus] = useState<'Available' | 'On Operation' | 'Standby' | 'Offline'>('Available');
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Helper for District-Specific Incidents Fallback
-  const getDistrictMockIncidents = (targetDistrict: string) => [
-    {
-      id: 'INC-2026-0012',
-      code: 'INC-2026-0012',
-      type: 'Flood Rescue & Evacuation',
-      severity: 'CRITICAL',
-      location: `${targetDistrict} Sector 4 Basin`,
-      reportedTime: '15 mins ago',
-      assignedTime: '10 mins ago',
-      assignedBy: `District Collector (${targetDistrict})`,
-      affectedPeople: 18,
-      status: 'EN ROUTE',
-      rescuedCount: 0,
-      remainingCount: 18,
-      lat: 9.5916,
-      lng: 76.5222,
-      description: `Flash flooding near river basin in ${targetDistrict}. 18 citizens stranded inside two-storey residential building.`
-    },
-    {
-      id: 'INC-2026-0019',
-      code: 'INC-2026-0019',
-      type: 'Landslide Debris Clearance',
-      severity: 'HIGH',
-      location: `${targetDistrict} North Highway Pass`,
-      reportedTime: '45 mins ago',
-      assignedTime: '30 mins ago',
-      assignedBy: `District Collector (${targetDistrict})`,
-      affectedPeople: 5,
-      status: 'ASSIGNED',
-      rescuedCount: 0,
-      remainingCount: 5,
-      lat: 9.4833,
-      lng: 76.8333,
-      description: `Mudslide blocking primary emergency route in ${targetDistrict}. 2 vehicles trapped under light debris.`
-    },
-    {
-      id: 'INC-2026-0008',
-      code: 'INC-2026-0008',
-      type: 'Medical Emergency Transport',
-      severity: 'MEDIUM',
-      location: `${targetDistrict} Central Sector`,
-      reportedTime: '2 hours ago',
-      assignedTime: '1 hour ago',
-      assignedBy: `Disaster Management Cell (${targetDistrict})`,
-      affectedPeople: 2,
-      status: 'IN PROGRESS',
-      rescuedCount: 1,
-      remainingCount: 1,
-      lat: 9.5542,
-      lng: 76.7867,
-      description: `Emergency patient evacuation from flooded clinic to ${targetDistrict} District Hospital.`
-    }
-  ];
+  // Dynamic Incident State (100% DB Loaded)
+  const [assignedIncidents, setAssignedIncidents] = useState<any[]>([]);
 
-  // Dynamic Incident State
-  const [assignedIncidents, setAssignedIncidents] = useState<any[]>(() => getDistrictMockIncidents(profile.district));
+  // Active Operations Filter & Search State
+  const [opSearchQuery, setOpSearchQuery] = useState('');
+  const [opFilterStatus, setOpFilterStatus] = useState<string>('ALL');
 
   // Operations History State
   const [operationHistory] = useState([
@@ -250,6 +209,143 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
   const [newMemberAvailability, setNewMemberAvailability] = useState('Available');
   const [newMemberAssignment, setNewMemberAssignment] = useState('Base Station');
   const [isSubmittingMember, setIsSubmittingMember] = useState(false);
+
+  // Field Validation States & Touched tracking
+  const [memberErrors, setMemberErrors] = useState<Record<string, string>>({});
+  const [memberTouched, setMemberTouched] = useState<Record<string, boolean>>({});
+
+  const [requestErrors, setRequestErrors] = useState<Record<string, string>>({});
+  const [requestTouched, setRequestTouched] = useState<Record<string, boolean>>({});
+
+  const [commError, setCommError] = useState<string>('');
+  const [commTouched, setCommTouched] = useState<boolean>(false);
+
+  const [reportErrors, setReportErrors] = useState<Record<string, string>>({});
+  const [reportTouched, setReportTouched] = useState<Record<string, boolean>>({});
+
+  // Helper for input styling based on validation state
+  const getFieldClass = (error?: string, isTouched?: boolean, isMono = false) => {
+    const monoClass = isMono ? ' font-mono' : '';
+    if (isTouched && error) {
+      return `w-full p-3 rounded-2xl border-2 border-red-500 bg-red-50/30 text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all font-medium text-xs${monoClass}`;
+    }
+    if (isTouched && !error) {
+      return `w-full p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/10 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium text-xs${monoClass}`;
+    }
+    return `w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium text-xs${monoClass}`;
+  };
+
+  // Validation functions
+  const validateMemberField = (field: string, val: string): string => {
+    const value = val.trim();
+    switch (field) {
+      case 'name':
+        if (!value) return 'Full Name is required.';
+        if (value.length < 2) return 'Full Name must be at least 2 characters.';
+        if (!/^[a-zA-Z\s\.\-']+$/.test(value)) return 'Full Name should contain only letters, spaces, dots or hyphens.';
+        return '';
+      case 'empId':
+        if (!value) return 'Employee / Service ID is required.';
+        if (value.length < 3) return 'Employee ID must be at least 3 characters.';
+        if (!/^[a-zA-Z0-9\-\/]+$/.test(value)) return 'Invalid Employee ID (use letters, numbers, hyphens).';
+        return '';
+      case 'designation':
+        if (!val) return 'Please select an official designation.';
+        return '';
+      case 'specialization':
+        if (!val) return 'Please select an agency specialization.';
+        return '';
+      case 'role':
+        if (!val) return 'Please select an operational role.';
+        return '';
+      case 'contact':
+        if (!value) return 'Mobile contact phone is required.';
+        if (!/^\+?[0-9\s\-]{10,15}$/.test(value)) return 'Enter a valid 10-15 digit phone number (e.g. +91 94471 23456).';
+        return '';
+      case 'email':
+        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Enter a valid email address (e.g. officer@kerala.gov.in).';
+        return '';
+      case 'experience':
+        if (!value) return 'Service experience is required.';
+        return '';
+      case 'assignment':
+        if (!value) return 'Current base or assignment location is required.';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const validateRequestField = (field: string, val: string): string => {
+    const value = val.trim();
+    switch (field) {
+      case 'type':
+        if (!val) return 'Request type is required.';
+        return '';
+      case 'priority':
+        if (!val) return 'Priority level is required.';
+        return '';
+      case 'quantity':
+        if (!val) return 'Quantity is required.';
+        const num = Number(val);
+        if (isNaN(num) || num < 1 || num > 100 || !Number.isInteger(num)) {
+          return 'Quantity must be a positive integer between 1 and 100.';
+        }
+        return '';
+      case 'reason':
+        if (!value) return 'Reason for support request is required.';
+        if (value.length < 10) return 'Detailed reason must be at least 10 characters long.';
+        return '';
+      case 'notes':
+        if (val.length > 500) return 'Notes cannot exceed 500 characters.';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const validateCommField = (val: string): string => {
+    const value = val.trim();
+    if (!value) return 'Message cannot be empty.';
+    if (value.length < 2) return 'Message must be at least 2 characters.';
+    if (val.length > 500) return 'Message cannot exceed 500 characters.';
+    return '';
+  };
+
+  const validateReportField = (field: string, val: string): string => {
+    const value = val.trim();
+    switch (field) {
+      case 'incidentId':
+        if (!value) return 'Incident Code is required.';
+        if (value.length < 3) return 'Incident Code must be at least 3 characters.';
+        return '';
+      case 'rescued':
+        if (val === '' || isNaN(Number(val)) || Number(val) < 0 || !Number.isInteger(Number(val))) {
+          return 'People rescued must be 0 or a positive integer.';
+        }
+        return '';
+      case 'injured':
+        if (val === '' || isNaN(Number(val)) || Number(val) < 0 || !Number.isInteger(Number(val))) {
+          return 'People injured must be 0 or a positive integer.';
+        }
+        return '';
+      case 'missing':
+        if (val === '' || isNaN(Number(val)) || Number(val) < 0 || !Number.isInteger(Number(val))) {
+          return 'People missing must be 0 or a positive integer.';
+        }
+        return '';
+      case 'actions':
+        if (!value) return 'Rescue actions description is required.';
+        if (value.length < 10) return 'Rescue actions description must be at least 10 characters.';
+        return '';
+      case 'remarks':
+        if (!value) return 'Final remarks are required.';
+        if (value.length < 5) return 'Final remarks must be at least 5 characters.';
+        return '';
+      default:
+        return '';
+    }
+  };
 
   // Resources State (Loaded from agency config or local DB)
   const [resourceList] = useState([
@@ -342,13 +438,38 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
 
   const fetchIncidents = async () => {
     try {
+      // 1. Fetch from official incidents endpoint
+      const officialRes = await fetchOfficialIncidents({ district });
+      if (officialRes && officialRes.incidents && officialRes.incidents.length > 0) {
+        const formatted = officialRes.incidents.map((inc: any) => ({
+          id: String(inc.id || inc.incidentCode || inc.incident_code),
+          code: inc.incidentCode || inc.incident_code || `INC-${inc.id}`,
+          type: inc.incidentTypeName || inc.incident_type_name || inc.type || 'Emergency Incident',
+          severity: (inc.severity || 'HIGH').toUpperCase(),
+          location: inc.locationAddress || inc.location_address || `${district} Sector`,
+          reportedTime: inc.createdAt || inc.created_at ? new Date(inc.createdAt || inc.created_at).toLocaleTimeString() : 'Recently',
+          assignedTime: 'Recently',
+          assignedBy: `District Collector (${district})`,
+          affectedPeople: inc.affectedPeople ?? 4,
+          status: (inc.status || 'ASSIGNED').toUpperCase(),
+          rescuedCount: inc.rescuedCount ?? 0,
+          remainingCount: inc.remainingCount ?? 4,
+          lat: parseFloat(inc.latitude) || 9.5916,
+          lng: parseFloat(inc.longitude) || 76.5222,
+          description: inc.description || `Emergency incident assigned in ${district} district.`
+        }));
+        setAssignedIncidents(formatted);
+        return;
+      }
+
+      // 2. Fetch from assigned incidents endpoint
       const res = await getAssignedIncidents(district);
       if (res && res.incidents && res.incidents.length > 0) {
         const formatted = res.incidents.map((inc: any) => ({
-          id: inc.id || inc.incident_code,
-          code: inc.incident_code,
+          id: String(inc.id || inc.incident_code),
+          code: inc.incident_code || `INC-${inc.id}`,
           type: inc.incident_type || 'Emergency Response',
-          severity: inc.severity || 'HIGH',
+          severity: (inc.severity || 'HIGH').toUpperCase(),
           location: inc.location_address || `${district} Sector`,
           reportedTime: inc.created_at ? new Date(inc.created_at).toLocaleTimeString() : 'Recently',
           assignedTime: 'Recently',
@@ -362,11 +483,13 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
           description: inc.description || `Emergency incident assigned in ${district} district.`
         }));
         setAssignedIncidents(formatted);
-      } else {
-        setAssignedIncidents(getDistrictMockIncidents(district));
+        return;
       }
+
+      setAssignedIncidents([]);
     } catch (err) {
-      setAssignedIncidents(getDistrictMockIncidents(district));
+      console.error('Error fetching assigned incidents:', err);
+      setAssignedIncidents([]);
     }
   };
 
@@ -382,12 +505,36 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
   // Team Member CRUD Handlers
   const handleAddTeamMember = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMemberName.trim() || !newMemberContact.trim()) return;
+
+    const errors: Record<string, string> = {
+      name: validateMemberField('name', newMemberName),
+      empId: validateMemberField('empId', newMemberEmpId),
+      designation: validateMemberField('designation', newMemberDesignation),
+      specialization: validateMemberField('specialization', newMemberSpecialization),
+      role: validateMemberField('role', newMemberRole),
+      contact: validateMemberField('contact', newMemberContact),
+      email: validateMemberField('email', newMemberEmail),
+      experience: validateMemberField('experience', newMemberExperience),
+      assignment: validateMemberField('assignment', newMemberAssignment)
+    };
+
+    setMemberErrors(errors);
+    setMemberTouched({
+      name: true, empId: true, designation: true, specialization: true,
+      role: true, contact: true, email: true, experience: true, assignment: true
+    });
+
+    const hasError = Object.values(errors).some(err => err !== '');
+    if (hasError) {
+      setStatusMsg({ type: 'error', text: 'Please resolve all highlighted validation errors before saving team member.' });
+      return;
+    }
+
     try {
       setIsSubmittingMember(true);
       const res = await addTeamMember({
         name: newMemberName.trim(),
-        employeeServiceId: newMemberEmpId.trim() || `${agencyType.slice(0, 3)}-${Math.floor(100 + Math.random() * 900)}`,
+        employeeServiceId: newMemberEmpId.trim(),
         agencyTypeCode: agencyType,
         designation: newMemberDesignation || (agencyConfig.designations[0] || 'Rescuer'),
         specialization: newMemberSpecialization || (agencyConfig.specializations[0] || 'General'),
@@ -403,6 +550,8 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
       setNewMemberEmpId('');
       setNewMemberContact('');
       setNewMemberEmail('');
+      setMemberErrors({});
+      setMemberTouched({});
       setShowAddMemberForm(false);
       setStatusMsg({ type: 'success', text: `Team member ${res.member.name} (${res.member.designation}) saved to database!` });
       setTimeout(() => setStatusMsg(null), 4000);
@@ -436,7 +585,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
     }
   };
 
-  // Handlers
+  // Operations & Request Handlers
   const handleUpdateOperationStatus = async (incidentId: string, newStatus: string) => {
     try {
       setAssignedIncidents(prev => prev.map(inc => inc.id === incidentId ? { ...inc, status: newStatus } : inc));
@@ -448,17 +597,53 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
     }
   };
 
+  const handleUpdateRescuedCount = (incidentId: string, delta: number) => {
+    setAssignedIncidents(prev => prev.map(inc => {
+      if (inc.id === incidentId) {
+        const currentRescued = inc.rescuedCount || 0;
+        const totalPeople = inc.affectedPeople || 10;
+        const newRescued = Math.max(0, Math.min(totalPeople, currentRescued + delta));
+        const newRemaining = Math.max(0, totalPeople - newRescued);
+        return {
+          ...inc,
+          rescuedCount: newRescued,
+          remainingCount: newRemaining
+        };
+      }
+      return inc;
+    }));
+    setStatusMsg({ type: 'success', text: `Updated rescued survivor count for operation!` });
+    setTimeout(() => setStatusMsg(null), 3000);
+  };
+
   const handleSendSupportRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reqReason.trim()) return;
+
+    const errors: Record<string, string> = {
+      type: validateRequestField('type', reqType),
+      priority: validateRequestField('priority', reqPriority),
+      quantity: validateRequestField('quantity', reqQuantity),
+      reason: validateRequestField('reason', reqReason),
+      notes: validateRequestField('notes', reqNotes)
+    };
+
+    setRequestErrors(errors);
+    setRequestTouched({ type: true, priority: true, quantity: true, reason: true, notes: true });
+
+    const hasError = Object.values(errors).some(err => err !== '');
+    if (hasError) {
+      setStatusMsg({ type: 'error', text: 'Please resolve all validation errors in the emergency request form.' });
+      return;
+    }
+
     try {
       const payload = {
         requestType: reqType,
         priority: reqPriority,
         incidentId: reqIncidentId,
         quantity: parseInt(reqQuantity, 10) || 1,
-        reason: reqReason,
-        notes: reqNotes
+        reason: reqReason.trim(),
+        notes: reqNotes.trim()
       };
       await submitEmergencySupportRequest(payload);
       const newReq = {
@@ -467,13 +652,15 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
         priority: reqPriority,
         incidentId: reqIncidentId,
         quantity: parseInt(reqQuantity, 10) || 1,
-        reason: reqReason,
+        reason: reqReason.trim(),
         status: 'PENDING',
         time: 'Just Now'
       };
       setSupportRequests([newReq, ...supportRequests]);
       setReqReason('');
       setReqNotes('');
+      setRequestErrors({});
+      setRequestTouched({});
       setStatusMsg({ type: 'success', text: `Support Request successfully sent to District Collector (${district})!` });
       setTimeout(() => setStatusMsg(null), 5000);
     } catch (err: any) {
@@ -483,7 +670,11 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
 
   const handleSendCollectorMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessageText.trim()) return;
+    const err = validateCommField(newMessageText);
+    setCommError(err);
+    setCommTouched(true);
+    if (err) return;
+
     const msgObj = {
       id: Date.now(),
       sender: unitName,
@@ -494,6 +685,32 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
     };
     setCollectorMessages([...collectorMessages, msgObj]);
     setNewMessageText('');
+    setCommError('');
+    setCommTouched(false);
+  };
+
+  const handleReportSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors: Record<string, string> = {
+      incidentId: validateReportField('incidentId', reportIncidentId),
+      rescued: validateReportField('rescued', reportRescued),
+      injured: validateReportField('injured', reportInjured),
+      missing: validateReportField('missing', reportMissing),
+      actions: validateReportField('actions', reportActions),
+      remarks: validateReportField('remarks', reportRemarks)
+    };
+
+    setReportErrors(errors);
+    setReportTouched({ incidentId: true, rescued: true, injured: true, missing: true, actions: true, remarks: true });
+
+    const hasError = Object.values(errors).some(err => err !== '');
+    if (hasError) {
+      setStatusMsg({ type: 'error', text: 'Please complete all report fields with valid entries before submitting.' });
+      return;
+    }
+
+    setStatusMsg({ type: 'success', text: 'Final Operation Debrief Report submitted successfully to District Collector!' });
+    setTimeout(() => setStatusMsg(null), 5000);
   };
 
   // Sidebar Menu Categories (Matching User Model & Collector Portal Standard)
@@ -934,71 +1151,85 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
-                  {assignedIncidents.map((inc) => (
-                    <div
-                      key={inc.id}
-                      className={`bg-white border rounded-3xl p-5 shadow-xs hover:border-emerald-300 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                        inc.severity === 'CRITICAL' ? 'border-red-300 bg-red-50/20' : 'border-slate-200'
-                      }`}
-                    >
-                      <div className="space-y-2 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase ${
-                            inc.severity === 'CRITICAL' ? 'bg-red-600 text-white animate-pulse' :
-                            inc.severity === 'HIGH' ? 'bg-orange-500 text-white' : 'bg-amber-400 text-slate-950'
-                          }`}>
-                            {inc.severity}
-                          </span>
-
-                          <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black border border-slate-200">
-                            {inc.code}
-                          </span>
-
-                          <span className="text-xs text-slate-500 font-medium">
-                            Reported: {inc.reportedTime} &bull; Assigned by: <strong>{inc.assignedBy}</strong>
-                          </span>
-                        </div>
-
-                        <h3 className="text-base font-black text-slate-900">
-                          {inc.type} &bull; <span className="text-emerald-700 font-bold">{inc.location}</span>
-                        </h3>
-
-                        <p className="text-xs text-slate-600 line-clamp-2">
-                          {inc.description}
-                        </p>
-
-                        <div className="flex items-center gap-4 text-xs font-bold text-slate-700 pt-1">
-                          <span>Stranded People: <strong className="text-red-600 font-mono">{inc.affectedPeople}</strong></span>
-                          <span>Current Status: <strong className="text-emerald-700 uppercase font-mono">{inc.status}</strong></span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto">
-                        <button
-                          onClick={() => setSelectedIncidentId(inc.id)}
-                          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all border border-slate-200"
-                        >
-                          View Details
-                        </button>
-
-                        <button
-                          onClick={() => handleUpdateOperationStatus(inc.id, 'ACCEPTED')}
-                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
-                        >
-                          Accept
-                        </button>
-
-                        <button
-                          onClick={() => handleUpdateOperationStatus(inc.id, 'EN ROUTE')}
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
-                        >
-                          Start Operation
-                        </button>
-                      </div>
+                {assignedIncidents.length === 0 ? (
+                  <div className="text-center py-12 px-4 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-6 h-6" />
                     </div>
-                  ))}
-                </div>
+                    <h3 className="text-base font-black text-slate-900">
+                      No assigned incidents right now
+                    </h3>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                      There are currently no active emergency field incidents assigned to {unitName} in {district} district. New assigned incidents from EOC Collector will appear here live.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                    {assignedIncidents.map((inc) => (
+                      <div
+                        key={inc.id}
+                        className={`bg-white border rounded-3xl p-5 shadow-xs hover:border-emerald-300 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+                          inc.severity === 'CRITICAL' ? 'border-red-300 bg-red-50/20' : 'border-slate-200'
+                        }`}
+                      >
+                        <div className="space-y-2 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase ${
+                              inc.severity === 'CRITICAL' ? 'bg-red-600 text-white animate-pulse' :
+                              inc.severity === 'HIGH' ? 'bg-orange-500 text-white' : 'bg-amber-400 text-slate-950'
+                            }`}>
+                              {inc.severity}
+                            </span>
+
+                            <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black border border-slate-200">
+                              {inc.code}
+                            </span>
+
+                            <span className="text-xs text-slate-500 font-medium">
+                              Reported: {inc.reportedTime} &bull; Assigned by: <strong>{inc.assignedBy}</strong>
+                            </span>
+                          </div>
+
+                          <h3 className="text-base font-black text-slate-900">
+                            {inc.type} &bull; <span className="text-emerald-700 font-bold">{inc.location}</span>
+                          </h3>
+
+                          <p className="text-xs text-slate-600 line-clamp-2">
+                            {inc.description}
+                          </p>
+
+                          <div className="flex items-center gap-4 text-xs font-bold text-slate-700 pt-1">
+                            <span>Stranded People: <strong className="text-red-600 font-mono">{inc.affectedPeople}</strong></span>
+                            <span>Current Status: <strong className="text-emerald-700 uppercase font-mono">{inc.status}</strong></span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto">
+                          <button
+                            onClick={() => setSelectedIncidentId(inc.id)}
+                            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all border border-slate-200"
+                          >
+                            View Details
+                          </button>
+
+                          <button
+                            onClick={() => handleUpdateOperationStatus(inc.id, 'ACCEPTED')}
+                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                          >
+                            Accept
+                          </button>
+
+                          <button
+                            onClick={() => handleUpdateOperationStatus(inc.id, 'EN ROUTE')}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                          >
+                            Start Operation
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1007,61 +1238,11 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
           {/* VIEW 3: ACTIVE OPERATIONS */}
           {/* ------------------------------------------------------------- */}
           {activeTab === 'active_operations' && !selectedIncidentId && (
-            <div className="space-y-6 animate-fadeIn">
-              <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs space-y-6">
-                <div>
-                  <h2 className="text-lg font-black text-slate-900">
-                    Active Field Rescue Operations Workflow
-                  </h2>
-                  <p className="text-xs text-slate-500">
-                    Step through the official mission lifecycle from ACCEPTED ➔ EN ROUTE ➔ ARRIVED ➔ RESCUE IN PROGRESS ➔ COMPLETED.
-                  </p>
-                </div>
-
-                {assignedIncidents.filter(i => i.status !== 'RESOLVED').map((op) => (
-                  <div key={op.id} className="bg-slate-50 border border-slate-200 rounded-3xl p-6 space-y-5">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
-                      <div>
-                        <div className="text-xs font-black text-emerald-700 uppercase tracking-wider">{op.code} &bull; {op.type}</div>
-                        <h3 className="text-lg font-black text-slate-900">{op.location}</h3>
-                      </div>
-
-                      <div className="px-3.5 py-1 rounded-full bg-red-600 text-white text-xs font-black uppercase">
-                        Current Status: {op.status}
-                      </div>
-                    </div>
-
-                    {/* Workflow Stepper */}
-                    <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-center text-[11px] font-extrabold">
-                      {['ASSIGNED', 'ACCEPTED', 'EN ROUTE', 'ARRIVED', 'RESCUE IN PROGRESS', 'COMPLETED'].map((step, idx) => {
-                        const isCurrent = op.status === step;
-                        return (
-                          <button
-                            key={idx}
-                            onClick={() => handleUpdateOperationStatus(op.id, step)}
-                            className={`p-2.5 rounded-2xl border transition-all ${
-                              isCurrent
-                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-md scale-105'
-                                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            {step}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-bold text-slate-700 bg-white p-4 rounded-2xl border border-slate-200">
-                      <div>GPS Position: <span className="font-mono text-slate-900">{op.lat}, {op.lng}</span></div>
-                      <div>Rescued Count: <span className="font-mono text-emerald-700 font-black">{op.rescuedCount}</span></div>
-                      <div>Remaining Stranded: <span className="font-mono text-red-600 font-black">{op.remainingCount}</span></div>
-                      <div>Assigned Rescuers: <span className="text-slate-900 font-bold">4 Divers + 1 Tender</span></div>
-                    </div>
-
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ActiveOperationsListView
+              userRole="rescue_team"
+              userDistrict={district}
+              onSelectIncident={(id) => setSelectedIncidentId(id)}
+            />
           )}
 
           {/* ------------------------------------------------------------- */}
@@ -1293,100 +1474,232 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-bold">
                       <div>
-                        <label className="block text-slate-700 mb-1">Full Name *</label>
+                        <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                          <span>Full Name *</span>
+                          {memberTouched.name && !memberErrors.name && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                        </label>
                         <input
                           type="text"
-                          required
                           value={newMemberName}
-                          onChange={(e) => setNewMemberName(e.target.value)}
-                          placeholder="e.g. Capt. Suresh Kumar / Insp. Rajesh"
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          onChange={(e) => {
+                            setNewMemberName(e.target.value);
+                            if (memberTouched.name) {
+                              setMemberErrors(prev => ({ ...prev, name: validateMemberField('name', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, name: true }));
+                            setMemberErrors(prev => ({ ...prev, name: validateMemberField('name', e.target.value) }));
+                          }}
+                          placeholder="e.g. Capt. Suresh Kumar"
+                          className={getFieldClass(memberErrors.name, memberTouched.name)}
                         />
+                        {memberTouched.name && memberErrors.name && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.name}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
-                        <label className="block text-slate-700 mb-1">Employee / Service ID *</label>
+                        <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                          <span>Employee / Service ID *</span>
+                          {memberTouched.empId && !memberErrors.empId && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                        </label>
                         <input
                           type="text"
-                          required
                           value={newMemberEmpId}
-                          onChange={(e) => setNewMemberEmpId(e.target.value)}
+                          onChange={(e) => {
+                            setNewMemberEmpId(e.target.value);
+                            if (memberTouched.empId) {
+                              setMemberErrors(prev => ({ ...prev, empId: validateMemberField('empId', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, empId: true }));
+                            setMemberErrors(prev => ({ ...prev, empId: validateMemberField('empId', e.target.value) }));
+                          }}
                           placeholder="e.g. FRS-9921 / NDRF-042"
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 font-mono"
+                          className={getFieldClass(memberErrors.empId, memberTouched.empId, true)}
                         />
+                        {memberTouched.empId && memberErrors.empId && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.empId}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
                         <label className="block text-slate-700 mb-1">Official Designation ({agencyConfig.agencyTypeName}) *</label>
                         <select
                           value={newMemberDesignation}
-                          onChange={(e) => setNewMemberDesignation(e.target.value)}
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 font-bold"
+                          onChange={(e) => {
+                            setNewMemberDesignation(e.target.value);
+                            if (memberTouched.designation) {
+                              setMemberErrors(prev => ({ ...prev, designation: validateMemberField('designation', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, designation: true }));
+                            setMemberErrors(prev => ({ ...prev, designation: validateMemberField('designation', e.target.value) }));
+                          }}
+                          className={getFieldClass(memberErrors.designation, memberTouched.designation)}
                         >
                           {agencyConfig.designations.map((desg, i) => (
                             <option key={i} value={desg}>{desg}</option>
                           ))}
                         </select>
+                        {memberTouched.designation && memberErrors.designation && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.designation}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
                         <label className="block text-slate-700 mb-1">Agency Specialization *</label>
                         <select
                           value={newMemberSpecialization}
-                          onChange={(e) => setNewMemberSpecialization(e.target.value)}
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          onChange={(e) => {
+                            setNewMemberSpecialization(e.target.value);
+                            if (memberTouched.specialization) {
+                              setMemberErrors(prev => ({ ...prev, specialization: validateMemberField('specialization', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, specialization: true }));
+                            setMemberErrors(prev => ({ ...prev, specialization: validateMemberField('specialization', e.target.value) }));
+                          }}
+                          className={getFieldClass(memberErrors.specialization, memberTouched.specialization)}
                         >
                           {agencyConfig.specializations.map((spec, i) => (
                             <option key={i} value={spec}>{spec}</option>
                           ))}
                         </select>
+                        {memberTouched.specialization && memberErrors.specialization && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.specialization}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
                         <label className="block text-slate-700 mb-1">Operational Role (Mission Function) *</label>
                         <select
                           value={newMemberRole}
-                          onChange={(e) => setNewMemberRole(e.target.value)}
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          onChange={(e) => {
+                            setNewMemberRole(e.target.value);
+                            if (memberTouched.role) {
+                              setMemberErrors(prev => ({ ...prev, role: validateMemberField('role', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, role: true }));
+                            setMemberErrors(prev => ({ ...prev, role: validateMemberField('role', e.target.value) }));
+                          }}
+                          className={getFieldClass(memberErrors.role, memberTouched.role)}
                         >
                           {agencyConfig.operationalRoles.map((roleOption, i) => (
                             <option key={i} value={roleOption}>{roleOption}</option>
                           ))}
                         </select>
+                        {memberTouched.role && memberErrors.role && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.role}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
-                        <label className="block text-slate-700 mb-1">Mobile Contact Phone *</label>
+                        <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                          <span>Mobile Contact Phone *</span>
+                          {memberTouched.contact && !memberErrors.contact && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                        </label>
                         <input
                           type="text"
-                          required
                           value={newMemberContact}
-                          onChange={(e) => setNewMemberContact(e.target.value)}
+                          onChange={(e) => {
+                            setNewMemberContact(e.target.value);
+                            if (memberTouched.contact) {
+                              setMemberErrors(prev => ({ ...prev, contact: validateMemberField('contact', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, contact: true }));
+                            setMemberErrors(prev => ({ ...prev, contact: validateMemberField('contact', e.target.value) }));
+                          }}
                           placeholder="+91 94471 23456"
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 font-mono"
+                          className={getFieldClass(memberErrors.contact, memberTouched.contact, true)}
                         />
+                        {memberTouched.contact && memberErrors.contact && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.contact}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
-                        <label className="block text-slate-700 mb-1">Government Email</label>
+                        <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                          <span>Government Email</span>
+                          {memberTouched.email && !memberErrors.email && newMemberEmail.trim() && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                        </label>
                         <input
                           type="email"
                           value={newMemberEmail}
-                          onChange={(e) => setNewMemberEmail(e.target.value)}
+                          onChange={(e) => {
+                            setNewMemberEmail(e.target.value);
+                            if (memberTouched.email) {
+                              setMemberErrors(prev => ({ ...prev, email: validateMemberField('email', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, email: true }));
+                            setMemberErrors(prev => ({ ...prev, email: validateMemberField('email', e.target.value) }));
+                          }}
                           placeholder="member@kerala.gov.in"
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          className={getFieldClass(memberErrors.email, memberTouched.email)}
                         />
+                        {memberTouched.email && memberErrors.email && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.email}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
-                        <label className="block text-slate-700 mb-1">Experience / Service Length</label>
+                        <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                          <span>Experience / Service Length *</span>
+                          {memberTouched.experience && !memberErrors.experience && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                        </label>
                         <input
                           type="text"
                           value={newMemberExperience}
-                          onChange={(e) => setNewMemberExperience(e.target.value)}
+                          onChange={(e) => {
+                            setNewMemberExperience(e.target.value);
+                            if (memberTouched.experience) {
+                              setMemberErrors(prev => ({ ...prev, experience: validateMemberField('experience', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, experience: true }));
+                            setMemberErrors(prev => ({ ...prev, experience: validateMemberField('experience', e.target.value) }));
+                          }}
                           placeholder="e.g. 5 Years"
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          className={getFieldClass(memberErrors.experience, memberTouched.experience)}
                         />
+                        {memberTouched.experience && memberErrors.experience && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.experience}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -1394,7 +1707,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                         <select
                           value={newMemberAvailability}
                           onChange={(e) => setNewMemberAvailability(e.target.value)}
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 font-medium text-xs focus:ring-2 focus:ring-emerald-500"
                         >
                           <option value="Available">Available</option>
                           <option value="On Operation">On Operation</option>
@@ -1404,14 +1717,32 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                       </div>
 
                       <div>
-                        <label className="block text-slate-700 mb-1">Current Base / Assignment</label>
+                        <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                          <span>Current Base / Assignment *</span>
+                          {memberTouched.assignment && !memberErrors.assignment && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                        </label>
                         <input
                           type="text"
                           value={newMemberAssignment}
-                          onChange={(e) => setNewMemberAssignment(e.target.value)}
+                          onChange={(e) => {
+                            setNewMemberAssignment(e.target.value);
+                            if (memberTouched.assignment) {
+                              setMemberErrors(prev => ({ ...prev, assignment: validateMemberField('assignment', e.target.value) }));
+                            }
+                          }}
+                          onBlur={(e) => {
+                            setMemberTouched(prev => ({ ...prev, assignment: true }));
+                            setMemberErrors(prev => ({ ...prev, assignment: validateMemberField('assignment', e.target.value) }));
+                          }}
                           placeholder="e.g. Command Base Station"
-                          className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                          className={getFieldClass(memberErrors.assignment, memberTouched.assignment)}
                         />
+                        {memberTouched.assignment && memberErrors.assignment && (
+                          <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                            <span>{memberErrors.assignment}</span>
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -1633,11 +1964,20 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                 <form onSubmit={handleSendSupportRequest} className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-bold">
                     <div>
-                      <label className="block text-slate-700 mb-1">Request Type</label>
+                      <label className="block text-slate-700 mb-1">Request Type *</label>
                       <select
                         value={reqType}
-                        onChange={(e) => setReqType(e.target.value)}
-                        className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                        onChange={(e) => {
+                          setReqType(e.target.value);
+                          if (requestTouched.type) {
+                            setRequestErrors(prev => ({ ...prev, type: validateRequestField('type', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setRequestTouched(prev => ({ ...prev, type: true }));
+                          setRequestErrors(prev => ({ ...prev, type: validateRequestField('type', e.target.value) }));
+                        }}
+                        className={getFieldClass(requestErrors.type, requestTouched.type)}
                       >
                         <option value="Additional Rescue Personnel">Additional Rescue Personnel</option>
                         <option value="ALS Ambulance Support">ALS Ambulance Support</option>
@@ -1645,41 +1985,100 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                         <option value="Inflatable Rescue Boat">Inflatable Rescue Boat</option>
                         <option value="Heavy Excavator JCB">Heavy Excavator JCB</option>
                       </select>
+                      {requestTouched.type && requestErrors.type && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{requestErrors.type}</span>
+                        </p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-slate-700 mb-1">Priority Level</label>
+                      <label className="block text-slate-700 mb-1">Priority Level *</label>
                       <select
                         value={reqPriority}
-                        onChange={(e) => setReqPriority(e.target.value)}
-                        className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900"
+                        onChange={(e) => {
+                          setReqPriority(e.target.value);
+                          if (requestTouched.priority) {
+                            setRequestErrors(prev => ({ ...prev, priority: validateRequestField('priority', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setRequestTouched(prev => ({ ...prev, priority: true }));
+                          setRequestErrors(prev => ({ ...prev, priority: validateRequestField('priority', e.target.value) }));
+                        }}
+                        className={getFieldClass(requestErrors.priority, requestTouched.priority)}
                       >
                         <option value="URGENT">URGENT</option>
                         <option value="HIGH">HIGH</option>
                         <option value="MEDIUM">MEDIUM</option>
                       </select>
+                      {requestTouched.priority && requestErrors.priority && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{requestErrors.priority}</span>
+                        </p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-slate-700 mb-1">Required Quantity</label>
+                      <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                        <span>Required Quantity *</span>
+                        {requestTouched.quantity && !requestErrors.quantity && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                      </label>
                       <input
                         type="number"
+                        min="1"
+                        max="100"
                         value={reqQuantity}
-                        onChange={(e) => setReqQuantity(e.target.value)}
-                        className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 font-mono"
+                        onChange={(e) => {
+                          setReqQuantity(e.target.value);
+                          if (requestTouched.quantity) {
+                            setRequestErrors(prev => ({ ...prev, quantity: validateRequestField('quantity', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setRequestTouched(prev => ({ ...prev, quantity: true }));
+                          setRequestErrors(prev => ({ ...prev, quantity: validateRequestField('quantity', e.target.value) }));
+                        }}
+                        className={getFieldClass(requestErrors.quantity, requestTouched.quantity, true)}
                       />
+                      {requestTouched.quantity && requestErrors.quantity && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{requestErrors.quantity}</span>
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 mb-1 text-xs font-bold">Reason for Support Request</label>
+                    <label className="block text-slate-700 mb-1 text-xs font-bold flex items-center justify-between">
+                      <span>Reason for Support Request *</span>
+                      {requestTouched.reason && !requestErrors.reason && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                    </label>
                     <textarea
                       rows={2}
                       value={reqReason}
-                      onChange={(e) => setReqReason(e.target.value)}
+                      onChange={(e) => {
+                        setReqReason(e.target.value);
+                        if (requestTouched.reason) {
+                          setRequestErrors(prev => ({ ...prev, reason: validateRequestField('reason', e.target.value) }));
+                        }
+                      }}
+                      onBlur={(e) => {
+                        setRequestTouched(prev => ({ ...prev, reason: true }));
+                        setRequestErrors(prev => ({ ...prev, reason: validateRequestField('reason', e.target.value) }));
+                      }}
                       placeholder="e.g. Flood water levels rising rapidly at Mundakayam Ward 4. Swift-water current requires 4 additional divers."
-                      className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-slate-900 text-xs"
+                      className={getFieldClass(requestErrors.reason, requestTouched.reason)}
                     />
+                    {requestTouched.reason && requestErrors.reason && (
+                      <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                        <span>{requestErrors.reason}</span>
+                      </p>
+                    )}
                   </div>
 
                   <button
@@ -1744,20 +2143,39 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                     ))}
                   </div>
 
-                  <form onSubmit={handleSendCollectorMessage} className="pt-4 flex gap-2">
-                    <input
-                      type="text"
-                      value={newMessageText}
-                      onChange={(e) => setNewMessageText(e.target.value)}
-                      placeholder="Type urgent transmission to District Collector..."
-                      className="flex-1 p-3 rounded-2xl bg-slate-800 border border-slate-700 text-xs text-white placeholder:text-slate-500"
-                    />
-                    <button
-                      type="submit"
-                      className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold text-xs shadow-md transition-all"
-                    >
-                      Send
-                    </button>
+                  <form onSubmit={handleSendCollectorMessage} className="pt-4 space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newMessageText}
+                        onChange={(e) => {
+                          setNewMessageText(e.target.value);
+                          if (commTouched) {
+                            setCommError(validateCommField(e.target.value));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setCommTouched(true);
+                          setCommError(validateCommField(e.target.value));
+                        }}
+                        placeholder="Type urgent transmission to District Collector..."
+                        className={`flex-1 p-3 rounded-2xl bg-slate-800 border text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all ${
+                          commTouched && commError ? 'border-red-500 bg-red-950/30' : 'border-slate-700'
+                        }`}
+                      />
+                      <button
+                        type="submit"
+                        className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold text-xs shadow-md transition-all shrink-0"
+                      >
+                        Send
+                      </button>
+                    </div>
+                    {commTouched && commError && (
+                      <p className="text-[11px] text-red-400 font-semibold flex items-center gap-1">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                        <span>{commError}</span>
+                      </p>
+                    )}
                   </form>
                 </div>
               </div>
@@ -1892,41 +2310,186 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                   <p className="text-xs text-slate-500">Official debrief report submitted to District Collector for official archives.</p>
                 </div>
 
-                <form onSubmit={(e) => { e.preventDefault(); setStatusMsg({ type: 'success', text: 'Final Operation Report submitted to District Collector!' }); setTimeout(() => setStatusMsg(null), 4000); }} className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-4 text-xs font-bold">
+                <form onSubmit={handleReportSubmit} className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-4 text-xs font-bold">
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div>
-                      <label className="block text-slate-700 mb-1">Incident Code</label>
-                      <input type="text" value={reportIncidentId} onChange={(e) => setReportIncidentId(e.target.value)} className="w-full p-3 rounded-2xl border border-slate-200 bg-white font-mono" />
+                      <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                        <span>Incident Code *</span>
+                        {reportTouched.incidentId && !reportErrors.incidentId && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                      </label>
+                      <input
+                        type="text"
+                        value={reportIncidentId}
+                        onChange={(e) => {
+                          setReportIncidentId(e.target.value);
+                          if (reportTouched.incidentId) {
+                            setReportErrors(prev => ({ ...prev, incidentId: validateReportField('incidentId', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setReportTouched(prev => ({ ...prev, incidentId: true }));
+                          setReportErrors(prev => ({ ...prev, incidentId: validateReportField('incidentId', e.target.value) }));
+                        }}
+                        className={getFieldClass(reportErrors.incidentId, reportTouched.incidentId, true)}
+                      />
+                      {reportTouched.incidentId && reportErrors.incidentId && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{reportErrors.incidentId}</span>
+                        </p>
+                      )}
                     </div>
+
                     <div>
-                      <label className="block text-slate-700 mb-1">People Rescued</label>
-                      <input type="number" value={reportRescued} onChange={(e) => setReportRescued(e.target.value)} className="w-full p-3 rounded-2xl border border-slate-200 bg-white font-mono" />
+                      <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                        <span>People Rescued *</span>
+                        {reportTouched.rescued && !reportErrors.rescued && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={reportRescued}
+                        onChange={(e) => {
+                          setReportRescued(e.target.value);
+                          if (reportTouched.rescued) {
+                            setReportErrors(prev => ({ ...prev, rescued: validateReportField('rescued', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setReportTouched(prev => ({ ...prev, rescued: true }));
+                          setReportErrors(prev => ({ ...prev, rescued: validateReportField('rescued', e.target.value) }));
+                        }}
+                        className={getFieldClass(reportErrors.rescued, reportTouched.rescued, true)}
+                      />
+                      {reportTouched.rescued && reportErrors.rescued && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{reportErrors.rescued}</span>
+                        </p>
+                      )}
                     </div>
+
                     <div>
-                      <label className="block text-slate-700 mb-1">People Injured</label>
-                      <input type="number" value={reportInjured} onChange={(e) => setReportInjured(e.target.value)} className="w-full p-3 rounded-2xl border border-slate-200 bg-white font-mono" />
+                      <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                        <span>People Injured *</span>
+                        {reportTouched.injured && !reportErrors.injured && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={reportInjured}
+                        onChange={(e) => {
+                          setReportInjured(e.target.value);
+                          if (reportTouched.injured) {
+                            setReportErrors(prev => ({ ...prev, injured: validateReportField('injured', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setReportTouched(prev => ({ ...prev, injured: true }));
+                          setReportErrors(prev => ({ ...prev, injured: validateReportField('injured', e.target.value) }));
+                        }}
+                        className={getFieldClass(reportErrors.injured, reportTouched.injured, true)}
+                      />
+                      {reportTouched.injured && reportErrors.injured && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{reportErrors.injured}</span>
+                        </p>
+                      )}
                     </div>
+
                     <div>
-                      <label className="block text-slate-700 mb-1">People Missing</label>
-                      <input type="number" value={reportMissing} onChange={(e) => setReportMissing(e.target.value)} className="w-full p-3 rounded-2xl border border-slate-200 bg-white font-mono" />
+                      <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                        <span>People Missing *</span>
+                        {reportTouched.missing && !reportErrors.missing && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={reportMissing}
+                        onChange={(e) => {
+                          setReportMissing(e.target.value);
+                          if (reportTouched.missing) {
+                            setReportErrors(prev => ({ ...prev, missing: validateReportField('missing', e.target.value) }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          setReportTouched(prev => ({ ...prev, missing: true }));
+                          setReportErrors(prev => ({ ...prev, missing: validateReportField('missing', e.target.value) }));
+                        }}
+                        className={getFieldClass(reportErrors.missing, reportTouched.missing, true)}
+                      />
+                      {reportTouched.missing && reportErrors.missing && (
+                        <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>{reportErrors.missing}</span>
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 mb-1">Rescue Actions Taken</label>
-                    <textarea rows={2} value={reportActions} onChange={(e) => setReportActions(e.target.value)} className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-xs font-normal" />
+                    <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                      <span>Rescue Actions Taken *</span>
+                      {reportTouched.actions && !reportErrors.actions && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={reportActions}
+                      onChange={(e) => {
+                        setReportActions(e.target.value);
+                        if (reportTouched.actions) {
+                          setReportErrors(prev => ({ ...prev, actions: validateReportField('actions', e.target.value) }));
+                        }
+                      }}
+                      onBlur={(e) => {
+                        setReportTouched(prev => ({ ...prev, actions: true }));
+                        setReportErrors(prev => ({ ...prev, actions: validateReportField('actions', e.target.value) }));
+                      }}
+                      className={getFieldClass(reportErrors.actions, reportTouched.actions)}
+                    />
+                    {reportTouched.actions && reportErrors.actions && (
+                      <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                        <span>{reportErrors.actions}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 mb-1">Final Remarks / Handover</label>
-                    <textarea rows={2} value={reportRemarks} onChange={(e) => setReportRemarks(e.target.value)} className="w-full p-3 rounded-2xl border border-slate-200 bg-white text-xs font-normal" />
+                    <label className="block text-slate-700 mb-1 flex items-center justify-between">
+                      <span>Final Remarks / Handover *</span>
+                      {reportTouched.remarks && !reportErrors.remarks && <span className="text-[10px] text-emerald-600 font-black">✓ Valid</span>}
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={reportRemarks}
+                      onChange={(e) => {
+                        setReportRemarks(e.target.value);
+                        if (reportTouched.remarks) {
+                          setReportErrors(prev => ({ ...prev, remarks: validateReportField('remarks', e.target.value) }));
+                        }
+                      }}
+                      onBlur={(e) => {
+                        setReportTouched(prev => ({ ...prev, remarks: true }));
+                        setReportErrors(prev => ({ ...prev, remarks: validateReportField('remarks', e.target.value) }));
+                      }}
+                      className={getFieldClass(reportErrors.remarks, reportTouched.remarks)}
+                    />
+                    {reportTouched.remarks && reportErrors.remarks && (
+                      <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                        <span>{reportErrors.remarks}</span>
+                      </p>
+                    )}
                   </div>
 
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs shadow-md transition-all"
+                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs shadow-md transition-all flex items-center gap-2"
                   >
-                    SUBMIT FINAL REPORT
+                    <FileCheck className="w-4 h-4" />
+                    <span>SUBMIT FINAL REPORT</span>
                   </button>
                 </form>
               </div>

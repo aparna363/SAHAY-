@@ -243,3 +243,28 @@ CREATE TABLE IF NOT EXISTS operational_roles (
     status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 19. Family Members Table
+CREATE TABLE IF NOT EXISTS family_members (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    relation VARCHAR(100) NOT NULL,
+    age INTEGER,
+    gender VARCHAR(50),
+    phone VARCHAR(20),
+    blood_group VARCHAR(10),
+    medical_needs VARCHAR(255),
+    is_emergency_contact BOOLEAN DEFAULT FALSE,
+    status VARCHAR(50) DEFAULT 'Safe',
+    location VARCHAR(255) DEFAULT 'Home',
+    govt_id VARCHAR(50),
+    notes TEXT,
+    last_checkin TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_family_members_user_id ON family_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_family_members_status ON family_members(status);
+

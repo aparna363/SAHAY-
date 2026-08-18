@@ -188,7 +188,7 @@ export const CitizenIncidentDetailsPage: React.FC<CitizenIncidentDetailsPageProp
               <p className="font-bold text-slate-900">
                 Longitude: <span className="font-mono text-emerald-900">{incident.longitude.toFixed(6)}°</span>
               </p>
-              {incident.locationAddress && (
+              {incident.locationAddress && !incident.locationAddress.includes('Browser Live GPS Position') && !incident.locationAddress.startsWith('Selected on Map') && (
                 <p className="text-slate-600 mt-1 font-medium bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                   📍 {incident.locationAddress}
                 </p>

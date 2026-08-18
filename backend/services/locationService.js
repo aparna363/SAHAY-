@@ -359,13 +359,14 @@ async function reverseGeocode(latitude, longitude) {
             placeName:
                 placeName
                     ? (
-                        district
-                            ? `${placeName}, ${district}`
-                            : placeName
+                        district && !placeName.toLowerCase().includes(district.toLowerCase())
+                            ? `${placeName}, ${district}, ${state}`
+                            : `${placeName}, ${state}`
                     )
                     : (
-                        district ||
-                        'Unknown location'
+                        district
+                            ? `${district}, ${state}`
+                            : `${state}, India`
                     ),
 
             village:

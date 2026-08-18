@@ -366,13 +366,20 @@ router.patch('/operations/:id/status', async (req, res) => {
 router.post('/emergency-requests', async (req, res) => {
   try {
     const { requestType, priority, incidentId, quantity, reason, notes } = req.body;
-    if (!requestType || !reason) {
-      return res.status(400).json({ error: 'Request type and reason are required.' });
+    if (!requestType || !String(requestType).trim()) {
+      return res.status(400).json({ error: 'Request type is required.' });
+    }
+    if (!reason || String(reason).trim().length < 10) {
+      return res.status(400).json({ error: 'Reason for support request must be at least 10 characters long.' });
+    }
+    const parsedQty = parseInt(quantity, 10);
+    if (isNaN(parsedQty) || parsedQty < 1 || parsedQty > 100) {
+      return res.status(400).json({ error: 'Required quantity must be a positive integer between 1 and 100.' });
     }
 
     // Insert into notifications / support requests log
     const title = `Support Request: ${requestType} (${priority || 'HIGH'})`;
-    const message = `Unit ${req.user ? req.user.name : 'Rescue Team'} requested ${quantity || 1} ${requestType} for Incident ${incidentId || 'Sector Operation'}. Reason: ${reason}. ${notes ? 'Notes: ' + notes : ''}`;
+    const message = `Unit ${req.user ? req.user.name : 'Rescue Team'} requested ${parsedQty} ${requestType} for Incident ${incidentId || 'Sector Operation'}. Reason: ${reason}. ${notes ? 'Notes: ' + notes : ''}`;
 
     // Get District Collector user ID if available
     const collectorRes = await pool.query("SELECT id FROM users WHERE role = 'collector' AND LOWER(district) = LOWER($1) LIMIT 1", [req.user ? req.user.district : 'Kottayam']);
@@ -392,8 +399,8 @@ router.post('/emergency-requests', async (req, res) => {
         requestType,
         priority: priority || 'HIGH',
         incidentId: incidentId || 'GENERAL',
-        quantity: quantity || 1,
-        reason,
+        quantity: parsedQty,
+        reason: String(reason).trim(),
         notes,
         status: 'PENDING',
         time: 'Just Now'
@@ -472,9 +479,24 @@ router.post('/team-members', async (req, res) => {
   try {
     await ensureRescueTeamMembersTable();
     const { name, employeeServiceId, agencyTypeCode, designation, specialization, role, contact, email, experience, availability, currentAssignment } = req.body;
-    if (!name || !name.trim()) return res.status(400).json({ error: 'Team member Name is required' });
-    if (!contact || !contact.trim()) return res.status(400).json({ error: 'Contact phone number is required' });
-    if (!role || !role.trim()) return res.status(400).json({ error: 'Operational Role is required' });
+    
+    // Server-side field validations
+    if (!name || !name.trim() || name.trim().length < 2) {
+      return res.status(400).json({ error: 'Full Name is required and must be at least 2 characters.' });
+    }
+    const phoneRegex = /^\+?[0-9\s\-]{10,15}$/;
+    if (!contact || !contact.trim() || !phoneRegex.test(contact.trim())) {
+      return res.status(400).json({ error: 'Valid contact phone number (10-15 digits) is required.' });
+    }
+    if (email && email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        return res.status(400).json({ error: 'Invalid email address format.' });
+      }
+    }
+    if (!role || !role.trim()) {
+      return res.status(400).json({ error: 'Operational Role is required.' });
+    }
 
     const userId = req.user ? req.user.id : null;
     const district = req.user ? req.user.district : 'Kottayam';

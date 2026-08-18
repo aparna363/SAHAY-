@@ -28,15 +28,23 @@ const incidentRoutes = require('./routes/incidentRoutes');
 const incidentTypeRoutes = require('./routes/incidentTypeRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const rescueRoutes = require('./routes/rescue');
+const weatherAlertsRoutes = require('./routes/weatherAlerts');
+const familyRoutes = require('./routes/family');
+const { startPollingTimer } = require('./services/officialWeatherAlertFetcher');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/collector', collectorRoutes);
 app.use('/api/rescue', rescueRoutes);
 app.use('/api/weather', weatherRoutes);
+app.use('/api/weather-alerts', weatherAlertsRoutes);
 app.use('/api/incidents', incidentRoutes);
 app.use('/api/incident-types', incidentTypeRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/family-members', familyRoutes);
+
+// Start official background weather alert polling every 20 mins
+startPollingTimer(20 * 60 * 1000);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
