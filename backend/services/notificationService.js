@@ -26,7 +26,7 @@ async function notifyCitizenStatusUpdate({ userId, incidentCode, oldStatus, newS
     'UNDER_REVIEW': 'Incident Report Under Review',
     'VERIFIED': 'Incident Verified by Officials 🚨',
     'REJECTED': 'Incident Report Update',
-    'RESPONSE_ASSIGNED': 'Rescue Response Assigned 🚑',
+    'RESPONSE_ASSIGNED': 'Rescue Team Accepted Incident Report 🚑',
     'IN_PROGRESS': 'Relief Operation In Progress ⚡',
     'RESOLVED': 'Incident Resolved ✅',
     'CLOSED': 'Incident Report Closed'
@@ -34,7 +34,11 @@ async function notifyCitizenStatusUpdate({ userId, incidentCode, oldStatus, newS
 
   const title = statusTitles[newStatus] || `Incident ${incidentCode} Status Updated`;
 
-  let message = `Your reported incident ${incidentCode} status has changed to ${newStatus.replace('_', ' ')}.`;
+  let message = `Your reported incident (${incidentCode}) status has changed to ${newStatus.replace('_', ' ')}.`;
+  if (newStatus === 'RESPONSE_ASSIGNED') {
+    message = `Good news! Your reported incident (${incidentCode}) has been accepted by the official Rescue Response Team. Field personnel are preparing for immediate dispatch.`;
+  }
+
   if (remarks && remarks.trim()) {
     message += ` Official remarks: "${remarks.trim()}"`;
   }
@@ -120,12 +124,40 @@ async function sendDistrictRoleNotification({ district, roles = ['citizen'], tit
   }
 }
 
+/**
+ * Creates notification for a Rescue Team / Station when approved or rejected by District Collector.
+ */
+async function notifyStationApproval({ userId, district, status, stationName, remarks }) {
+  const isApproved = status === 'approved';
+  const type = isApproved ? 'STATION_APPROVAL_ACCEPTED' : 'STATION_APPROVAL_REJECTED';
+  const title = isApproved ? 'Rescue Team Registration Approved ✅' : 'Rescue Team Registration Update ❌';
+  
+  let message = isApproved
+    ? `Your Rescue Unit/Station (${stationName || 'Unit'}) in ${district || 'your'} district has been APPROVED by the District Collector. Full operational features are now unlocked on SAHAY.`
+    : `Your Rescue Unit/Station (${stationName || 'Unit'}) registration request for ${district || 'your'} district was REJECTED by the District Collector.`;
+  
+  if (remarks && remarks.trim()) {
+    message += ` Official remarks: "${remarks.trim()}"`;
+  }
+
+  return await createNotification({
+    userId,
+    type,
+    title,
+    message,
+    referenceType: 'REGISTRATION',
+    referenceId: `REG-${userId}`
+  });
+}
+
 module.exports = {
   createNotification,
   notifyCitizenStatusUpdate,
+  notifyStationApproval,
   getUserNotifications,
   markNotificationAsRead,
   markAllNotificationsAsRead,
   sendDistrictRoleNotification
 };
+
 

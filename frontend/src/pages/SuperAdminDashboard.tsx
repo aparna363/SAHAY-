@@ -18,7 +18,6 @@ import {
   Activity,
   Layers,
   Search,
-  Filter,
   Clock,
   MapPin,
   Sparkles,

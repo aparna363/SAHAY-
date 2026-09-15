@@ -38,7 +38,7 @@ const initDb = async () => {
         CREATE TABLE IF NOT EXISTS users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
-          phone VARCHAR(20) NOT NULL UNIQUE,
+          phone VARCHAR(20),
           email VARCHAR(255),
           password_hash VARCHAR(255),
           role VARCHAR(50) NOT NULL,
@@ -54,6 +54,8 @@ const initDb = async () => {
       await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);`);
       await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'approved';`);
       await client.query(`ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;`);
+      await client.query(`ALTER TABLE users DROP CONSTRAINT IF EXISTS users_phone_key;`);
+      await client.query(`ALTER TABLE users ALTER COLUMN phone DROP NOT NULL;`);
 
       // 2. Create separate login table with separate phone & email columns
       await client.query(`
@@ -149,6 +151,83 @@ const initDb = async () => {
           contact_number VARCHAR(20)
         );
       `);
+
+      // Seed initial active relief shelters if table is empty
+      const shelterCountRes = await client.query('SELECT COUNT(*) FROM shelters');
+      if (parseInt(shelterCountRes.rows[0].count, 10) === 0) {
+        await client.query(`
+          INSERT INTO shelters (name, district, address, latitude, longitude, capacity, available_capacity, contact_number) VALUES
+          ('St. Joseph Relief Camp, Meppadi', 'Wayanad', 'Meppadi Town, Wayanad - 673577', 11.5512, 76.1245, 500, 185, '+914936240100'),
+          ('Kalpetta Model Girls High School Camp', 'Wayanad', 'Kalpetta HQ, Wayanad - 673121', 11.6080, 76.0820, 400, 220, '+914936202444'),
+          ('Govt Higher Secondary School Camp', 'Ernakulam', 'Aluva East, Ernakulam - 683101', 10.1084, 76.3570, 600, 220, '+914842624500'),
+          ('Kadavanthra Community Relief Shelter', 'Ernakulam', 'Kadavanthra, Kochi - 682020', 9.9675, 76.3010, 450, 210, '+914842203344'),
+          ('Painavu Central Relief Shelter', 'Idukki', 'Painavu, Idukki - 685603', 9.8510, 76.9450, 450, 120, '+914862233111'),
+          ('Munnar Govt Higher Secondary Camp', 'Idukki', 'Munnar Town, Idukki - 685612', 10.0889, 77.0595, 500, 310, '+914865230211'),
+          ('Town Hall Emergency Camp', 'Kottayam', 'Collectorate Road, Kottayam - 686002', 9.5916, 76.5222, 400, 150, '+914812562201'),
+          ('Kanjirappally St. Dominic Camp', 'Kottayam', 'Kanjirappally, Kottayam - 686507', 9.5558, 76.7884, 350, 180, '+914828202333'),
+          ('Model Boys High School Relief Hub', 'Thrissur', 'Round East, Thrissur - 680001', 10.5276, 76.2144, 550, 200, '+914872361000'),
+          ('Chalakudy Municipal Relief Center', 'Thrissur', 'Chalakudy Town, Thrissur - 680307', 10.3070, 76.3330, 400, 160, '+914872701200'),
+          ('St. Mary Higher Secondary Relief Camp', 'Pathanamthitta', 'Kozhencherry, Pathanamthitta - 689641', 9.3364, 76.6811, 350, 90, '+914682222515'),
+          ('Adoor Central Emergency Camp', 'Pathanamthitta', 'Adoor Bypass, Pathanamthitta - 691523', 9.1554, 76.7335, 300, 140, '+914734224100'),
+          ('Alappuzha SDV Higher Secondary Camp', 'Alappuzha', 'Beach Road, Alappuzha - 688001', 9.4981, 76.3388, 500, 260, '+914772243500'),
+          ('Chengannur Relief Operations Camp', 'Alappuzha', 'Chengannur Market, Alappuzha - 689121', 9.3175, 76.6122, 450, 190, '+914792452300'),
+          ('Trivandrum Central SMV Camp', 'Thiruvananthapuram', 'Overbridge, Thiruvananthapuram - 695001', 8.4900, 76.9500, 600, 320, '+914712471000'),
+          ('Attingal Govt Boys Camp', 'Thiruvananthapuram', 'Attingal, Thiruvananthapuram - 695101', 8.6960, 76.8140, 350, 175, '+914702622300'),
+          ('Kollam City Corporation Relief Hall', 'Kollam', 'Chinnakada, Kollam - 691001', 8.8932, 76.6141, 500, 240, '+914742742000'),
+          ('Palakkad Victoria College Camp', 'Palakkad', 'College Road, Palakkad - 678001', 10.7867, 76.6548, 550, 280, '+914912534500'),
+          ('Malappuram Govt College Relief Center', 'Malappuram', 'Munduparamba, Malappuram - 676509', 11.0720, 76.0740, 450, 210, '+914832734100'),
+          ('Kozhikode Model School Relief Hub', 'Kozhikode', 'Mananchira, Kozhikode - 673001', 11.2588, 75.7804, 500, 230, '+914952721000'),
+          ('Kannur Govt City Higher Secondary Camp', 'Kannur', 'Talap, Kannur - 670002', 11.8745, 75.3704, 450, 190, '+914972702100'),
+          ('Kasaragod Govt College Emergency Camp', 'Kasaragod', 'Vidyanagar, Kasaragod - 671123', 12.4996, 74.9869, 400, 180, '+914994230100');
+        `);
+      }
+
+      // 6b. Create hospitals table
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS hospitals (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          district VARCHAR(100) NOT NULL,
+          address TEXT,
+          latitude NUMERIC(10, 6) NOT NULL,
+          longitude NUMERIC(10, 6) NOT NULL,
+          contact_number VARCHAR(30),
+          emergency_available BOOLEAN DEFAULT TRUE,
+          bed_capacity INTEGER DEFAULT 200,
+          available_beds INTEGER DEFAULT 50,
+          trauma_care_level VARCHAR(50) DEFAULT 'Level 2',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Seed hospitals if empty
+      const hospitalCountRes = await client.query('SELECT COUNT(*) FROM hospitals');
+      if (parseInt(hospitalCountRes.rows[0].count, 10) === 0) {
+        await client.query(`
+          INSERT INTO hospitals (name, district, address, latitude, longitude, contact_number, emergency_available, bed_capacity, available_beds, trauma_care_level) VALUES
+          ('Wayanad Govt District Hospital', 'Wayanad', 'Mananthavady, Wayanad - 670645', 11.8024, 76.0034, '+914935240223', TRUE, 350, 65, 'Level 2 Trauma'),
+          ('Meppadi Community Health Centre', 'Wayanad', 'Meppadi, Wayanad - 673577', 11.5505, 76.1260, '+914936240240', TRUE, 120, 28, 'Emergency 24x7'),
+          ('Ernakulam Govt Medical College Hospital', 'Ernakulam', 'HMT Colony, Kalamassery, Kochi - 683503', 10.0544, 76.3533, '+914842754000', TRUE, 800, 140, 'Level 1 Apex Trauma'),
+          ('General Hospital Ernakulam', 'Ernakulam', 'Hospital Road, Marine Drive, Kochi - 682011', 9.9723, 76.2829, '+914842361251', TRUE, 550, 95, 'Level 2 Trauma'),
+          ('Idukki Govt Medical College Hospital', 'Idukki', 'Painavu, Cheruthoni, Idukki - 685603', 9.8530, 76.9465, '+914862232400', TRUE, 450, 80, 'Level 2 Trauma'),
+          ('Munnar Tata Tea General Hospital', 'Idukki', 'Nullatanni, Munnar, Idukki - 685612', 10.0750, 77.0620, '+914865230270', TRUE, 160, 42, 'Emergency Critical'),
+          ('Govt Medical College Hospital Kottayam', 'Kottayam', 'Gandhinagar, Kottayam - 686008', 9.6175, 76.5367, '+914812597284', TRUE, 900, 160, 'Level 1 Apex Trauma'),
+          ('District Hospital Kottayam', 'Kottayam', 'Kottayam Town - 686001', 9.5880, 76.5210, '+914812563611', TRUE, 400, 75, 'Level 2 Trauma'),
+          ('Govt Medical College Thrissur', 'Thrissur', 'Mulankunnathukavu, Thrissur - 680596', 10.6186, 76.1969, '+914872200310', TRUE, 850, 130, 'Level 1 Apex Trauma'),
+          ('General Hospital Thrissur', 'Thrissur', 'Round South, Thrissur - 680001', 10.5220, 76.2160, '+914872421050', TRUE, 500, 90, 'Level 2 Trauma'),
+          ('General Hospital Pathanamthitta', 'Pathanamthitta', 'Ring Road, Pathanamthitta - 689645', 9.2680, 76.7845, '+914682222364', TRUE, 380, 70, 'Level 2 Trauma'),
+          ('Govt District Hospital Kozhencherry', 'Pathanamthitta', 'Kozhencherry - 689641', 9.3410, 76.6850, '+914682212350', TRUE, 260, 50, 'Emergency 24x7'),
+          ('Govt Medical College Hospital Alappuzha', 'Alappuzha', 'Vandanam, Alappuzha - 688005', 9.4080, 76.3450, '+914772282015', TRUE, 750, 110, 'Level 1 Apex Trauma'),
+          ('District General Hospital Alappuzha', 'Alappuzha', 'Beach Road, Alappuzha - 688001', 9.4950, 76.3350, '+914772251340', TRUE, 420, 85, 'Level 2 Trauma'),
+          ('Govt Medical College Hospital Trivandrum', 'Thiruvananthapuram', 'Medical College PO, Thiruvananthapuram - 695011', 8.5241, 76.9275, '+914712528300', TRUE, 1200, 210, 'Level 1 Apex Trauma'),
+          ('District Hospital Kollam', 'Kollam', 'Asramam, Kollam - 691001', 8.8950, 76.6020, '+914742742050', TRUE, 520, 95, 'Level 2 Trauma'),
+          ('District Hospital Palakkad', 'Palakkad', 'Sultanpet, Palakkad - 678001', 10.7780, 76.6520, '+914912533320', TRUE, 480, 90, 'Level 2 Trauma'),
+          ('Govt Medical College Hospital Manjeri', 'Malappuram', 'Manjeri, Malappuram - 676121', 11.1190, 76.1220, '+914832766056', TRUE, 650, 115, 'Level 2 Trauma'),
+          ('Govt Medical College Hospital Kozhikode', 'Kozhikode', 'Chevayur, Kozhikode - 673008', 11.2720, 75.8360, '+914952350216', TRUE, 1100, 180, 'Level 1 Apex Trauma'),
+          ('Govt Medical College Hospital Kannur', 'Kannur', 'Pariyaram, Kannur - 670503', 12.0450, 75.2980, '+914972808080', TRUE, 700, 125, 'Level 2 Trauma'),
+          ('General Hospital Kasaragod', 'Kasaragod', 'Nullipady, Kasaragod - 671121', 12.5080, 74.9920, '+914994220025', TRUE, 360, 60, 'Level 2 Trauma');
+        `);
+      }
 
       // 7. Create volunteers table
       await client.query(`
@@ -430,6 +509,10 @@ const initDb = async () => {
         );
       `);
 
+      await client.query(`ALTER TABLE rescue_units ADD COLUMN IF NOT EXISTS last_location_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP;`);
+      await client.query(`ALTER TABLE rescue_units ADD COLUMN IF NOT EXISTS assigned_incident_id VARCHAR(50);`);
+      await client.query(`ALTER TABLE rescue_units DROP CONSTRAINT IF EXISTS rescue_units_status_check;`);
+
       // Seed Demo Rescue Units for Unit ID Verification if empty
       const rescueUnitCheck = await client.query(`SELECT COUNT(*) FROM rescue_units;`);
       if (parseInt(rescueUnitCheck.rows[0].count, 10) === 0) {
@@ -552,6 +635,28 @@ const initDb = async () => {
           last_successful_fetch TIMESTAMP NOT NULL,
           fetch_status VARCHAR(20) DEFAULT 'HEALTHY' CHECK (fetch_status IN ('HEALTHY', 'STALE', 'UNVERIFIED')),
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS ai_conversations (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+          session_id VARCHAR(100) NOT NULL,
+          language VARCHAR(10) DEFAULT 'en',
+          title VARCHAR(255) DEFAULT 'Emergency Assistance',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS ai_messages (
+          id SERIAL PRIMARY KEY,
+          conversation_id INTEGER NOT NULL REFERENCES ai_conversations(id) ON DELETE CASCADE,
+          role VARCHAR(20) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+          content TEXT NOT NULL,
+          disaster_type VARCHAR(50),
+          severity VARCHAR(20),
+          requires_sos BOOLEAN DEFAULT FALSE,
+          metadata JSONB DEFAULT '{}',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
 
@@ -677,6 +782,42 @@ const initDb = async () => {
           role = EXCLUDED.role, 
           status = EXCLUDED.status;
       `);
+
+      // 4. Ensure PostGIS Extension & Incident Location Spatial Geometry Sync
+      try {
+        await client.query(`CREATE EXTENSION IF NOT EXISTS postgis;`);
+        await client.query(`
+          UPDATE incidents 
+          SET location = ST_SetSRID(ST_MakePoint(longitude, latitude), 4326) 
+          WHERE location IS NULL AND latitude IS NOT NULL AND longitude IS NOT NULL;
+        `);
+        await client.query(`CREATE INDEX IF NOT EXISTS incidents_location_idx ON incidents USING GIST(location);`);
+
+        // Load Road Hazards and IoT Sensors Schema
+        const fs = require('fs');
+        const schemaPath = require('path').join(__dirname, 'schema_road_and_iot.sql');
+        if (fs.existsSync(schemaPath)) {
+          const sql = fs.readFileSync(schemaPath, 'utf8');
+          await client.query(sql);
+        }
+
+        // Load Rescue Evidence Schema
+        const evidenceSchemaPath = require('path').join(__dirname, 'schema_evidence.sql');
+        if (fs.existsSync(evidenceSchemaPath)) {
+          const evidenceSql = fs.readFileSync(evidenceSchemaPath, 'utf8');
+          await client.query(evidenceSql);
+        }
+
+        // Load Relief & Compensation Schema
+        const reliefSchemaPath = require('path').join(__dirname, 'schema_relief.sql');
+        if (fs.existsSync(reliefSchemaPath)) {
+          const reliefSql = fs.readFileSync(reliefSchemaPath, 'utf8');
+          await client.query(reliefSql);
+          console.log('✓ Relief & Compensation Schema and Norms loaded');
+        }
+      } catch (postgisErr) {
+        console.warn('PostGIS Sync Note:', postgisErr.message);
+      }
 
       console.log(`🔑 Admin Account Configured & Seeded`);
 

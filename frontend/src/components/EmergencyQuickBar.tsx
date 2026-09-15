@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertCircle, Home, Waves, FileText, PhoneCall, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { translations } from '../translations';
 import type { Language } from '../translations';
+import { fetchPublicStats, type PublicPortalStats } from '../services/api';
 
 interface EmergencyQuickBarProps {
   currentLang: Language;
@@ -11,6 +12,29 @@ interface EmergencyQuickBarProps {
 
 export const EmergencyQuickBar: React.FC<EmergencyQuickBarProps> = ({ currentLang, onSelectAction, onOpenContacts }) => {
   const t = translations[currentLang];
+
+  const [stats, setStats] = useState<PublicPortalStats>({
+    activeRescueTeams: 0,
+    openReliefCamps: 0,
+    shelteredCitizens: 0,
+    activeIncidents: 0
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadStats = async () => {
+      const data = await fetchPublicStats();
+      if (isMounted) {
+        setStats(data);
+      }
+    };
+    loadStats();
+    const interval = setInterval(loadStats, 15000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const quickActions = [
     {
@@ -113,28 +137,36 @@ export const EmergencyQuickBar: React.FC<EmergencyQuickBarProps> = ({ currentLan
           })}
         </div>
 
-        {/* Stats Strip */}
+        {/* Dynamic Stats Strip loaded from DB */}
         <div className="mt-8 bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-sm grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-2xl sm:text-3xl font-black text-[#059669]">142</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#059669]">
+              {stats.activeRescueTeams > 0 ? stats.activeRescueTeams.toLocaleString() : '0'}
+            </div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-1">
               {t.activeRescueTeams}
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-black text-sky-600">85</div>
+            <div className="text-2xl sm:text-3xl font-black text-sky-600">
+              {stats.openReliefCamps > 0 ? stats.openReliefCamps.toLocaleString() : '0'}
+            </div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-1">
               {t.openReliefCamps}
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-600">12,450</div>
+            <div className="text-2xl sm:text-3xl font-black text-amber-600">
+              {stats.shelteredCitizens > 0 ? stats.shelteredCitizens.toLocaleString() : '0'}
+            </div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-1">
               {t.shelteredCitizens}
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-black text-red-600">24/7</div>
+            <div className="text-2xl sm:text-3xl font-black text-red-600">
+              24/7
+            </div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-1">
               {t.liveMonitoring}
             </div>

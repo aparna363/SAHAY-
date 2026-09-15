@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, PhoneCall, CheckCircle2, Radio } from 'lucide-react';
-import { getDistricts } from '../services/api';
+import { getDistricts, fetchPublicStats, type PublicPortalStats } from '../services/api';
 
 export const EmergencyPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [districtsList, setDistrictsList] = useState<string[]>([]);
+  const [portalStats, setPortalStats] = useState<PublicPortalStats>({
+    activeRescueTeams: 0,
+    openReliefCamps: 0,
+    shelteredCitizens: 0,
+    activeIncidents: 0
+  });
 
   useEffect(() => {
     getDistricts().then((data) => {
@@ -12,6 +18,10 @@ export const EmergencyPage: React.FC = () => {
       if (data.length > 0 && !formData.district) {
         setFormData((prev) => ({ ...prev, district: data[0] }));
       }
+    });
+
+    fetchPublicStats().then((stats) => {
+      setPortalStats(stats);
     });
   }, []);
 
@@ -38,190 +48,198 @@ export const EmergencyPage: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-2 bg-red-800 px-3.5 py-1 rounded-full text-xs font-bold text-red-100 mb-2">
             <AlertCircle className="w-4 h-4 text-red-300 animate-pulse" />
-            <span>24/7 Rapid Emergency Response Unit</span>
+            <span>EMERGENCY DISPATCH LIVE</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Emergency Assistance & SOS Dispatch
-          </h1>
-          <p className="text-xs sm:text-sm text-red-200 mt-1 max-w-xl font-normal">
-            Direct high-priority alert dispatch to KSDMA Control Room, NDRF Search & Rescue, and District Collectorate Desks.
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Report SOS & Emergency</h1>
+          <p className="text-sm text-red-200 mt-1 max-w-xl">
+            This high-priority submission dispatches immediate automated alerts to state & district disaster control rooms.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <a
             href="tel:112"
-            className="btn-primary text-xs font-bold px-6 py-3 bg-red-600 hover:bg-red-500 shadow-xl flex items-center gap-2"
+            className="btn-primary bg-red-600 hover:bg-red-500 text-white flex items-center justify-center gap-2 py-3 px-6 text-sm shadow-lg font-black"
           >
-            <PhoneCall className="w-4 h-4 animate-bounce" />
-            <span>Call SOS Helpline (112)</span>
+            <PhoneCall className="w-4 h-4" />
+            <span>Call 112 Direct</span>
+          </a>
+          <a
+            href="tel:1077"
+            className="btn-outline border-red-700 hover:bg-red-900/50 text-white flex items-center justify-center gap-2 py-3 px-6 text-sm font-bold"
+          >
+            <Radio className="w-4 h-4" />
+            <span>State Hotline (1077)</span>
           </a>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-        {/* SOS Report Form */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Main Emergency Form */}
+        <div className="lg:col-span-2">
           {submitted ? (
-            <div className="text-center py-10 space-y-4 animate-fadeIn">
-              <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-10 h-10" />
+            <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-8 text-center space-y-4 shadow-sm animate-fadeIn">
+              <div className="w-16 h-16 bg-[#059669] text-white rounded-full flex items-center justify-center mx-auto shadow-md">
+                <CheckCircle2 className="w-9 h-9" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900">
-                SOS Alert Dispatched!
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-md mx-auto">
-                Your emergency SOS ticket has been logged in KSDMA Central Console. Control room team is dispatching nearest rescue unit to your provided location.
+              <h3 className="text-2xl font-extrabold text-slate-900">SOS Alert Transmitted Successfully</h3>
+              <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                Control room personnel and nearest rescue teams in <strong className="text-slate-800">{formData.district}</strong> have received your location payload. Maintain line open.
               </p>
-              <div className="p-4 bg-red-50 rounded-2xl border border-red-200 text-xs font-bold text-red-800 max-w-sm mx-auto">
-                Reference ID: KSDMA-SOS-2026-8834
-              </div>
               <button
                 onClick={() => setSubmitted(false)}
-                className="btn-primary px-8 py-2.5 text-xs font-bold mt-4"
+                className="btn-secondary text-xs font-bold px-6 py-2.5 rounded-xl mt-4"
               >
-                Submit Another Request
+                Submit Another Report
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="border-b border-slate-100 pb-3 mb-4">
-                <h3 className="text-xl font-black text-slate-900">
-                  Request Immediate Rescue / Emergency Aid
-                </h3>
-                <p className="text-xs text-slate-500 font-medium">
-                  Fill out this high-priority dispatch form. Fields marked * are mandatory.
-                </p>
-              </div>
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+              <h3 className="text-xl font-black text-slate-900 border-b border-slate-100 pb-4">
+                Emergency Information Form
+              </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
                     Your Name *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Suresh Kumar"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none"
+                    className="input-field text-sm"
+                    placeholder="Enter full name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Contact Phone Number *
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="+91 98765 43210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none"
+                    className="input-field text-sm"
+                    placeholder="10-digit mobile number"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    District Location *
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    District *
                   </label>
                   <select
                     value={formData.district}
                     onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-red-500 focus:outline-none"
+                    className="input-field text-sm bg-white"
                   >
                     {districtsList.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
+                      <option key={d} value={d}>{d}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Nature of Emergency *
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Emergency Nature *
                   </label>
                   <select
                     value={formData.emergencyType}
                     onChange={(e) => setFormData({ ...formData, emergencyType: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-red-500 focus:outline-none"
+                    className="input-field text-sm bg-white"
                   >
-                    <option value="Flood / Water Entrapment">Flood / Water Inundation Trap</option>
-                    <option value="Landslide / Mudslip">Landslide / Debris Trapped</option>
-                    <option value="Medical Emergency">Medical Emergency / Evacuation</option>
-                    <option value="Structure Damage">Building / Roof Collapse</option>
+                    <option value="Flood / Water Entrapment">Flood / Water Entrapment</option>
+                    <option value="Landslide / Debris Trapped">Landslide / Debris Trapped</option>
+                    <option value="Medical Critical Emergency">Medical Critical Emergency</option>
+                    <option value="Sea / Water Rescue">Sea / Water Rescue</option>
+                    <option value="Structural Collapse / Fire">Structural Collapse / Fire</option>
                   </select>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Specific Landmark / House Address *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Near St. George Church, Munnar Town Rd, Ward 4"
-                  value={formData.landmark}
-                  onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Estimated Persons Trapped / Affected
+                  </label>
+                  <select
+                    value={formData.personsCount}
+                    onChange={(e) => setFormData({ ...formData, personsCount: e.target.value })}
+                    className="input-field text-sm bg-white"
+                  >
+                    <option value="1 Person">1 Person</option>
+                    <option value="2-4 People">2-4 People</option>
+                    <option value="5-10 People">5-10 People</option>
+                    <option value="10+ People (Group)">10+ People (Group)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Landmark / Address Details
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.landmark}
+                    onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
+                    className="input-field text-sm"
+                    placeholder="Near Bridge, Church, School..."
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Additional Situation Details
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Additional Crucial Details (Optional)
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Mention number of senior citizens, children, or immediate medical assistance required..."
                   value={formData.details}
                   onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  className="input-field text-sm"
+                  placeholder="Describe medical conditions, water level height, specific access roads..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-2xl text-xs font-bold tracking-wide uppercase shadow-lg transition-all"
+                className="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl text-base font-black uppercase tracking-wider shadow-lg transition-all"
               >
-                Dispatch Emergency SOS Alert
+                Transmit High-Priority SOS Alert
               </button>
             </form>
           )}
         </div>
 
-        {/* Right Info Cards */}
-        <div className="lg:col-span-5 space-y-6">
-
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-md space-y-4">
-            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-              <Radio className="w-5 h-5 text-red-600" />
-              Primary Disaster Helplines
-            </h3>
-
+        {/* Side Info Cards */}
+        <div className="space-y-6">
+          <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-md space-y-4">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#059669]">
+              Important Emergency Helplines
+            </h4>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-red-50 border border-red-200">
-                <span className="text-xs font-bold text-red-900">National Emergency Number</span>
-                <a href="tel:112" className="text-base font-black text-red-600 hover:underline">112</a>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                <span className="text-xs font-bold text-slate-300">National Emergency</span>
+                <a href="tel:112" className="text-base font-black text-[#059669] hover:underline">112</a>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#f0fdf4] border border-emerald-200">
-                <span className="text-xs font-bold text-emerald-900">Disaster Management Helpline</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                <span className="text-xs font-bold text-slate-300">State Control Room</span>
                 <a href="tel:1077" className="text-base font-black text-[#059669] hover:underline">1077</a>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-orange-50 border border-orange-200">
-                <span className="text-xs font-bold text-orange-900">Fire & Rescue Services</span>
-                <a href="tel:101" className="text-base font-black text-orange-600 hover:underline">101</a>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                <span className="text-xs font-bold text-slate-300">Fire & Rescue</span>
+                <a href="tel:101" className="text-base font-black text-orange-400 hover:underline">101</a>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-sky-50 border border-sky-200">
-                <span className="text-xs font-bold text-sky-900">Ambulance Services</span>
-                <a href="tel:108" className="text-base font-black text-sky-600 hover:underline">108</a>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                <span className="text-xs font-bold text-slate-300">Ambulance Services</span>
+                <a href="tel:108" className="text-base font-black text-sky-400 hover:underline">108</a>
               </div>
             </div>
           </div>
@@ -232,18 +250,21 @@ export const EmergencyPage: React.FC = () => {
             </h4>
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <div className="text-xl font-black text-[#059669]">142</div>
-                <div className="text-[10px] font-bold text-slate-500 uppercase">NDRF Teams</div>
+                <div className="text-xl font-black text-[#059669]">
+                  {portalStats.activeRescueTeams > 0 ? portalStats.activeRescueTeams : '0'}
+                </div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase">Rescue Teams</div>
               </div>
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <div className="text-xl font-black text-sky-600">68</div>
-                <div className="text-[10px] font-bold text-slate-500 uppercase">Rescue Boats</div>
+                <div className="text-xl font-black text-sky-600">
+                  {portalStats.openReliefCamps > 0 ? portalStats.openReliefCamps : '0'}
+                </div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase">Relief Camps</div>
               </div>
             </div>
           </div>
 
         </div>
-
       </div>
     </div>
   );

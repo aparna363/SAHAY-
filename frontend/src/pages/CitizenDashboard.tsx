@@ -9,7 +9,6 @@ import {
   PhoneCall,
   FileText,
   Users,
-  Coins,
   BookOpen,
   Bot,
   Bell,
@@ -24,13 +23,8 @@ import {
   Navigation,
   Plus,
   Phone,
-  Layers,
-  Maximize2,
-  Send,
   Building2,
   Heart,
-  Crosshair,
-  Map as MapIcon,
   ChevronDown,
   Edit3,
   Trash2,
@@ -39,7 +33,8 @@ import {
   HeartPulse,
   CheckCircle,
   AlertOctagon,
-  Info
+  Info,
+  HeartHandshake
 } from 'lucide-react';
 import type { Language } from '../translations';
 import type { FamilyMember } from '../services/api';
@@ -60,6 +55,9 @@ import { NotificationBell } from '../components/NotificationBell';
 import { ReportIncidentPage } from './ReportIncidentPage';
 import { MyReportsPage } from './MyReportsPage';
 import { CitizenIncidentDetailsPage } from './CitizenIncidentDetailsPage';
+import { LiveDisasterMap } from '../components/LiveDisasterMap';
+import { ReliefModule } from '../components/relief/ReliefModule';
+import { AIDisasterCopilot } from '../components/ai/AIDisasterCopilot';
 import logoSahay from '../assets/logo_sahay.png';
 
 interface CitizenDashboardProps {
@@ -75,7 +73,7 @@ export function CitizenDashboard({
   onSignOut,
   onNavigateToTab
 }: CitizenDashboardProps) {
-  const { weatherData, loading, error, refreshLocation } = useLocation();
+  const { location, weatherData, loading, error, refreshLocation } = useLocation();
 
   // User Session State
   const [currentUser] = useState<any>(() => propUser || getStoredUser() || {
@@ -88,10 +86,41 @@ export function CitizenDashboard({
 
   // UI State - activeMenu determines which view is shown on the right panel
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('dashboard');
+  const [activeMenu, setActiveMenu] = useState(() => {
+    const hash = window.location.hash || '';
+    const path = window.location.pathname || '';
+    const tabParam = new URLSearchParams(window.location.search).get('menu') || '';
+    if (hash.includes('relief') || path.includes('relief') || tabParam.includes('relief')) {
+      return 'relief';
+    }
+    return 'dashboard';
+  });
   const [selectedDistrict] = useState(currentUser?.district || 'Wayanad');
   const [selectedLang, setSelectedLang] = useState<Language>(currentLang);
   const [activeAlertBanner, setActiveAlertBanner] = useState(true);
+
+  const [initialAiQuery, setInitialAiQuery] = useState<string>('');
+
+  const openAiWithQuery = (query: string) => {
+    setInitialAiQuery(query);
+    setActiveMenu('ai-assistant');
+    window.location.hash = '/citizen/ai-assistant';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Synchronize hash routing with activeMenu
+  useEffect(() => {
+    const syncHash = () => {
+      const hash = window.location.hash || '';
+      if (hash.includes('relief')) {
+        setActiveMenu('relief');
+      } else if (hash.includes('ai-assistant') || hash.includes('copilot') || hash.includes('ai')) {
+        setActiveMenu('ai-assistant');
+      }
+    };
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
 
   // Modals & Panels
   const [selectedReportId, setSelectedReportId] = useState<string>('');
@@ -124,29 +153,6 @@ export function CitizenDashboard({
     whistle: false,
     medicines: true
   });
-
-  // Map Filter State
-  const [mapLayerFilters, setMapLayerFilters] = useState<{ [key: string]: boolean }>({
-    shelters: true,
-    hospitals: true,
-    police: true,
-    fire: true,
-    incidents: true,
-    floodZones: true,
-    landslideZones: true,
-    rescueTeams: true,
-    safeRoutes: true
-  });
-
-  // AI Assistant Chat State
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'bot'; text: string; time: string }>>([
-    {
-      sender: 'bot',
-      text: `Namaskaram ${currentUser.name.split(' ')[0]}! I am SAHAY AI Emergency Assistant. How can I assist you today regarding weather, open shelters, incident reporting, or disaster safety?`,
-      time: 'Just now'
-    }
-  ]);
-  const [chatInput, setChatInput] = useState('');
 
   // Real-time / User Data States (Empty Initial States)
   const [incidentReports, setIncidentReports] = useState<any[]>([]);
@@ -379,45 +385,6 @@ export function CitizenDashboard({
     }
   };
 
-  // Relief & Compensation Claims Data
-  const reliefClaims: any[] = [];
-
-  // Map Markers Data
-  const mapMarkers: any[] = [];
-
-  // AI Chat Handler
-  const handleSendChatMessage = (msgText?: string) => {
-    const query = msgText || chatInput;
-    if (!query.trim()) return;
-
-    const userMsg = { sender: 'user' as const, text: query, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-    setChatMessages(prev => [...prev, userMsg]);
-    if (!msgText) setChatInput('');
-
-    setTimeout(() => {
-      let replyText = `Thank you for reaching out. Based on official KSDMA guidelines for ${selectedDistrict}:`;
-      const qLower = query.toLowerCase();
-
-      if (qLower.includes('shelter') || qLower.includes('camp')) {
-        replyText = `Nearest active relief camp in ${selectedDistrict} is St. Joseph Relief Camp, Meppadi (1.2 km away) with 185 available beds. Phone: +91 4936 240100. Would you like direct navigation?`;
-      } else if (qLower.includes('landslide') || qLower.includes('hill')) {
-        replyText = `Landslide Advisory: An Orange Alert is active for hilly regions in ${selectedDistrict}. Keep clear of steep slopes, move to safer valley relief camps if mud cracks or unusual stream turbidity appear. Emergency helpline: 1077.`;
-      } else if (qLower.includes('sos') || qLower.includes('help') || qLower.includes('emergency')) {
-        replyText = `EMERGENCY ALERT: Press the red Emergency SOS button on top of your dashboard to send immediate GPS coordinates to the District Control Room and 112 ERSS units!`;
-      } else if (qLower.includes('compensation') || qLower.includes('relief') || qLower.includes('money')) {
-        replyText = `You have 1 active compensation claim (CLM-2026-4412 for Flood Damage) approved by District Collector. Disbursement of ₹25,000 is scheduled within 48 hours to your linked bank account.`;
-      } else {
-        replyText = `Control Room Advisory: Current weather in ${selectedDistrict} shows 28°C with moderate to heavy rain. Dial 1077 (DDMA) or 112 for rapid emergency response.`;
-      }
-
-      setChatMessages(prev => [...prev, {
-        sender: 'bot',
-        text: replyText,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
-    }, 600);
-  };
-
   // SOS Dispatch Trigger
   const handleTriggerSOS = () => {
     setSosTriggered(true);
@@ -457,9 +424,22 @@ export function CitizenDashboard({
     { id: 'services', label: 'Emergency Services', icon: PhoneCall },
     { id: 'my-reports', label: 'My Reports', icon: FileText, action: () => setActiveMenu('my-reports') },
     { id: 'family', label: 'Family Safety', icon: Users },
-    { id: 'relief', label: 'Relief & Compensation', icon: Coins },
+    {
+      id: 'relief',
+      label: 'Relief & Compensation',
+      icon: HeartHandshake,
+      action: () => {
+        setActiveMenu('relief');
+        window.location.hash = '/citizen/relief-fund';
+      }
+    },
     { id: 'preparedness', label: 'Disaster Preparedness', icon: BookOpen },
-    { id: 'ai-assistant', label: 'AI Disaster Assistant', icon: Bot }
+    {
+      id: 'ai-assistant',
+      label: '🤖 SAHAY AI Copilot',
+      icon: Bot,
+      action: () => openAiWithQuery('')
+    }
   ];
 
   // =========================================================================
@@ -541,7 +521,117 @@ export function CitizenDashboard({
               )}
             </section>
 
+            {/* ========================================================================= */}
+            {/* 🤖 PROMINENT SAHAY AI DISASTER COPILOT FEATURE CARD */}
+            {/* ========================================================================= */}
+            <div className="bg-gradient-to-br from-[#0B4D3B] via-[#0E8F66] to-[#043e2e] text-white p-6 rounded-3xl shadow-lg border border-emerald-600/50 relative overflow-hidden space-y-5">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
 
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shadow-inner shrink-0">
+                    <Bot className="w-8 h-8 animate-pulse text-emerald-200" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-xl font-black text-white tracking-tight">
+                        🤖 SAHAY AI Disaster Copilot
+                      </h2>
+                      <span className="text-[10px] uppercase font-mono font-extrabold bg-emerald-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-xs">
+                        LIVE ASSISTANT
+                      </span>
+                    </div>
+                    <p className="text-xs text-emerald-100/90 font-medium">
+                      "Your intelligent emergency companion" &bull; Real-time PostGIS context, risk assessment & safe evacuation guidance
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => openAiWithQuery('')}
+                  className="px-5 py-2.5 bg-white hover:bg-emerald-50 text-[#0B4D3B] font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 self-stretch sm:self-auto justify-center active:scale-95"
+                >
+                  <span>Open Copilot</span>
+                  <span>&rarr;</span>
+                </button>
+              </div>
+
+              {/* Main Actions Grid (6 buttons) */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 relative z-10 pt-1">
+                <button
+                  onClick={() => openAiWithQuery('')}
+                  className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all flex flex-col items-center justify-center gap-1.5 text-center shadow-xs active:scale-95 group"
+                >
+                  <Bot className="w-5 h-5 text-emerald-200 group-hover:scale-110 transition-transform" />
+                  <span>Ask SAHAY</span>
+                </button>
+
+                <button
+                  onClick={() => openAiWithQuery('Check my current disaster risk in this location')}
+                  className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all flex flex-col items-center justify-center gap-1.5 text-center shadow-xs active:scale-95 group"
+                >
+                  <Search className="w-5 h-5 text-amber-300 group-hover:scale-110 transition-transform" />
+                  <span>Check My Risk</span>
+                </button>
+
+                <button
+                  onClick={() => openAiWithQuery('Where is the nearest verified safe shelter?')}
+                  className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all flex flex-col items-center justify-center gap-1.5 text-center shadow-xs active:scale-95 group"
+                >
+                  <Home className="w-5 h-5 text-emerald-300 group-hover:scale-110 transition-transform" />
+                  <span>Find Safe Shelter</span>
+                </button>
+
+                <button
+                  onClick={() => openAiWithQuery('What are the critical safety instructions for current weather?')}
+                  className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all flex flex-col items-center justify-center gap-1.5 text-center shadow-xs active:scale-95 group"
+                >
+                  <Shield className="w-5 h-5 text-teal-200 group-hover:scale-110 transition-transform" />
+                  <span>Safety Rules</span>
+                </button>
+
+                <button
+                  onClick={() => openAiWithQuery('I am in danger and need immediate rescue assistance')}
+                  className="p-3 rounded-2xl bg-red-600/85 hover:bg-red-600 border border-red-400 text-white text-xs font-black transition-all flex flex-col items-center justify-center gap-1.5 text-center shadow-xs active:scale-95 group animate-pulse"
+                >
+                  <Radio className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+                  <span>I'm in Danger</span>
+                </button>
+
+                <button
+                  onClick={() => openAiWithQuery('How can I apply for disaster relief assistance and track my claim?')}
+                  className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-all flex flex-col items-center justify-center gap-1.5 text-center shadow-xs active:scale-95 group"
+                >
+                  <HeartHandshake className="w-5 h-5 text-rose-300 group-hover:scale-110 transition-transform" />
+                  <span>Relief Fund</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Live Disaster & Safe Evacuation Map Quick Banner */}
+            <div className="bg-gradient-to-r from-[#043e2e] via-[#065f46] to-[#043e2e] text-white p-5 rounded-3xl shadow-md border border-emerald-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase font-mono font-black bg-emerald-800 text-emerald-200 px-2.5 py-0.5 rounded-full tracking-wider">
+                    GPS SITUATION AWARENESS
+                  </span>
+                  <span className="text-xs text-emerald-200 font-semibold">&bull; {selectedDistrict} District</span>
+                </div>
+                <h3 className="text-lg font-black text-white">Intelligent Live Disaster & Safe Evacuation Map</h3>
+                <p className="text-xs text-emerald-100/90 max-w-xl font-normal leading-relaxed">
+                  Real-time GPS tracking for active disaster polygons, blocked roads, open relief camps, and automatic safe evacuation routing.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                <button
+                  onClick={() => setActiveMenu('map')}
+                  className="px-4 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow transition-all flex items-center gap-1.5 active:scale-95"
+                >
+                  <MapPin className="w-4 h-4 text-slate-950" />
+                  <span>📍 Open Live Safety Map</span>
+                </button>
+              </div>
+            </div>
 
             {/* Statistic Cards */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -596,8 +686,8 @@ export function CitizenDashboard({
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-slate-500">Current Weather</p>
-                  <p className="text-2xl font-black text-slate-900">28°C Rain</p>
-                  <span className="text-[11px] text-teal-600 font-bold">92% Humidity &bull; 24km/h</span>
+                  <p className="text-2xl font-black text-slate-900">{weatherData?.temperature ?? 25}°C {weatherData?.condition || 'Light Rain'}</p>
+                  <span className="text-[11px] text-teal-600 font-bold">{weatherData?.humidity ?? 92}% Humidity &bull; {weatherData?.windSpeed ?? 24}km/h</span>
                 </div>
               </div>
             </section>
@@ -671,120 +761,18 @@ export function CitizenDashboard({
       // -----------------------------------------------------------------------
       // 3. LIVE DISASTER MAP VIEW
       // -----------------------------------------------------------------------
+      // 3. INTELLIGENT LIVE DISASTER & SAFE EVACUATION MAP VIEW
+      // -----------------------------------------------------------------------
       case 'map':
         return (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-black text-slate-900">Live Disaster Operations Map</h1>
-                <p className="text-xs text-slate-500">Interactive GIS mapping with shelters, hospitals, police, fire force, and hazard zones</p>
-              </div>
-              <span className="bg-emerald-100 text-[#0B4D3B] text-xs font-bold px-3 py-1 rounded-full">
-                Telemetry Live &bull; {selectedDistrict} Sector
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
-                <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <MapIcon className="w-5 h-5 text-[#0E8F66]" />
-                    <h2 className="font-bold text-base text-slate-900">Operations Map Canvas</h2>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                    {Object.keys(mapLayerFilters).map((key) => (
-                      <button
-                        key={key}
-                        onClick={() => setMapLayerFilters(prev => ({ ...prev, [key]: !prev[key] }))}
-                        className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all capitalize ${mapLayerFilters[key]
-                            ? 'bg-[#EAF8F3] border-emerald-300 text-[#0B4D3B]'
-                            : 'bg-slate-100 border-slate-200 text-slate-400'
-                          }`}
-                      >
-                        {key.replace(/([A-Z])/g, ' $1')}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="relative flex-1 min-h-[460px] bg-slate-900 p-4 flex flex-col justify-between overflow-hidden group">
-                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#0E8F66_1px,transparent_1px)] [background-size:16px_16px]"></div>
-
-                  <div className="relative z-10 flex items-center justify-between text-xs text-slate-300">
-                    <div className="bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 flex items-center gap-2">
-                      <Crosshair className="w-4 h-4 text-emerald-400 animate-spin" />
-                      <span>GPS: {selectedDistrict} Sector &bull; 11.605° N, 76.083° E</span>
-                    </div>
-
-                    <div className="bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-emerald-400" />
-                      <span>Layers Active: 9</span>
-                    </div>
-                  </div>
-
-                  <div className="relative z-10 my-auto grid grid-cols-3 gap-6 p-4 max-w-lg mx-auto">
-                    {mapMarkers.map((marker) => (
-                      <div
-                        key={marker.id}
-                        onClick={() => setSelectedMapMarker(marker)}
-                        className="bg-slate-800/90 border border-slate-700 hover:border-[#0E8F66] p-3 rounded-2xl cursor-pointer hover:scale-105 transition-all text-white shadow-lg flex flex-col items-center text-center group/pin"
-                      >
-                        <span className="text-2xl mb-1 group-hover/pin:animate-bounce">{marker.icon}</span>
-                        <p className="text-xs font-bold truncate max-w-full">{marker.name}</p>
-                        <span className="text-[10px] text-emerald-400 font-semibold mt-0.5">{marker.status}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="relative z-10 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-700 text-slate-300">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                      <span>Safe Evacuation Route Cleared via NH766</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <button className="p-2 bg-slate-800 text-white rounded-xl border border-slate-700 hover:bg-slate-700">
-                        <Plus className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 bg-slate-800 text-white rounded-xl border border-slate-700 hover:bg-slate-700">
-                        <Maximize2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 flex flex-col justify-between space-y-6">
-                <div>
-                  <h2 className="font-bold text-base text-slate-900 border-b border-slate-100 pb-3">
-                    Map Location Info
-                  </h2>
-                  <div className="my-4 space-y-3 text-xs">
-                    <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                      <p className="font-bold text-slate-800">Current Sector</p>
-                      <p className="text-slate-600 mt-0.5">{selectedDistrict} District Catchment</p>
-                    </div>
-                    <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                      <p className="font-bold text-slate-800">Nearest Relief Camp</p>
-                      <p className="text-[#0E8F66] font-bold mt-0.5">St. Joseph Relief Shelter (1.2 km)</p>
-                    </div>
-                    <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
-                      <p className="font-bold text-slate-800">Active Hazards</p>
-                      <p className="text-amber-700 font-bold mt-0.5">Orange Alert Landslide Slope Risk</p>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => alert(`🧭 Navigating to nearest shelter in ${selectedDistrict}...`)}
-                  className="w-full bg-[#0E8F66] hover:bg-[#0B4D3B] text-white text-xs font-bold py-3 rounded-xl shadow-xs flex items-center justify-center gap-2"
-                >
-                  <Navigation className="w-4 h-4" />
-                  <span>Navigate to Safe Zone</span>
-                </button>
-              </div>
-            </div>
+            <LiveDisasterMap
+              userDistrict={location?.district || selectedDistrict || 'Kottayam'}
+              onViewIncidentDetails={(id) => {
+                setSelectedReportId(String(id));
+                setActiveMenu('incident-detail');
+              }}
+            />
           </div>
         );
 
@@ -1345,67 +1333,15 @@ export function CitizenDashboard({
       }
 
       // -----------------------------------------------------------------------
-      // 8. RELIEF & COMPENSATION TRACKER VIEW
+      // 8. RELIEF & COMPENSATION MODULE (FULL WORKFLOW & TRACKING)
       // -----------------------------------------------------------------------
       case 'relief':
         return (
-          <div className="space-y-6 animate-fade-in max-w-4xl">
-            <div>
-              <h1 className="text-2xl font-black text-slate-900">Relief & Compensation Tracker</h1>
-              <p className="text-xs text-slate-500">Track progress of disaster financial assistance applications</p>
-            </div>
-
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-5">
-              {reliefClaims.length === 0 ? (
-                <div className="p-12 text-center space-y-3">
-                  <Coins className="w-10 h-10 text-slate-400 mx-auto" />
-                  <h3 className="font-bold text-slate-800 text-base">No Active Relief Claims</h3>
-                  <p className="text-xs text-slate-500 max-w-md mx-auto">
-                    No active compensation or financial relief applications found for your profile.
-                  </p>
-                </div>
-              ) : (
-                reliefClaims.map((claim) => (
-                  <div key={claim.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-200/70 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-xs font-mono text-slate-400">{claim.id}</span>
-                        <h4 className="font-bold text-sm text-slate-900">{claim.title}</h4>
-                      </div>
-                      <span className="text-base font-black text-[#0E8F66] bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
-                        {claim.amount}
-                      </span>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs font-bold text-slate-600">
-                        <span>Status: <strong className="text-[#0B4D3B]">{claim.status}</strong></span>
-                        <span>Step {claim.currentStep} of 4</span>
-                      </div>
-
-                      <div className="grid grid-cols-4 gap-2">
-                        {claim.steps.map((stepName: any, sIdx: number) => {
-                          const isDone = sIdx + 1 <= claim.currentStep;
-                          return (
-                            <div
-                              key={sIdx}
-                              className={`h-2.5 rounded-full transition-all ${isDone ? 'bg-[#0E8F66]' : 'bg-slate-200'
-                                }`}
-                              title={stepName}
-                            ></div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-slate-500 pt-2">
-                      <span>Updated {claim.updatedAt}</span>
-                      <button className="text-[#0E8F66] font-bold hover:underline">View Claim Audit Log</button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+          <div className="animate-fade-in">
+            <ReliefModule
+              user={currentUser}
+              onNavigateToTab={onNavigateToTab}
+            />
           </div>
         );
 
@@ -1488,84 +1424,21 @@ export function CitizenDashboard({
         );
 
       // -----------------------------------------------------------------------
-      // 10. AI DISASTER ASSISTANT VIEW
+      // 10. AI DISASTER COPILOT VIEW
       // -----------------------------------------------------------------------
       case 'ai-assistant':
         return (
-          <div className="space-y-6 animate-fade-in max-w-4xl">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#0B4D3B] to-[#0E8F66] text-white flex items-center justify-center shadow-md">
-                <Bot className="w-7 h-7" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-                  SAHAY AI Disaster Assistant
-                  <span className="bg-emerald-100 text-[#0B4D3B] text-xs font-bold px-2.5 py-0.5 rounded-full">AI Powered</span>
-                </h1>
-                <p className="text-xs text-slate-500">Ask emergency questions, shelter queries, or safety guidance</p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
-              <div className="flex flex-wrap gap-2 text-xs">
-                <button
-                  onClick={() => handleSendChatMessage('Where is the nearest shelter in Wayanad?')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-[#EAF8F3] hover:text-[#0B4D3B] font-semibold text-slate-700 border border-slate-200/70 transition-all"
-                >
-                  📍 Nearest Shelter in Wayanad
-                </button>
-                <button
-                  onClick={() => handleSendChatMessage('What to do during a landslide warning?')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-[#EAF8F3] hover:text-[#0B4D3B] font-semibold text-slate-700 border border-slate-200/70 transition-all"
-                >
-                  ⛰️ Landslide Warning Safety
-                </button>
-                <button
-                  onClick={() => handleSendChatMessage('How to track my flood compensation claim?')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-[#EAF8F3] hover:text-[#0B4D3B] font-semibold text-slate-700 border border-slate-200/70 transition-all"
-                >
-                  💰 Relief Claim Status
-                </button>
-              </div>
-
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 h-80 overflow-y-auto space-y-3">
-                {chatMessages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs ${msg.sender === 'user'
-                          ? 'bg-[#0E8F66] text-white rounded-br-none'
-                          : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none'
-                        }`}
-                    >
-                      <p className="font-medium">{msg.text}</p>
-                      <span className={`text-[9px] block mt-1 ${msg.sender === 'user' ? 'text-emerald-100' : 'text-slate-400'}`}>
-                        {msg.time}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder="Type your emergency query here..."
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSendChatMessage()}
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0E8F66]/30 focus:border-[#0E8F66]"
-                />
-                <button
-                  onClick={() => handleSendChatMessage()}
-                  className="bg-[#0E8F66] hover:bg-[#0B4D3B] text-white p-3 rounded-xl shadow-xs transition-all"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+          <div className="animate-fade-in">
+            <AIDisasterCopilot
+              user={currentUser}
+              onNavigateToMap={() => setActiveMenu('map')}
+              onNavigateToRelief={(_subView) => {
+                setActiveMenu('relief');
+                window.location.hash = '/citizen/relief-fund';
+              }}
+              onOpenContacts={() => setIsContactsOpen(true)}
+              initialQuery={initialAiQuery}
+            />
           </div>
         );
 
@@ -1702,11 +1575,11 @@ export function CitizenDashboard({
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-full bg-[#0E8F66] text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform">
-                    {currentUser.name.charAt(0)}
+                    {(currentUser?.name || 'C').charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-black text-[#0B4D3B] truncate">{currentUser.name}</p>
-                    <p className="text-[11px] font-medium text-emerald-700 truncate">{currentUser.district} &bull; Citizen</p>
+                    <p className="text-xs font-black text-[#0B4D3B] truncate">{currentUser?.name || 'Citizen'}</p>
+                    <p className="text-[11px] font-medium text-emerald-700 truncate">{currentUser?.district || 'Kerala'} &bull; Citizen</p>
                   </div>
                 </div>
                 <ChevronDown className={`w-4 h-4 text-[#0E8F66] transition-transform duration-200 flex-shrink-0 ${userMenuOpen ? 'rotate-180' : ''}`} />
@@ -1724,7 +1597,7 @@ export function CitizenDashboard({
                   <div className="absolute bottom-full left-0 right-0 mb-2 z-40 bg-white rounded-2xl border border-slate-200 shadow-xl p-2 space-y-1 animate-fadeIn">
                     <div className="px-3 py-1.5 border-b border-slate-100">
                       <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Account Options</p>
-                      <p className="text-xs font-bold text-slate-800 truncate">{currentUser.name}</p>
+                      <p className="text-xs font-bold text-slate-800 truncate">{currentUser?.name || 'Citizen'}</p>
                     </div>
 
                     <button
@@ -1796,7 +1669,7 @@ export function CitizenDashboard({
               {/* Live Weather Summary Pill */}
               <div className="hidden sm:flex items-center gap-2.5 bg-[#EAF8F3] text-[#0B4D3B] px-4 py-1.5 rounded-full border border-emerald-200/80 text-xs font-semibold shadow-2xs">
                 <CloudSun className="w-4 h-4 text-[#0E8F66]" />
-                <span>28°C Moderate Rain</span>
+                <span>{weatherData?.temperature ?? 25}°C {weatherData?.condition || 'Light Rain'}</span>
               </div>
             </div>
           </header>

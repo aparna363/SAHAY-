@@ -38,7 +38,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ currentLang, onOpenAle
   const localRiskReason = alertObj?.localRisk?.reason || 'Normal weather telemetry in location.';
 
   const currentWeather = {
-    temp: globalWeather ? `${Math.round(globalWeather.temperature)}°C` : '28°C',
+    temp: globalWeather ? `${Math.round(globalWeather.temperature)}°C` : '25°C',
     status: globalWeather?.condition || 'Partly Cloudy',
     humidity: globalWeather ? `${globalWeather.humidity}%` : '81%',
     wind: globalWeather ? `${globalWeather.windSpeed} km/h` : '9.4 km/h',

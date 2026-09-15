@@ -4,6 +4,8 @@ const pool = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 const { requireRole } = require('../middleware/role');
 const { createAuditLog } = require('../utils/auditLogger');
+const { calculateRescueRouteOptions, calculateSafeRoute } = require('../services/safeRoutingService');
+const { uploadRescueEvidence } = require('../middleware/upload');
 
 // Middleware to ensure authenticated rescue unit or official
 router.use(authenticateToken);
@@ -309,9 +311,31 @@ router.patch('/operations/:id/status', async (req, res) => {
     const incident = incRes.rows[0];
 
     const oldStatus = incident.status;
-    let dbStatus = status;
-    if (status === 'COMPLETED') dbStatus = 'RESOLVED';
-    if (status === 'EN ROUTE' || status === 'ARRIVED' || status === 'RESCUE IN PROGRESS') dbStatus = 'IN_PROGRESS';
+    const statusUpper = String(status).trim().toUpperCase();
+
+    // Map incoming operational status aliases to valid DB check constraint values
+    // Allowed values: 'SUBMITTED', 'UNDER_REVIEW', 'VERIFIED', 'REJECTED', 'RESPONSE_ASSIGNED', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'
+    let dbStatus = statusUpper;
+    if (['ACCEPTED', 'ACCEPT', 'ASSIGNED', 'RESPONSE_ASSIGNED', 'RESPONSE ASSIGNED'].includes(statusUpper)) {
+      dbStatus = 'RESPONSE_ASSIGNED';
+    } else if (['COMPLETED', 'RESOLVED'].includes(statusUpper)) {
+      dbStatus = 'RESOLVED';
+    } else if (['EN ROUTE', 'EN_ROUTE', 'ARRIVED', 'RESCUE IN PROGRESS', 'RESCUE_IN_PROGRESS', 'IN PROGRESS', 'IN_PROGRESS'].includes(statusUpper)) {
+      dbStatus = 'IN_PROGRESS';
+    } else if (['UNDER REVIEW', 'UNDER_REVIEW'].includes(statusUpper)) {
+      dbStatus = 'UNDER_REVIEW';
+    } else if (statusUpper === 'VERIFIED') {
+      dbStatus = 'VERIFIED';
+    } else if (statusUpper === 'REJECTED') {
+      dbStatus = 'REJECTED';
+    } else if (statusUpper === 'CLOSED') {
+      dbStatus = 'CLOSED';
+    } else if (statusUpper === 'SUBMITTED') {
+      dbStatus = 'SUBMITTED';
+    } else {
+      // Safety fallback to prevent violating incidents_status_check constraint
+      dbStatus = 'IN_PROGRESS';
+    }
 
     await pool.query(
       "UPDATE incidents SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
@@ -324,14 +348,41 @@ router.patch('/operations/:id/status', async (req, res) => {
       [incident.id, oldStatus, status, req.user ? req.user.id : null, remarks || `Rescue Operation status updated to ${status}`]
     );
 
-    // Notify reporter
+    // Notify reporter (Citizen) with clear status updates
     if (incident.user_id) {
+      let notifType = 'OPERATION_UPDATE';
+      let notifTitle = 'Rescue Status Update';
+      let notifMsg = `Rescue team operational status for incident ${incident.incident_code} is now: ${status}. ${remarks ? 'Note: ' + remarks : ''}`;
+
+      const sUpper = String(status).trim().toUpperCase();
+      const unitName = req.user ? (req.user.name || req.user.panchayat || 'Rescue Unit Base') : 'Official Rescue Team';
+
+      if (['ACCEPTED', 'ACCEPT', 'RESPONSE_ASSIGNED', 'RESPONSE ASSIGNED', 'ASSIGNED'].includes(sUpper)) {
+        notifType = 'INCIDENT_ACCEPTED';
+        notifTitle = 'Rescue Team Accepted Your Incident Report 🚑';
+        notifMsg = `Good news! Your reported incident (${incident.incident_code}) has been ACCEPTED by ${unitName}. Rescue team personnel have taken charge of your emergency dispatch. ${remarks ? 'Note: ' + remarks : ''}`;
+      } else if (['EN ROUTE', 'EN_ROUTE'].includes(sUpper)) {
+        notifType = 'RESCUE_EN_ROUTE';
+        notifTitle = 'Rescue Team En Route to Location 🚗';
+        notifMsg = `The Rescue Team (${unitName}) is en route to your incident location (${incident.incident_code}). Please remain in a safe location. ${remarks ? 'Note: ' + remarks : ''}`;
+      } else if (['ARRIVED'].includes(sUpper)) {
+        notifType = 'RESCUE_ARRIVED';
+        notifTitle = 'Rescue Team Arrived at Site 📍';
+        notifMsg = `The Rescue Team (${unitName}) has arrived at the incident site (${incident.incident_code}) and is actively conducting operations. ${remarks ? 'Note: ' + remarks : ''}`;
+      } else if (['COMPLETED', 'RESOLVED'].includes(sUpper)) {
+        notifType = 'RESCUE_COMPLETED';
+        notifTitle = 'Rescue Operation Completed ✅';
+        notifMsg = `The rescue operation for your reported incident (${incident.incident_code}) has been successfully completed by ${unitName}. ${remarks ? 'Note: ' + remarks : ''}`;
+      }
+
       await pool.query(
         `INSERT INTO notifications (user_id, type, title, message, reference_type, reference_id)
-         VALUES ($1, 'OPERATION_UPDATE', 'Rescue Status Update', $2, 'INCIDENT', $3)`,
+         VALUES ($1, $2, $3, $4, 'INCIDENT', $5)`,
         [
           incident.user_id,
-          `Rescue team operational status for incident ${incident.incident_code} is now: ${status}. ${remarks ? 'Note: ' + remarks : ''}`,
+          notifType,
+          notifTitle,
+          notifMsg,
           incident.incident_code
         ]
       );
@@ -607,6 +658,427 @@ router.delete('/team-members/:id', async (req, res) => {
   } catch (err) {
     console.error('Delete Team Member Error:', err);
     return res.status(500).json({ error: 'Failed to delete team member: ' + err.message });
+  }
+});
+
+// -------------------------------------------------------------
+// 9. GET /api/rescue/map-data
+// Real-time disaster GIS telemetry tailored for Rescue Teams:
+// active incidents, rescue team GPS, other units, shelters, hospitals,
+// hazard zones, and blocked roads.
+// -------------------------------------------------------------
+router.get('/map-data', async (req, res) => {
+  try {
+    const userDistrict = req.user ? req.user.district : 'Kottayam';
+    const district = req.query.district || userDistrict;
+    const userRole = (req.user?.role || 'rescue_team').toLowerCase();
+
+    // 1. Incidents in the district / operational area (DB Loaded)
+    const incRes = await pool.query(`
+      SELECT 
+        i.id,
+        i.incident_code AS "incidentCode",
+        it.name AS "incidentTypeName",
+        i.severity,
+        i.description,
+        i.latitude,
+        i.longitude,
+        i.location_address AS "locationAddress",
+        i.status,
+        i.created_at AS "createdAt",
+        i.updated_at AS "updatedAt",
+        u.name AS "reporterName",
+        u.phone AS "reporterPhone",
+        u.district AS "reporterDistrict",
+        (SELECT json_build_object('assignedTeam', h.remarks, 'assignedAt', h.created_at)
+         FROM incident_status_history h 
+         WHERE h.incident_id = i.id AND h.new_status = 'RESPONSE_ASSIGNED' 
+         ORDER BY h.id DESC LIMIT 1) AS assignment
+      FROM incidents i
+      LEFT JOIN incident_types it ON i.incident_type_id = it.id
+      LEFT JOIN users u ON i.user_id = u.id
+      WHERE i.status NOT IN ('REJECTED', 'CLOSED')
+        AND (LOWER(u.district) LIKE LOWER($1) OR LOWER(i.location_address) LIKE LOWER($1))
+      ORDER BY 
+        CASE i.severity 
+          WHEN 'CRITICAL' THEN 1 
+          WHEN 'HIGH' THEN 2 
+          WHEN 'MODERATE' THEN 3 
+          ELSE 4 END,
+        i.created_at DESC;
+    `, [`%${district.toLowerCase()}%`]);
+
+    const incidents = incRes.rows.map(row => ({
+      id: row.id,
+      incidentCode: row.incidentCode,
+      incidentTypeName: row.incidentTypeName || 'General Incident',
+      severity: row.severity,
+      description: row.description,
+      latitude: parseFloat(row.latitude),
+      longitude: parseFloat(row.longitude),
+      locationAddress: row.locationAddress,
+      status: row.status,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      reporter: {
+        name: row.reporterName,
+        phone: row.reporterPhone,
+        district: row.reporterDistrict
+      },
+      assignment: row.assignment
+    }));
+
+    // 2. Active Rescue Units Telemetry (DB Loaded)
+    const unitsRes = await pool.query(`
+      SELECT 
+        id, unit_id AS "unitId", unit_name AS "unitName", unit_type AS "unitType",
+        district, contact_number AS "contactNumber", status, latitude, longitude,
+        team_leader AS "teamLeader", team_size AS "teamSize", current_location AS "currentLocation",
+        assigned_incident_id AS "assignedIncidentId", last_location_update AS "lastLocationUpdate"
+      FROM rescue_units
+      WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+      ORDER BY id ASC;
+    `);
+
+    const now = new Date();
+    const rescueTeams = unitsRes.rows.map(u => {
+      const lastUpdate = u.lastLocationUpdate ? new Date(u.lastLocationUpdate) : new Date();
+      const diffMins = Math.round((now.getTime() - lastUpdate.getTime()) / (1000 * 60));
+      return {
+        ...u,
+        latitude: parseFloat(u.latitude),
+        longitude: parseFloat(u.longitude),
+        lastLocationUpdate: lastUpdate.toISOString(),
+        minutesSinceUpdate: diffMins
+      };
+    });
+
+    // 3. Shelters (DB Loaded)
+    const shelterRes = await pool.query(`
+      SELECT id, name, district, address, latitude, longitude, capacity, available_capacity AS "availableCapacity", contact_number AS "contactNumber"
+      FROM shelters
+      WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+      ORDER BY id ASC;
+    `);
+    const shelters = shelterRes.rows.map(s => ({
+      ...s,
+      latitude: parseFloat(s.latitude),
+      longitude: parseFloat(s.longitude),
+      status: (s.availableCapacity && s.availableCapacity > 0) ? 'OPEN' : 'FULL'
+    }));
+
+    // 4. Hospitals (DB Loaded)
+    const hospRes = await pool.query(`
+      SELECT id, name, district, address, latitude, longitude, contact_number AS "contactNumber", 
+             emergency_available AS "emergencyAvailable", bed_capacity AS "bedCapacity", 
+             available_beds AS "availableBeds", trauma_care_level AS "traumaCareLevel"
+      FROM hospitals
+      WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+      ORDER BY id ASC;
+    `);
+    const hospitals = hospRes.rows.map(h => ({
+      ...h,
+      latitude: parseFloat(h.latitude),
+      longitude: parseFloat(h.longitude)
+    }));
+
+    // 5. Hazard Zones (PostGIS GeoJSON Polygons)
+    const hzRes = await pool.query(`
+      SELECT id, name, hazard_type AS "hazardType", severity, description, active, ST_AsGeoJSON(geometry) AS geojson
+      FROM hazard_zones
+      WHERE active = true
+      ORDER BY id ASC;
+    `);
+    const hazardZones = hzRes.rows.map(hz => ({
+      ...hz,
+      geojson: hz.geojson ? JSON.parse(hz.geojson) : null
+    }));
+
+    // 6. Road Hazards & Blocked Roads (DB Loaded)
+    const roadsRes = await pool.query(`
+      SELECT id, road_name AS "roadName", district, status, hazard_type AS "hazardType", 
+             description, severity, start_lat AS "startLat", start_lng AS "startLng", 
+             end_lat AS "endLat", end_lng AS "endLng", ST_AsGeoJSON(geometry) AS geojson,
+             created_at AS "createdAt"
+      FROM road_hazards
+      WHERE is_active = true
+      ORDER BY CASE status WHEN 'BLOCKED' THEN 1 WHEN 'HAZARDOUS' THEN 2 ELSE 3 END, id ASC;
+    `);
+    const roadHazards = roadsRes.rows.map(r => ({
+      ...r,
+      startLat: parseFloat(r.startLat),
+      startLng: parseFloat(r.startLng),
+      endLat: parseFloat(r.endLat),
+      endLng: parseFloat(r.endLng),
+      geojson: r.geojson ? JSON.parse(r.geojson) : null
+    }));
+
+    return res.status(200).json({
+      success: true,
+      district,
+      userRole,
+      currentTeam: {
+        unitId: req.user.department_id || req.user.departmentId || 'arr.frs',
+        unitName: req.user.name || 'Fire & Rescue Services Base',
+        district: userDistrict
+      },
+      counts: {
+        incidents: incidents.length,
+        rescueTeams: rescueTeams.length,
+        shelters: shelters.length,
+        hospitals: hospitals.length,
+        hazardZones: hazardZones.length,
+        blockedRoads: roadHazards.filter(r => r.status === 'BLOCKED').length
+      },
+      incidents,
+      rescueTeams,
+      shelters,
+      hospitals,
+      hazardZones,
+      roadHazards,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (err) {
+    console.error('Fetch Rescue Map Data Error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch rescue map data: ' + err.message });
+  }
+});
+
+// -------------------------------------------------------------
+// 10. POST /api/rescue/safe-route
+// Smart Navigation route calculation evaluating disaster hazards,
+// blocked roads, safety score, and multiple route options.
+// -------------------------------------------------------------
+router.post('/safe-route', async (req, res) => {
+  try {
+    const { origin, destination } = req.body;
+
+    if (!origin || !destination) {
+      return res.status(400).json({
+        success: false,
+        error: 'Both origin and destination coordinates are required for navigation route calculation.'
+      });
+    }
+
+    const routeResult = await calculateRescueRouteOptions(origin, destination);
+    return res.status(200).json(routeResult);
+
+  } catch (err) {
+    console.error('Rescue Safe Route Error:', err);
+    return res.status(500).json({
+      success: false,
+      error: 'Unable to calculate a safe route right now. Please try again: ' + err.message
+    });
+  }
+});
+
+// -------------------------------------------------------------
+// 11. POST /api/rescue/missions/:id/evidence
+// Upload damage & rescue evidence (Photos, Videos, Rescue Stats, Damage Form)
+// -------------------------------------------------------------
+router.post('/missions/:id/evidence', uploadRescueEvidence.array('files', 5), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      evidenceType = 'PHOTO',
+      description = '',
+      peopleRescued = 0,
+      peopleInjured = 0,
+      peopleMissing = 0,
+      peopleEvacuated = 0,
+      medicalAssistanceNeeded = false,
+      floodDepth = '',
+      roadCondition = 'Normal',
+      buildingDamage = 'None',
+      infrastructureDamage = 'None',
+      otherObservations = '',
+      latitude,
+      longitude,
+      capturedAt
+    } = req.body;
+
+    // Verify incident existence
+    const isNum = !isNaN(Number(id)) && /^\d+$/.test(String(id).trim());
+    const incRes = isNum
+      ? await pool.query("SELECT id, incident_code, status, severity, user_id FROM incidents WHERE id = $1 OR incident_code = $2", [parseInt(id, 10), String(id)])
+      : await pool.query("SELECT id, incident_code, status, severity, user_id FROM incidents WHERE incident_code = $1", [String(id)]);
+
+    if (incRes.rows.length === 0) {
+      return res.status(404).json({ success: false, error: `Incident or Mission ID ${id} not found.` });
+    }
+    const incident = incRes.rows[0];
+
+    const files = req.files || [];
+    const userId = req.user ? req.user.id : null;
+    const userName = req.user ? req.user.name : 'Rescue Officer';
+    const unitId = req.user ? (req.user.departmentId || req.user.department_id || 'RS-01') : 'RS-01';
+
+    const pRescued = parseInt(peopleRescued, 10) || 0;
+    const pInjured = parseInt(peopleInjured, 10) || 0;
+    const pMissing = parseInt(peopleMissing, 10) || 0;
+    const pEvacuated = parseInt(peopleEvacuated, 10) || 0;
+    const medNeeded = medicalAssistanceNeeded === 'true' || medicalAssistanceNeeded === true;
+
+    const latNum = parseFloat(latitude);
+    const lngNum = parseFloat(longitude);
+    const hasGps = !isNaN(latNum) && !isNaN(lngNum);
+
+    const insertedRecords = [];
+
+    if (files.length > 0) {
+      // Multiple file uploads
+      for (const file of files) {
+        const fileUrl = `/uploads/rescue_evidence/${file.filename}`;
+        const isVid = file.mimetype.startsWith('video');
+        const evType = isVid ? 'VIDEO' : (evidenceType || 'PHOTO');
+
+        const insertQuery = `
+          INSERT INTO rescue_evidence (
+            incident_id, incident_code, rescue_unit_id, user_id, uploaded_by_name,
+            evidence_type, file_url, file_name, mime_type, file_size, description,
+            people_rescued, people_injured, people_missing, people_evacuated, medical_assistance_needed,
+            flood_depth, road_condition, building_damage, infrastructure_damage, other_observations,
+            latitude, longitude, location, captured_at
+          ) VALUES (
+            $1, $2, $3, $4, $5,
+            $6, $7, $8, $9, $10, $11,
+            $12, $13, $14, $15, $16,
+            $17, $18, $19, $20, $21,
+            $22::numeric, $23::numeric, ${hasGps ? 'ST_SetSRID(ST_MakePoint($23::double precision, $22::double precision), 4326)' : 'NULL'}, $24
+          ) RETURNING *;
+        `;
+
+        const insRes = await pool.query(insertQuery, [
+          incident.id, incident.incident_code, unitId, userId, userName,
+          evType, fileUrl, file.originalname, file.mimetype, file.size, description,
+          pRescued, pInjured, pMissing, pEvacuated, medNeeded,
+          floodDepth, roadCondition, buildingDamage, infrastructureDamage, otherObservations,
+          hasGps ? latNum : null, hasGps ? lngNum : null, capturedAt ? new Date(capturedAt) : new Date()
+        ]);
+        insertedRecords.push(insRes.rows[0]);
+      }
+    } else {
+      // Structured Report Submission without raw file
+      const insertQuery = `
+        INSERT INTO rescue_evidence (
+          incident_id, incident_code, rescue_unit_id, user_id, uploaded_by_name,
+          evidence_type, file_url, file_name, description,
+          people_rescued, people_injured, people_missing, people_evacuated, medical_assistance_needed,
+          flood_depth, road_condition, building_damage, infrastructure_damage, other_observations,
+          latitude, longitude, location, captured_at
+        ) VALUES (
+          $1, $2, $3, $4, $5,
+          'REPORT', NULL, NULL, $6,
+          $7, $8, $9, $10, $11,
+          $12, $13, $14, $15, $16,
+          $17::numeric, $18::numeric, ${hasGps ? 'ST_SetSRID(ST_MakePoint($18::double precision, $17::double precision), 4326)' : 'NULL'}, $19
+        ) RETURNING *;
+      `;
+
+      const insRes = await pool.query(insertQuery, [
+        incident.id, incident.incident_code, unitId, userId, userName,
+        description || 'Mission Field Damage & Rescue Progress Report',
+        pRescued, pInjured, pMissing, pEvacuated, medNeeded,
+        floodDepth, roadCondition, buildingDamage, infrastructureDamage, otherObservations,
+        hasGps ? latNum : null, hasGps ? lngNum : null, capturedAt ? new Date(capturedAt) : new Date()
+      ]);
+      insertedRecords.push(insRes.rows[0]);
+    }
+
+    // Auto-update incident status to IN_PROGRESS if currently RESPONSE_ASSIGNED or ACCEPTED
+    if (['RESPONSE_ASSIGNED', 'SUBMITTED', 'VERIFIED'].includes(incident.status)) {
+      await pool.query("UPDATE incidents SET status = 'IN_PROGRESS', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [incident.id]);
+    }
+
+    // Notify Collector
+    const collectorRes = await pool.query("SELECT id FROM users WHERE role = 'collector' AND LOWER(district) = LOWER($1) LIMIT 1", [req.user.district || 'Kottayam']);
+    const collectorId = collectorRes.rows.length > 0 ? collectorRes.rows[0].id : null;
+
+    if (collectorId) {
+      await pool.query(`
+        INSERT INTO notifications (user_id, type, title, message, reference_type, reference_id)
+        VALUES ($1, 'MISSION_EVIDENCE_SUBMITTED', $2, $3, 'INCIDENT', $4)
+      `, [
+        collectorId,
+        `Mission Evidence Submitted: ${incident.incident_code}`,
+        `Rescue Unit ${userName} uploaded field evidence for Incident ${incident.incident_code}. Rescued: ${pRescued}, Injured: ${pInjured}, Evacuated: ${pEvacuated}.`,
+        incident.incident_code
+      ]);
+    }
+
+    await createAuditLog(req, 'MISSION_EVIDENCE_SUBMITTED', 'Incident', incident.incident_code, req.user.district, {
+      evidenceCount: insertedRecords.length,
+      peopleRescued: pRescued,
+      peopleInjured: pInjured,
+      hasGps
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: `Damage & rescue evidence submitted successfully (${insertedRecords.length} record(s)).`,
+      incidentId: incident.id,
+      incidentCode: incident.incident_code,
+      evidence: insertedRecords
+    });
+
+  } catch (err) {
+    console.error('Submit Mission Evidence Error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to submit rescue evidence: ' + err.message });
+  }
+});
+
+// -------------------------------------------------------------
+// 12. GET /api/rescue/missions/:id/evidence
+// Retrieve submitted damage & rescue evidence for an incident/mission
+// -------------------------------------------------------------
+router.get('/missions/:id/evidence', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const isNum = !isNaN(Number(id)) && /^\d+$/.test(String(id).trim());
+    const query = isNum
+      ? `SELECT * FROM rescue_evidence WHERE incident_id = $1 OR incident_code = $2 ORDER BY created_at DESC`
+      : `SELECT * FROM rescue_evidence WHERE incident_code = $1 ORDER BY created_at DESC`;
+    const params = isNum ? [parseInt(id, 10), String(id)] : [String(id)];
+
+    const result = await pool.query(query, params);
+
+    // Compute aggregated statistics for the mission
+    let totalRescued = 0;
+    let totalInjured = 0;
+    let totalMissing = 0;
+    let totalEvacuated = 0;
+    let photoCount = 0;
+    let videoCount = 0;
+
+    result.rows.forEach(r => {
+      totalRescued = Math.max(totalRescued, r.people_rescued || 0);
+      totalInjured = Math.max(totalInjured, r.people_injured || 0);
+      totalMissing = Math.max(totalMissing, r.people_missing || 0);
+      totalEvacuated = Math.max(totalEvacuated, r.people_evacuated || 0);
+      if (r.evidence_type === 'PHOTO') photoCount++;
+      if (r.evidence_type === 'VIDEO') videoCount++;
+    });
+
+    return res.status(200).json({
+      success: true,
+      incidentId: id,
+      count: result.rows.length,
+      evidence: result.rows,
+      summary: {
+        totalRescued,
+        totalInjured,
+        totalMissing,
+        totalEvacuated,
+        photoCount,
+        videoCount
+      }
+    });
+
+  } catch (err) {
+    console.error('Fetch Mission Evidence Error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch mission evidence: ' + err.message });
   }
 });
 

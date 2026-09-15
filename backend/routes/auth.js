@@ -42,13 +42,26 @@ router.post('/register', async (req, res) => {
     const userEmail = email ? email.trim().toLowerCase() : null;
 
     // Check existing
-    const existingCheck = await client.query(
-      'SELECT id FROM users WHERE phone = $1 OR (email IS NOT NULL AND LOWER(email) = $2)',
-      [cleanPhone, userEmail || cleanPhone]
-    );
+    // For Rescue Team / Station registration, emergency contact phone number is non-unique and can be shared.
+    let existingCheck;
+    if (rawRole === 'station') {
+      if (userEmail) {
+        existingCheck = await client.query(
+          'SELECT id FROM users WHERE email IS NOT NULL AND LOWER(email) = $1 AND role = $2',
+          [userEmail, rawRole]
+        );
+      } else {
+        existingCheck = { rows: [] };
+      }
+    } else {
+      existingCheck = await client.query(
+        'SELECT id FROM users WHERE (phone IS NOT NULL AND phone = $1) OR (email IS NOT NULL AND LOWER(email) = $2)',
+        [cleanPhone, userEmail || cleanPhone]
+      );
+    }
 
     if (existingCheck.rows.length > 0) {
-      return res.status(400).json({ error: 'Mobile number or Email is already registered in SAHAY portal. Please Login.' });
+      return res.status(400).json({ error: 'An account with this Email is already registered in SAHAY portal. Please Login.' });
     }
 
     await client.query('BEGIN');
@@ -116,6 +129,62 @@ router.post('/register', async (req, res) => {
     return res.status(500).json({ error: 'Server error during registration: ' + error.message });
   } finally {
     client.release();
+  }
+});
+
+// -------------------------------------------------------------
+// POST /api/auth/check-availability
+// Real-time check if email or phone is already registered
+// -------------------------------------------------------------
+router.post('/check-availability', async (req, res) => {
+  try {
+    const { email, phone, role } = req.body;
+    let emailExists = false;
+    let phoneExists = false;
+
+    if (email && typeof email === 'string' && email.trim()) {
+      const userEmail = email.trim().toLowerCase();
+      const emailQuery = `
+        SELECT id FROM users WHERE email IS NOT NULL AND LOWER(email) = $1
+        UNION
+        SELECT user_id AS id FROM login WHERE email IS NOT NULL AND LOWER(email) = $1
+        LIMIT 1;
+      `;
+      const emailRes = await pool.query(emailQuery, [userEmail]);
+      if (emailRes.rows.length > 0) {
+        emailExists = true;
+      }
+    }
+
+    if (phone && typeof phone === 'string' && phone.trim()) {
+      let cleanPhone = phone.replace(/\D/g, '');
+      if (cleanPhone.length > 10 && cleanPhone.startsWith('91')) {
+        cleanPhone = cleanPhone.slice(2);
+      } else if (cleanPhone.length > 10) {
+        cleanPhone = cleanPhone.slice(-10);
+      }
+
+      if (cleanPhone.length === 10) {
+        const phoneQuery = `
+          SELECT id FROM users WHERE phone IS NOT NULL AND phone = $1
+          UNION
+          SELECT user_id AS id FROM login WHERE phone IS NOT NULL AND phone = $1
+          LIMIT 1;
+        `;
+        const phoneRes = await pool.query(phoneQuery, [cleanPhone]);
+        if (phoneRes.rows.length > 0) {
+          phoneExists = true;
+        }
+      }
+    }
+
+    return res.json({
+      emailExists,
+      phoneExists
+    });
+  } catch (error) {
+    console.error('Check availability error:', error);
+    return res.status(500).json({ error: 'Failed to check credential availability: ' + error.message });
   }
 });
 
@@ -223,13 +292,29 @@ router.post('/login', async (req, res) => {
     // Check status: Block pending or rejected accounts
     if (targetRow.status === 'pending') {
       return res.status(403).json({
-        error: `Your Station account is PENDING APPROVAL by the District Collector of ${targetRow.district || 'your district'}. Please contact your District Collectorate.`
+        status: 'pending',
+        error: `Your Station account (${targetRow.name || 'Rescue Team'}) is PENDING APPROVAL by the District Collector of ${targetRow.district || 'your district'}. Verification is in progress. Full access will be unlocked upon approval.`
       });
     }
 
     if (targetRow.status === 'rejected') {
+      // Check if there is an explicit rejection notification saved
+      let rejectionMsg = `Your Rescue Team registration request for ${targetRow.district || 'your district'} was REJECTED by the District Collector. Please contact the Collectorate office for clarification.`;
+      try {
+        const notifRes = await pool.query(
+          "SELECT message FROM notifications WHERE user_id = $1 AND type = 'STATION_APPROVAL_REJECTED' ORDER BY created_at DESC LIMIT 1",
+          [targetRow.id]
+        );
+        if (notifRes.rows.length > 0 && notifRes.rows[0].message) {
+          rejectionMsg = notifRes.rows[0].message;
+        }
+      } catch (e) {
+        // Fallback to standard message
+      }
+
       return res.status(403).json({
-        error: `Your Station registration request was rejected by the District Collector. Please contact the Collectorate for clarification.`
+        status: 'rejected',
+        error: rejectionMsg
       });
     }
 

@@ -81,14 +81,14 @@ export const KeralaAlertMap: React.FC<KeralaAlertMapProps> = ({
       maxBoundsViscosity: 0.9,
     });
 
-    // Sleek CartoDB Dark Matter / Positron base tile layer for GIS thematic look
+    // Clean base tile layer for GIS thematic look (no API key required)
     const tileUrl = mapTheme === 'dark'
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     L.tileLayer(tileUrl, {
       maxZoom: 18,
-      subdomains: 'abcd',
+      attribution: '&copy; OpenStreetMap &copy; Esri',
     }).addTo(map);
 
     mapRef.current = map;

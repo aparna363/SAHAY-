@@ -41,6 +41,78 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
   const [forecastLimit, setForecastLimit] = useState<24 | 48>(24);
   const [show48HourModal, setShow48HourModal] = useState(false);
 
+  // Dynamic Solar & Lunar Astronomy calculation helper
+  const getAstronomyData = () => {
+    const lat = weatherData?.latitude ?? 9.9312;
+    const lon = weatherData?.longitude ?? 76.2673;
+    const d = new Date();
+    
+    const startOfYear = new Date(d.getFullYear(), 0, 0);
+    const diff = d.getTime() - startOfYear.getTime();
+    const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    const declination = 23.44 * Math.sin((2 * Math.PI / 365) * (dayOfYear - 81)) * (Math.PI / 180);
+    const latRad = lat * (Math.PI / 180);
+    
+    let cosH = -Math.tan(latRad) * Math.tan(declination);
+    cosH = Math.min(1, Math.max(-1, cosH));
+    const H = Math.acos(cosH) * (180 / Math.PI);
+    
+    const timeZoneOffsetHours = -d.getTimezoneOffset() / 60;
+    const B = (2 * Math.PI / 365) * (dayOfYear - 81);
+    const EoT = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+    
+    const solarNoonLocal = 12 + (timeZoneOffsetHours - lon / 15) - (EoT / 60);
+    const sunriseHours = solarNoonLocal - (H / 15);
+    const sunsetHours = solarNoonLocal + (H / 15);
+    
+    const formatTime = (totalHours: number) => {
+      const normalized = ((totalHours % 24) + 24) % 24;
+      const hours = Math.floor(normalized);
+      const mins = Math.round((normalized - hours) * 60);
+      const dateObj = new Date(d);
+      dateObj.setHours(hours, mins, 0, 0);
+      return dateObj.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
+    };
+
+    const refNewMoonMs = 1704974220000;
+    const daysSinceRef = (d.getTime() - refNewMoonMs) / (1000 * 60 * 60 * 24);
+    const synodicMonth = 29.530588;
+    const moonAgeDays = ((daysSinceRef % synodicMonth) + synodicMonth) % synodicMonth;
+    
+    const moonriseHours = (6.0 + moonAgeDays * 0.812) % 24;
+    const moonsetHours = (18.0 + moonAgeDays * 0.812) % 24;
+
+    return {
+      sunrise: weatherData?.sunrise || formatTime(sunriseHours),
+      sunset: weatherData?.sunset || formatTime(sunsetHours),
+      moonrise: weatherData?.moonrise || formatTime(moonriseHours),
+      moonset: weatherData?.moonset || formatTime(moonsetHours),
+      sunriseMinutes: Math.round(sunriseHours * 60),
+      sunsetMinutes: Math.round(sunsetHours * 60)
+    };
+  };
+
+  const astroData = getAstronomyData();
+
+  // Calculate live Sun position along quadratic Bézier curve
+  const getSunArcCoordinates = () => {
+    const now = new Date();
+    const currentMins = now.getHours() * 60 + now.getMinutes();
+    const sr = astroData.sunriseMinutes;
+    const ss = astroData.sunsetMinutes;
+    
+    if (currentMins <= sr) return { cx: 10, cy: 50, isSunVisible: false };
+    if (currentMins >= ss) return { cx: 190, cy: 50, isSunVisible: false };
+    
+    const progress = Math.min(1, Math.max(0, (currentMins - sr) / (ss - sr)));
+    const cx = 10 + 180 * progress;
+    const cy = 50 - 120 * progress * (1 - progress);
+    return { cx: Math.round(cx * 10) / 10, cy: Math.round(cy * 10) / 10, isSunVisible: true };
+  };
+
+  const sunArc = getSunArcCoordinates();
+
   // Helper to render weather icon dynamically
   const renderIcon = (iconName: string, className: string = 'w-6 h-6') => {
     switch (iconName) {
@@ -90,7 +162,7 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
     }
   };
 
-  const generateDefaultHourly = (baseTemp: number = 28): HourlyForecastItem[] => {
+  const generateDefaultHourly = (baseTemp: number = 25): HourlyForecastItem[] => {
     const items: HourlyForecastItem[] = [];
     const now = new Date();
     const currentHour = now.getHours();
@@ -122,7 +194,7 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
 
   const placeDisplay = weatherData?.placeName || weatherData?.district || 'Kottayam District';
   const rawHourly = weatherData?.hourlyForecast || [];
-  const hourlyList = rawHourly.length > 0 ? rawHourly : generateDefaultHourly(weatherData?.temperature ?? 28);
+  const hourlyList = rawHourly.length > 0 ? rawHourly : generateDefaultHourly(weatherData?.temperature ?? 25);
   const dailyList = weatherData?.dailyForecast || [];
   const icon = weatherData?.icon || 'cloud-rain';
 
@@ -190,7 +262,7 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-4 py-2 rounded-full text-xs font-extrabold text-emerald-900 shadow-sm">
             {renderIcon(icon, 'w-4 h-4')}
-            <span>{weatherData?.temperature ?? 28}°C {weatherData?.condition || 'Moderate Rain'}</span>
+            <span>{weatherData?.temperature ?? 25}°C {weatherData?.condition || 'Light Rain'}</span>
           </div>
 
           <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black tracking-wider uppercase border shadow-md ${getAlertBadgeColor(alertLevel)}`}>
@@ -341,7 +413,7 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
             {/* 10. Weather Condition */}
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 space-y-1">
               <div className="text-[11px] font-bold text-slate-300 uppercase">Weather Condition</div>
-              <div className="text-xl font-black text-white truncate">{weatherData?.condition || 'Moderate Rain'}</div>
+              <div className="text-xl font-black text-white truncate">{weatherData?.condition || 'Light Rain'}</div>
               <div className="text-[10px] text-amber-300 font-bold">Satellite Verified</div>
             </div>
           </div>
@@ -568,7 +640,13 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
             <div className="h-16 w-full relative my-2">
               <svg className="w-full h-full" viewBox="0 0 200 60">
                 <path d="M 10,50 Q 100,-10 190,50" fill="none" stroke="#f59e0b" strokeWidth="2" strokeDasharray="4 2" />
-                <circle cx="100" cy="20" r="6" fill="#fbbf24" className="animate-pulse" />
+                <circle
+                  cx={sunArc.cx}
+                  cy={sunArc.cy}
+                  r="6"
+                  fill={sunArc.isSunVisible ? "#fbbf24" : "#64748b"}
+                  className={sunArc.isSunVisible ? "animate-pulse shadow-md" : "opacity-60"}
+                />
               </svg>
             </div>
 
@@ -577,14 +655,14 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
                 <Sunrise className="w-4 h-4 text-amber-400" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-normal">Sunrise</span>
-                  {weatherData?.sunrise || '6:13 am'}
+                  {astroData.sunrise}
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-right">
                 <div>
                   <span className="text-[10px] text-slate-400 block font-normal">Sunset</span>
-                  {weatherData?.sunset || '6:42 pm'}
+                  {astroData.sunset}
                 </div>
                 <Sunset className="w-4 h-4 text-orange-400" />
               </div>
@@ -603,7 +681,7 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
                 <Moon className="w-8 h-8 text-slate-300" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-normal">Moonrise</span>
-                  <span className="text-base font-bold text-white">{weatherData?.moonrise || '2:22 am'}</span>
+                  <span className="text-base font-bold text-white">{astroData.moonrise}</span>
                 </div>
               </div>
 
@@ -611,7 +689,7 @@ export const WeatherTelemetryDashboard: React.FC<WeatherTelemetryDashboardProps>
                 <Moon className="w-8 h-8 text-slate-400 rotate-180" />
                 <div>
                   <span className="text-[10px] text-slate-400 block font-normal">Moonset</span>
-                  <span className="text-base font-bold text-white">2:15 pm</span>
+                  <span className="text-base font-bold text-white">{astroData.moonset}</span>
                 </div>
               </div>
             </div>

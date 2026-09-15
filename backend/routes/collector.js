@@ -142,4 +142,93 @@ router.post('/assign-rescue-team', async (req, res) => {
   }
 });
 
+// -------------------------------------------------------------
+// GET /api/collector/evidence
+// Collector endpoint: Audit damage & rescue evidence submitted by Rescue Teams in this district
+// -------------------------------------------------------------
+router.get('/evidence', async (req, res) => {
+  try {
+    const district = req.query.district || (req.user ? req.user.district : 'Idukki');
+    const { incidentId } = req.query;
+
+    let query = `
+      SELECT 
+        e.*,
+        e.incident_id AS "incidentId",
+        e.incident_code AS "incidentCode",
+        e.rescue_unit_id AS "rescueUnitId",
+        e.uploaded_by_name AS "uploadedByName",
+        e.evidence_type AS "evidenceType",
+        e.file_url AS "fileUrl",
+        e.file_name AS "fileName",
+        e.mime_type AS "mimeType",
+        e.file_size AS "fileSize",
+        e.people_rescued AS "peopleRescued",
+        e.people_injured AS "peopleInjured",
+        e.people_missing AS "peopleMissing",
+        e.people_evacuated AS "peopleEvacuated",
+        e.medical_assistance_needed AS "medicalAssistanceNeeded",
+        e.flood_depth AS "floodDepth",
+        e.road_condition AS "roadCondition",
+        e.building_damage AS "buildingDamage",
+        e.infrastructure_damage AS "infrastructureDamage",
+        e.other_observations AS "otherObservations",
+        e.captured_at AS "capturedAt",
+        e.created_at AS "createdAt",
+        i.status AS "missionStatus",
+        i.severity AS "incidentSeverity",
+        i.location_address AS "locationAddress",
+        it.name AS "incidentTypeName"
+      FROM rescue_evidence e
+      JOIN incidents i ON e.incident_id = i.id
+      LEFT JOIN incident_types it ON i.incident_type_id = it.id
+      LEFT JOIN users u ON i.user_id = u.id
+      WHERE (LOWER(u.district) LIKE LOWER($1) OR LOWER(i.location_address) LIKE LOWER($1))
+    `;
+    const params = [`%${district.toLowerCase()}%`];
+
+    if (incidentId) {
+      params.push(incidentId);
+      query += ` AND (e.incident_id = $${params.length} OR e.incident_code = $${params.length})`;
+    }
+
+    query += ` ORDER BY e.created_at DESC;`;
+
+    const result = await pool.query(query, params);
+
+    let totalRescued = 0;
+    let totalInjured = 0;
+    let totalEvacuated = 0;
+    let photoCount = 0;
+    let videoCount = 0;
+
+    result.rows.forEach(r => {
+      totalRescued += (r.people_rescued || 0);
+      totalInjured += (r.people_injured || 0);
+      totalEvacuated += (r.people_evacuated || 0);
+      if (r.evidence_type === 'PHOTO') photoCount++;
+      if (r.evidence_type === 'VIDEO') videoCount++;
+    });
+
+    return res.status(200).json({
+      success: true,
+      district,
+      count: result.rows.length,
+      evidence: result.rows,
+      stats: {
+        totalEvidences: result.rows.length,
+        totalRescued,
+        totalInjured,
+        totalEvacuated,
+        photoCount,
+        videoCount
+      }
+    });
+
+  } catch (err) {
+    console.error('Collector Fetch Evidence Error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch rescue evidence: ' + err.message });
+  }
+});
+
 module.exports = router;

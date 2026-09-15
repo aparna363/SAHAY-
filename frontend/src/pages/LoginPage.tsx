@@ -1,5 +1,22 @@
-import React, { useState } from 'react';
-import { LogIn, Lock, Phone, UserCheck, ArrowRight, AlertCircle, Building2, Eye, EyeOff, KeyRound, CheckCircle2, ArrowLeft, Mail, Send } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import {
+  LogIn,
+  Lock,
+  Phone,
+  UserCheck,
+  ArrowRight,
+  AlertCircle,
+  Building2,
+  Eye,
+  EyeOff,
+  KeyRound,
+  CheckCircle2,
+  ArrowLeft,
+  Mail,
+  Send,
+  Check,
+  Loader2
+} from 'lucide-react';
 import fullLogoSahay from '../assets/full_logo_sahay.png';
 import loginBg from '../assets/loginbg.jpg';
 import type { Language } from '../translations';
@@ -13,13 +30,22 @@ interface LoginPageProps {
   onOpenOfficialLogin?: () => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLoginSuccess, onOpenOfficialLogin }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({
+  onNavigateToRegister,
+  onLoginSuccess,
+  onOpenOfficialLogin,
+}) => {
   const tab = 'citizen';
 
   // Login State
   const [phoneOrEmail, setPhoneOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Focus error field for one-by-one validation
+  const [focusedErrorField, setFocusedErrorField] = useState<string | null>(null);
+  const phoneOrEmailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   // Forgot Password State
   const [isResetMode, setIsResetMode] = useState(false);
@@ -30,61 +56,93 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Errors state
-  const [errors, setErrors] = useState<{ phoneOrEmail?: string; password?: string; resetPhoneOrEmail?: string; newPassword?: string; confirmNewPassword?: string }>({});
+  // --- LIVE VALIDATION CHECKS FOR LOGIN ---
+  const trimmedInput = phoneOrEmail.trim();
+  const isInputEmpty = trimmedInput.length === 0;
 
-  const validateForm = () => {
-    const newErrors: typeof errors = {};
-    const trimmedVal = phoneOrEmail.trim();
+  // Detect format
+  const isEmailType = trimmedInput.includes('@');
+  const isEmailValid = isEmailType && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedInput);
+  const cleanPhone = trimmedInput.replace(/\D/g, '');
+  const isPhoneValid = !isEmailType && cleanPhone.length === 10 && /^[6-9]\d{9}$/.test(cleanPhone);
+  const isIdentifierValid = isEmailValid || isPhoneValid;
 
-    if (!trimmedVal) {
-      newErrors.phoneOrEmail = 'Registered Mobile Number or Email is required';
-    } else if (trimmedVal.includes('@')) {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedVal)) {
-        newErrors.phoneOrEmail = 'Please enter a valid email address format';
-      }
-    } else {
-      const cleanPhone = trimmedVal.replace(/\D/g, '');
-      if (!cleanPhone || cleanPhone.length < 8) {
-        newErrors.phoneOrEmail = 'Please enter a valid mobile number or email address';
-      }
+  const identifierError = !isInputEmpty && !isIdentifierValid
+    ? isEmailType
+      ? 'Please enter a valid email format (e.g. name@example.com)'
+      : cleanPhone.length > 0 && cleanPhone.length < 10
+      ? `Mobile number must be 10 digits (${cleanPhone.length}/10)`
+      : 'Please enter a valid 10-digit mobile or email'
+    : focusedErrorField === 'phoneOrEmail' && isInputEmpty
+    ? 'Registered Mobile Number or Email is required'
+    : null;
+
+  const isPassEmpty = password.length === 0;
+  const isPassValid = password.trim().length >= 6;
+  const passError = !isPassEmpty && !isPassValid
+    ? `Password must be at least 6 characters (${password.length}/6)`
+    : focusedErrorField === 'password' && isPassEmpty
+    ? 'Password is required'
+    : null;
+
+  // Reset live check
+  const resetTrimmed = resetPhoneOrEmail.trim();
+  const isResetEmail = resetTrimmed.includes('@');
+  const isResetValid =
+    (isResetEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resetTrimmed)) ||
+    (!isResetEmail && resetTrimmed.replace(/\D/g, '').length === 10);
+
+  const handlePhoneOrEmailChange = (val: string) => {
+    setPhoneOrEmail(val);
+    if (focusedErrorField === 'phoneOrEmail' && val.trim().length > 0) {
+      setFocusedErrorField(null);
     }
+  };
 
-    const trimmedSecret = password.trim();
-    if (!password || !trimmedSecret) {
-      newErrors.password = 'Password cannot be empty or spaces only';
-    } else if (trimmedSecret.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters long';
+  const handlePasswordChange = (val: string) => {
+    setPassword(val);
+    if (focusedErrorField === 'password' && val.trim().length >= 6) {
+      setFocusedErrorField(null);
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setServerError(null);
 
-    if (validateForm()) {
-      setIsSubmitting(true);
-      try {
-        const response = await loginUser({
-          phoneOrEmail: phoneOrEmail.trim(),
-          password: password.trim(),
-          role: tab,
-        });
+    // Step 1: Validate Phone or Email
+    if (!isIdentifierValid) {
+      setFocusedErrorField('phoneOrEmail');
+      phoneOrEmailRef.current?.focus();
+      return;
+    }
 
-        const user = response.user;
-        setLoggedInUser(user);
+    // Step 2: Validate Password
+    if (!isPassValid) {
+      setFocusedErrorField('password');
+      passwordRef.current?.focus();
+      return;
+    }
 
-        if (onLoginSuccess) {
-          onLoginSuccess(user);
-        }
-      } catch (err: any) {
-        setServerError(err.message || 'Login failed. Check server connection.');
-      } finally {
-        setIsSubmitting(false);
+    setFocusedErrorField(null);
+    setIsSubmitting(true);
+    try {
+      const response = await loginUser({
+        phoneOrEmail: trimmedInput,
+        password: password.trim(),
+        role: tab,
+      });
+
+      const user = response.user;
+      setLoggedInUser(user);
+
+      if (onLoginSuccess) {
+        onLoginSuccess(user);
       }
+    } catch (err: any) {
+      setServerError(err.message || 'Login failed. Please check credentials.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -93,15 +151,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
     setServerError(null);
     setResetSuccessMsg(null);
 
-    const trimmedVal = resetPhoneOrEmail.trim();
-    if (!trimmedVal) {
-      setErrors({ resetPhoneOrEmail: 'Registered Mobile Phone or Email is required' });
+    if (!isResetValid) {
+      setServerError('Please enter a valid 10-digit mobile number or email address');
       return;
     }
 
     try {
       setIsSubmitting(true);
-      const response = await sendResetLink(trimmedVal);
+      const response = await sendResetLink(resetTrimmed);
       setResetSuccessMsg(response.message);
     } catch (err: any) {
       setServerError(err.message || 'Failed to send reset email link.');
@@ -121,7 +178,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/65 to-slate-950/85 backdrop-brightness-[0.8]" />
 
       <div className="relative z-10 max-w-md w-full bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/80">
-
         {/* Seamless Header */}
         <div className="bg-emerald-50/90 border-b border-emerald-100 py-6 px-6 text-center relative">
           <div className="max-w-[200px] sm:max-w-[220px] mx-auto">
@@ -129,14 +185,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               src={fullLogoSahay}
               alt="SAHAY"
               className="w-full h-auto object-contain"
-              onError={(e) => { (e.target as HTMLImageElement).src = '/full_logo_sahay.png'; }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/full_logo_sahay.png';
+              }}
             />
           </div>
         </div>
 
         {/* Form Body */}
         <div className="p-7">
-
           {/* Success Reset Banner */}
           {resetSuccessMsg && !isResetMode && (
             <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800 flex items-center gap-2 animate-fadeIn">
@@ -155,7 +212,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
 
           {loggedInUser ? (
             <div className="text-center py-8 space-y-5 animate-fadeIn">
-              <div className="w-16 h-16 bg-emerald-100 text-[#059669] rounded-full flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 bg-emerald-100 text-[#059669] rounded-full flex items-center justify-center mx-auto shadow-inner">
                 <UserCheck className="w-10 h-10" />
               </div>
               <h2 className="text-2xl font-black text-slate-900">
@@ -178,7 +235,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                 </div>
                 <button
                   type="button"
-                  onClick={() => { setIsResetMode(false); setResetSuccessMsg(null); setErrors({}); setServerError(null); }}
+                  onClick={() => {
+                    setIsResetMode(false);
+                    setResetSuccessMsg(null);
+                    setServerError(null);
+                  }}
                   className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5"
                 >
                   <ArrowLeft className="w-4 h-4 text-slate-600" />
@@ -195,7 +256,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                   </h3>
                   <button
                     type="button"
-                    onClick={() => { setIsResetMode(false); setResetSuccessMsg(null); setErrors({}); setServerError(null); }}
+                    onClick={() => {
+                      setIsResetMode(false);
+                      setResetSuccessMsg(null);
+                      setServerError(null);
+                    }}
                     className="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Back to Sign In
@@ -206,31 +271,32 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                   Enter your registered Email or Mobile number below. We will send a secure link to reset your password.
                 </p>
 
-                {/* Reset Input 1: Registered Phone or Email */}
+                {/* Reset Input */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Registered Mobile / Email *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700">
+                      Registered Mobile / Email *
+                    </label>
+                    {isResetValid && (
+                      <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 animate-fadeIn">
+                        <Check className="w-3 h-3" /> Valid format
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       placeholder="Enter phone or email"
                       value={resetPhoneOrEmail}
-                      onChange={(e) => {
-                        setResetPhoneOrEmail(e.target.value);
-                        if (errors.resetPhoneOrEmail) setErrors({ ...errors, resetPhoneOrEmail: undefined });
-                      }}
-                      className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.resetPhoneOrEmail ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400' : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                        }`}
+                      onChange={(e) => setResetPhoneOrEmail(e.target.value)}
+                      className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
+                        isResetValid
+                          ? 'border-emerald-400 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500'
+                          : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
+                      }`}
                     />
                   </div>
-                  {errors.resetPhoneOrEmail && (
-                    <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
-                      <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                      <span>{errors.resetPhoneOrEmail}</span>
-                    </p>
-                  )}
                 </div>
 
                 {/* Action: Send Reset Link to Mail */}
@@ -239,40 +305,59 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                   disabled={isSubmitting}
                   className="w-full py-3 bg-[#059669] hover:bg-[#047857] text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-70"
                 >
-                  <Send className="w-4 h-4 text-white" />
-                  <span>{isSubmitting ? 'Sending Reset Link...' : 'Send Password Reset Link'}</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Sending Reset Link...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 text-white" />
+                      <span>Send Password Reset Link</span>
+                    </>
+                  )}
                 </button>
               </form>
             )
           ) : (
             /* Standard Login Form */
             <form onSubmit={handleLogin} className="space-y-4" noValidate>
-
               {/* Field 1: Mobile Phone or Email */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Registered Mobile Number or Email *
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700">
+                    Registered Mobile Number or Email <span className="text-red-500">*</span>
+                  </label>
+                  {isIdentifierValid && (
+                    <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 animate-fadeIn">
+                      <Check className="w-3 h-3" /> Valid format
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
+                    ref={phoneOrEmailRef}
                     type="text"
                     placeholder="e.g. 9876543210 or name@gmail.com"
                     value={phoneOrEmail}
-                    onChange={(e) => {
-                      setPhoneOrEmail(e.target.value);
-                      if (errors.phoneOrEmail) setErrors({ ...errors, phoneOrEmail: undefined });
-                    }}
-                    className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.phoneOrEmail
-                      ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
-                      : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
+                    onChange={(e) => handlePhoneOrEmailChange(e.target.value)}
+                    className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
+                      identifierError
+                        ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
+                        : isIdentifierValid
+                        ? 'border-emerald-400 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500'
+                        : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
+                    }`}
                   />
+                  {isIdentifierValid && (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 absolute right-3.5 top-1/2 -translate-y-1/2" />
+                  )}
                 </div>
-                {errors.phoneOrEmail && (
+                {identifierError && (
                   <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
                     <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    <span>{errors.phoneOrEmail}</span>
+                    <span>{identifierError}</span>
                   </p>
                 )}
               </div>
@@ -281,13 +366,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-bold text-slate-700">
-                    Account Password *
+                    Account Password <span className="text-red-500">*</span>
                   </label>
 
                   {/* Forgot Password Link */}
                   <button
                     type="button"
-                    onClick={() => { setIsResetMode(true); setResetPhoneOrEmail(phoneOrEmail); setServerError(null); setResetSuccessMsg(null); }}
+                    onClick={() => {
+                      setIsResetMode(true);
+                      setResetPhoneOrEmail(phoneOrEmail);
+                      setServerError(null);
+                      setResetSuccessMsg(null);
+                    }}
                     className="text-[11px] font-extrabold text-[#059669] hover:underline"
                   >
                     Forgot Password?
@@ -297,32 +387,33 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
+                    ref={passwordRef}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      if (errors.password) setErrors({ ...errors, password: undefined });
-                    }}
-                    className={`w-full pl-10 pr-10 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${errors.password
-                      ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
-                      : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    className={`w-full pl-10 pr-10 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
+                      passError
+                        ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400'
+                        : isPassValid
+                        ? 'border-emerald-400 bg-emerald-50/20 focus:ring-2 focus:ring-emerald-500'
+                        : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
+                    }`}
                   />
                   {/* Eye Toggle */}
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
 
-                {errors.password && (
+                {passError && (
                   <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
                     <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    <span>{errors.password}</span>
+                    <span>{passError}</span>
                   </p>
                 )}
               </div>
@@ -331,10 +422,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 rounded-xl text-sm font-extrabold tracking-wider uppercase shadow-lg transition-all flex items-center justify-center gap-2 mt-2 text-white bg-[#059669] hover:bg-[#047857]"
+                className="w-full py-3.5 rounded-xl text-sm font-extrabold tracking-wider uppercase shadow-lg transition-all flex items-center justify-center gap-2 mt-2 text-white bg-[#059669] hover:bg-[#047857] active:scale-[0.99] disabled:opacity-75"
               >
-                <LogIn className="w-4 h-4" />
-                <span>{isSubmitting ? 'Authenticating...' : 'Sign In'}</span>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Authenticating...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign In</span>
+                  </>
+                )}
               </button>
 
               {/* Sign in with Google (Only for Citizen Login) */}
@@ -387,9 +487,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onLo
               </button>
             </div>
           )}
-
         </div>
-
       </div>
     </div>
   );

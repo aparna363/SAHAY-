@@ -90,6 +90,8 @@ interface LocationContextType {
 
     loading: boolean;
 
+    isLocating?: boolean;
+
     error: string | null;
 
     accuracy: number | null;
@@ -986,6 +988,8 @@ export const LocationProvider:
                     isPromptOpen,
 
                     loading,
+
+                    isLocating: loading,
 
                     error,
 

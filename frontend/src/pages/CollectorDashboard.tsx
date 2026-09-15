@@ -29,7 +29,8 @@ import {
   Printer,
   FileSpreadsheet,
   PhoneCall,
-  ChevronRight
+  ChevronRight,
+  Camera
 } from 'lucide-react';
 import {
   getStationAdmins,
@@ -42,6 +43,8 @@ import { OfficialIncidentsPage } from './OfficialIncidentsPage';
 import { OfficialIncidentDetailsPage } from './OfficialIncidentDetailsPage';
 import { CollectorWeatherAlerts } from '../components/CollectorWeatherAlerts';
 import { ActiveOperationsListView } from '../components/ActiveOperationsListView';
+import { LiveMap } from '../components/LiveMap';
+import { CollectorEvidenceView } from '../components/CollectorEvidence/CollectorEvidenceView';
 
 interface CollectorDashboardProps {
   user?: any;
@@ -54,6 +57,7 @@ export type SidebarTab =
   | 'map'
   | 'incidents'
   | 'rescue_ops'
+  | 'rescue_evidence'
   | 'rescue_teams'
   | 'shelters'
   | 'evacuation'
@@ -171,9 +175,15 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
 
   const handleApproveReject = async (id: number, action: 'approve' | 'reject') => {
     try {
+      let remarks = '';
+      if (action === 'reject') {
+        const inputReason = window.prompt('Enter official reason/remarks for rejecting this station registration (optional):');
+        if (inputReason === null) return; // Cancelled by collector
+        remarks = inputReason;
+      }
       setProcessingId(id);
       setActionMsg(null);
-      const res = await approveStationAdmin(id, action);
+      const res = await approveStationAdmin(id, action, remarks);
       setActionMsg({ type: 'success', text: res.message });
       fetchDistrictStations();
       fetchStats();
@@ -226,6 +236,7 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
       title: 'RESCUE & FIELD ASSETS',
       items: [
         { id: 'rescue_ops', label: 'Rescue Operations', icon: LifeBuoy, badge: null },
+        { id: 'rescue_evidence', label: 'Field Evidence Audit', icon: Camera, badge: 'Photos' },
         { id: 'rescue_teams', label: 'Rescue Teams', icon: Users, badge: pendingStations.length ? `${pendingStations.length} Pending` : null, badgeColor: 'bg-orange-500 text-white' },
         { id: 'shelters', label: 'Evacuation Shelters', icon: Home, badge: `${shelterList.length}` },
         { id: 'evacuation', label: 'Evacuation Management', icon: Compass, badge: null },
@@ -565,39 +576,22 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
         {/* VIEW 3: LIVE DISTRICT MAP */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'map' && (
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-xs animate-fadeIn">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                  <MapPin className="w-6 h-6 text-emerald-600" />
-                  <span>{district} District GIS Telemetry & Spatial Live Map</span>
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                  Real-time spatial visualization of incident call locations, rescue stations, and relief camp locations in {district}.
-                </p>
-              </div>
-              <div className="px-3.5 py-1.5 bg-emerald-100 border border-emerald-300 rounded-xl text-xs font-black text-emerald-900">
-                POSTGIS LIVE GIS ACTIVE
-              </div>
-            </div>
-
-            <div className="h-[600px] w-full bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 relative flex items-center justify-center text-white">
-              <div className="text-center space-y-3 p-8">
-                <MapPin className="w-12 h-12 text-emerald-400 animate-bounce mx-auto" />
-                <h3 className="text-lg font-black text-white">{district} GIS Spatial Command Centered</h3>
-                <p className="text-xs text-slate-300 max-w-md">
-                  Displaying PostGIS spatial markers for active incident coordinates, registered stations, and relief camps in {district} District.
-                </p>
-                <div className="flex justify-center gap-3 pt-2">
-                  <button
-                    onClick={() => setActiveTab('incidents')}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-sm"
-                  >
-                    View Incidents Table ({stats.activeIncidents})
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-4 animate-fadeIn">
+            <LiveMap
+              role="collector"
+              userDistrict={district}
+              onAssignTeam={(incId) => {
+                setSelectedIncidentId(String(incId));
+                setActiveTab('incidents');
+              }}
+              onViewIncidentDetails={(incId) => {
+                setSelectedIncidentId(String(incId));
+                setActiveTab('incidents');
+              }}
+              onStatusUpdateSuccess={() => {
+                fetchStats();
+              }}
+            />
           </div>
         )}
 
@@ -635,6 +629,21 @@ export const CollectorDashboard: React.FC<CollectorDashboardProps> = ({ user, on
               onSelectIncident={(id) => setSelectedIncidentId(id)}
             />
           )
+        )}
+
+        {/* ------------------------------------------------------------- */}
+        {/* VIEW 5.5: RESCUE EVIDENCE AUDIT */}
+        {/* ------------------------------------------------------------- */}
+        {activeTab === 'rescue_evidence' && (
+          <div className="animate-fadeIn">
+            <CollectorEvidenceView
+              district={district}
+              onSelectIncident={(id) => {
+                setSelectedIncidentId(String(id));
+                setActiveTab('incidents');
+              }}
+            />
+          </div>
         )}
 
         {/* ------------------------------------------------------------- */}

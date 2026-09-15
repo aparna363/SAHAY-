@@ -99,6 +99,56 @@ function formatDayName(isoStr, index) {
 }
 
 /**
+ * Dynamic Solar & Lunar Astronomy Calculator
+ */
+function calculateAstronomy(date = new Date(), lat = 9.9312, lon = 76.2673) {
+  const d = new Date(date);
+  
+  const startOfYear = new Date(d.getFullYear(), 0, 0);
+  const diff = d.getTime() - startOfYear.getTime();
+  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+  
+  const declination = 23.44 * Math.sin((2 * Math.PI / 365) * (dayOfYear - 81)) * (Math.PI / 180);
+  const latRad = lat * (Math.PI / 180);
+  
+  let cosH = -Math.tan(latRad) * Math.tan(declination);
+  cosH = Math.min(1, Math.max(-1, cosH));
+  const H = Math.acos(cosH) * (180 / Math.PI);
+  
+  const timeZoneOffsetHours = -d.getTimezoneOffset() / 60;
+  const B = (2 * Math.PI / 365) * (dayOfYear - 81);
+  const EoT = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+  
+  const solarNoonLocal = 12 + (timeZoneOffsetHours - lon / 15) - (EoT / 60);
+  const sunriseHours = solarNoonLocal - (H / 15);
+  const sunsetHours = solarNoonLocal + (H / 15);
+  
+  const formatTime = (totalHours) => {
+    const normalized = ((totalHours % 24) + 24) % 24;
+    const hours = Math.floor(normalized);
+    const mins = Math.round((normalized - hours) * 60);
+    const dateObj = new Date(d);
+    dateObj.setHours(hours, mins, 0, 0);
+    return dateObj.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
+  };
+
+  const refNewMoonMs = 1704974220000;
+  const daysSinceRef = (d.getTime() - refNewMoonMs) / (1000 * 60 * 60 * 24);
+  const synodicMonth = 29.530588;
+  const moonAgeDays = ((daysSinceRef % synodicMonth) + synodicMonth) % synodicMonth;
+  
+  const moonriseHours = (6.0 + moonAgeDays * 0.812) % 24;
+  const moonsetHours = (18.0 + moonAgeDays * 0.812) % 24;
+
+  return {
+    sunrise: formatTime(sunriseHours),
+    sunset: formatTime(sunsetHours),
+    moonrise: formatTime(moonriseHours),
+    moonset: formatTime(moonsetHours)
+  };
+}
+
+/**
  * Fetch 48-hour forecast & metrics from Open-Meteo API
  */
 async function fetchWeatherData(latitude, longitude) {
@@ -215,8 +265,9 @@ async function fetchWeatherData(latitude, longitude) {
     const grassPollen = (aqiData?.current?.grass_pollen ?? 0) > 10 ? 'Low' : 'None';
     const ragweedPollen = (aqiData?.current?.ragweed_pollen ?? 0) > 10 ? 'Low' : 'None';
 
-    const sunriseTime = daily.sunrise?.[0] ? formatHourTime(daily.sunrise[0]) : '6:13 am';
-    const sunsetTime = daily.sunset?.[0] ? formatHourTime(daily.sunset[0]) : '6:42 pm';
+    const astro = calculateAstronomy(now, lat || 9.9312, lon || 76.2673);
+    const sunriseTime = daily.sunrise?.[0] ? formatHourTime(daily.sunrise[0]) : astro.sunrise;
+    const sunsetTime = daily.sunset?.[0] ? formatHourTime(daily.sunset[0]) : astro.sunset;
 
     return {
       temperature: temp,
@@ -252,7 +303,8 @@ async function fetchWeatherData(latitude, longitude) {
       },
       sunrise: sunriseTime,
       sunset: sunsetTime,
-      moonrise: '2:22 am',
+      moonrise: astro.moonrise,
+      moonset: astro.moonset,
       advice: [
         'Grab an Umbrella! Rain ending around 9:45 pm (<2mm)',
         'Drive carefully: High moisture & slick mountain road passes',
@@ -308,10 +360,11 @@ function generateFallbackDaily() {
   ];
 }
 
-function generateFallbackTelemetry() {
+function generateFallbackTelemetry(lat = 9.9312, lon = 76.2673) {
+  const astro = calculateAstronomy(new Date(), lat, lon);
   return {
-    temperature: 28,
-    feelsLike: 28,
+    temperature: 25,
+    feelsLike: 25,
     maxTemp: 29,
     minTemp: 23,
     humidity: 92,
@@ -322,8 +375,8 @@ function generateFallbackTelemetry() {
     windGusts: 45,
     rainfallTelemetry: 84.2,
     rainProbability: 75,
-    weatherCode: 63,
-    condition: 'Moderate Rain',
+    weatherCode: 61,
+    condition: 'Light Rain',
     icon: 'cloud-rain',
     summaryText: 'Showers early. Low 23°C.',
     dewPoint: 24,
@@ -341,9 +394,10 @@ function generateFallbackTelemetry() {
       grass: 'None',
       ragweed: 'None'
     },
-    sunrise: '6:13 am',
-    sunset: '6:42 pm',
-    moonrise: '2:22 am',
+    sunrise: astro.sunrise,
+    sunset: astro.sunset,
+    moonrise: astro.moonrise,
+    moonset: astro.moonset,
     advice: [
       'Grab an Umbrella! Rain ending around 9:45 pm (<2mm)',
       'Drive carefully: High moisture & slick mountain road passes',

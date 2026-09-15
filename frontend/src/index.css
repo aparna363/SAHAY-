@@ -282,3 +282,29 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
+
+/* Print Styles: Hide background page and show only modal form when printing */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  /* Hide background sidebar, navigation, header, and maps when printing */
+  header,
+  nav,
+  aside,
+  .sidebar,
+  #sahay-sidebar,
+  .print\\:hidden,
+  button {
+    display: none !important;
+  }
+
+  /* Ensure printed container expands cleanly */
+  .fixed.inset-0 {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+}

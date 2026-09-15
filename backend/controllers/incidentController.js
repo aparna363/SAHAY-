@@ -461,6 +461,7 @@ const getAllIncidents = async (req, res) => {
         i.longitude,
         i.location_address,
         i.status,
+        i.source,
         i.created_at,
         i.updated_at,
         u.name AS citizen_name,
@@ -539,7 +540,18 @@ const updateIncidentStatus = async (req, res) => {
     const officialId = req.user.id;
 
     const validStatuses = ['SUBMITTED', 'UNDER_REVIEW', 'VERIFIED', 'REJECTED', 'RESPONSE_ASSIGNED', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
-    const newStatus = (status || '').toUpperCase();
+    const rawStatus = (status || '').trim().toUpperCase();
+
+    let newStatus = rawStatus;
+    if (['ACCEPTED', 'ACCEPT', 'ASSIGNED', 'RESPONSE_ASSIGNED', 'RESPONSE ASSIGNED'].includes(rawStatus)) {
+      newStatus = 'RESPONSE_ASSIGNED';
+    } else if (['COMPLETED', 'RESOLVED'].includes(rawStatus)) {
+      newStatus = 'RESOLVED';
+    } else if (['EN ROUTE', 'EN_ROUTE', 'ARRIVED', 'RESCUE IN PROGRESS', 'RESCUE_IN_PROGRESS', 'IN PROGRESS', 'IN_PROGRESS'].includes(rawStatus)) {
+      newStatus = 'IN_PROGRESS';
+    } else if (['UNDER REVIEW', 'UNDER_REVIEW'].includes(rawStatus)) {
+      newStatus = 'UNDER_REVIEW';
+    }
 
     if (!validStatuses.includes(newStatus)) {
       return res.status(400).json({

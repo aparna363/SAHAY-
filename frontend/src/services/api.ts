@@ -18,6 +18,10 @@ export interface AuthUser {
   designation?: string;
   departmentId?: string;
   department_id?: string;
+  unit_id?: string;
+  station_name?: string;
+  agency_type?: string;
+  agencyType?: string;
   created_at?: string;
 }
 
@@ -43,6 +47,17 @@ export interface ResetPasswordPayload {
   token?: string;
   phoneOrEmail?: string;
   newPassword: string;
+}
+
+export interface CheckAvailabilityPayload {
+  email?: string;
+  phone?: string;
+  role?: string;
+}
+
+export interface CheckAvailabilityResponse {
+  emailExists: boolean;
+  phoneExists: boolean;
 }
 
 export interface AuthResponse {
@@ -225,6 +240,32 @@ export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
   }
 
   return data;
+}
+
+// 2a. Real-time credential availability check (email / phone duplicates)
+export async function checkAuthAvailability(payload: CheckAvailabilityPayload): Promise<CheckAvailabilityResponse> {
+  try {
+    const response = await fetchWithFallback('/auth/check-availability', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      return { emailExists: false, phoneExists: false };
+    }
+
+    const data = await response.json();
+    return {
+      emailExists: !!data.emailExists,
+      phoneExists: !!data.phoneExists,
+    };
+  } catch (err) {
+    console.warn('Live availability check note:', err);
+    return { emailExists: false, phoneExists: false };
+  }
 }
 
 // 2b. Google Sign In & Sign Up for Citizen
@@ -424,11 +465,11 @@ export async function getStationAdmins(district?: string): Promise<{ stationAdmi
 }
 
 // 7. Approve / Reject Station Admin (Collector)
-export async function approveStationAdmin(stationAdminId: number, action: 'approve' | 'reject'): Promise<{ message: string; user: AuthUser }> {
+export async function approveStationAdmin(stationAdminId: number, action: 'approve' | 'reject', remarks?: string): Promise<{ message: string; user: AuthUser; notification?: any }> {
   const response = await fetchWithFallback('/admin/approve-station-admin', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stationAdminId, action }),
+    body: JSON.stringify({ stationAdminId, action, remarks }),
   });
 
   const data = await response.json();
@@ -463,7 +504,9 @@ export interface AuditLogItem {
   id: number;
   user_id: number | null;
   user_name?: string;
+  performed_by?: string;
   role: string;
+  performed_by_role?: string;
   action: string;
   entity_type: string | null;
   entity_id: string | null;
@@ -690,6 +733,7 @@ export interface WeatherData {
   sunrise?: string;
   sunset?: string;
   moonrise?: string;
+  moonset?: string;
   advice?: string[];
   hourlyForecast?: HourlyForecastItem[];
   dailyForecast?: DailyForecastItem[];
@@ -1553,7 +1597,686 @@ export async function deleteFamilyMemberRecord(id: number): Promise<void> {
   }
 }
 
+export interface PublicPortalStats {
+  activeRescueTeams: number;
+  openReliefCamps: number;
+  shelteredCitizens: number;
+  activeIncidents: number;
+}
 
+export async function fetchPublicStats(): Promise<PublicPortalStats> {
+  try {
+    const response = await fetchWithFallback('/public-stats', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.stats) {
+        return data.stats;
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to fetch public stats from backend:', err);
+  }
+  return {
+    activeRescueTeams: 0,
+    openReliefCamps: 0,
+    shelteredCitizens: 0,
+    activeIncidents: 0
+  };
+}
 
+// -------------------------------------------------------------
+// RESCUE OPERATIONAL MAP & SMART NAVIGATION INTERFACES & APIS
+// -------------------------------------------------------------
 
+export interface RescueMapIncident {
+  id: number;
+  incidentCode: string;
+  incidentTypeName: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MODERATE' | 'LOW';
+  description: string;
+  latitude: number;
+  longitude: number;
+  locationAddress: string;
+  status: string;
+  createdAt: string;
+  updatedAt?: string;
+  reporter?: {
+    name?: string;
+    phone?: string;
+    district?: string;
+  };
+  assignment?: {
+    assignedTeam?: string;
+    assignedAt?: string;
+  };
+}
+
+export interface RescueUnitTelemetry {
+  id: number;
+  unitId: string;
+  unitName: string;
+  unitType: string;
+  district: string;
+  contactNumber: string;
+  status: string;
+  latitude: number;
+  longitude: number;
+  teamLeader: string;
+  teamSize: number;
+  currentLocation: string;
+  assignedIncidentId?: string;
+  lastLocationUpdate: string;
+  minutesSinceUpdate: number;
+}
+
+export interface RescueMapShelter {
+  id: number;
+  name: string;
+  district: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  capacity: number;
+  availableCapacity: number;
+  contactNumber?: string;
+  status: 'OPEN' | 'FULL';
+}
+
+export interface RescueMapHospital {
+  id: number;
+  name: string;
+  district: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  contactNumber?: string;
+  emergencyAvailable: boolean;
+  bedCapacity: number;
+  availableBeds: number;
+  traumaCareLevel: string;
+}
+
+export interface RescueMapHazardZone {
+  id: number;
+  name: string;
+  hazardType: string;
+  severity: string;
+  description: string;
+  active: boolean;
+  geojson: any;
+}
+
+export interface RescueMapRoadHazard {
+  id: number;
+  roadName: string;
+  district: string;
+  status: 'SAFE' | 'CAUTION' | 'HAZARDOUS' | 'BLOCKED';
+  hazardType: string;
+  description: string;
+  severity: string;
+  startLat: number;
+  startLng: number;
+  endLat: number;
+  endLng: number;
+  geojson: any;
+}
+
+export interface RescueMapDataResponse {
+  success: boolean;
+  district: string;
+  userRole: string;
+  currentTeam: {
+    unitId: string;
+    unitName: string;
+    district: string;
+  };
+  counts: {
+    incidents: number;
+    rescueTeams: number;
+    shelters: number;
+    hospitals: number;
+    hazardZones: number;
+    blockedRoads: number;
+  };
+  incidents: RescueMapIncident[];
+  rescueTeams: RescueUnitTelemetry[];
+  shelters: RescueMapShelter[];
+  hospitals: RescueMapHospital[];
+  hazardZones: RescueMapHazardZone[];
+  roadHazards: RescueMapRoadHazard[];
+  timestamp: string;
+}
+
+export interface RouteOption {
+  id: 'safest' | 'fastest' | 'alternative';
+  name: string;
+  recommendation: string;
+  isRecommended: boolean;
+  distanceKm: number;
+  travelTimeMinutes: number;
+  safetyScore: number;
+  riskLevel: 'LOW RISK' | 'MODERATE RISK' | 'HIGH RISK' | 'CRITICAL RISK';
+  badgeColor: string;
+  warnings: string[];
+  coordinates: [number, number][];
+  steps: {
+    instruction: string;
+    distance: number;
+    duration: number;
+  }[];
+}
+
+export interface SafeRouteResponse {
+  success: boolean;
+  origin: { latitude: number; longitude: number };
+  destination: { latitude: number; longitude: number };
+  recommendedRouteId: string;
+  routes: RouteOption[];
+  calculatedAt: string;
+}
+
+export interface RescueEvidenceItem {
+  id: number;
+  incident_id: number;
+  incident_code: string;
+  rescue_unit_id: string;
+  user_id?: number;
+  uploaded_by_name: string;
+  evidence_type: 'PHOTO' | 'VIDEO' | 'REPORT';
+  file_url?: string;
+  file_name?: string;
+  mime_type?: string;
+  file_size?: number;
+  description?: string;
+  people_rescued: number;
+  people_injured: number;
+  people_missing: number;
+  people_evacuated: number;
+  medical_assistance_needed: boolean;
+  flood_depth?: string;
+  road_condition?: string;
+  building_damage?: string;
+  infrastructure_damage?: string;
+  other_observations?: string;
+  latitude?: number;
+  longitude?: number;
+  captured_at: string;
+  created_at: string;
+  missionStatus?: string;
+  incidentSeverity?: string;
+  locationAddress?: string;
+  incidentTypeName?: string;
+}
+
+export interface MissionEvidenceResponse {
+  success: boolean;
+  incidentId: string;
+  count: number;
+  evidence: RescueEvidenceItem[];
+  summary: {
+    totalRescued: number;
+    totalInjured: number;
+    totalMissing: number;
+    totalEvacuated: number;
+    photoCount: number;
+    videoCount: number;
+  };
+}
+
+export async function fetchRescueMapData(district?: string): Promise<RescueMapDataResponse> {
+  const query = district ? `?district=${encodeURIComponent(district)}` : '';
+  const response = await fetchWithFallback(`/rescue/map-data${query}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch rescue map telemetry');
+  }
+  return data;
+}
+
+export async function calculateRescueSafeRoute(
+  origin: { lat: number; lng: number } | [number, number],
+  destination: { lat: number; lng: number } | [number, number]
+): Promise<SafeRouteResponse> {
+  const origObj = Array.isArray(origin) ? { lat: origin[0], lng: origin[1] } : origin;
+  const destObj = Array.isArray(destination) ? { lat: destination[0], lng: destination[1] } : destination;
+
+  const response = await fetchWithFallback('/rescue/safe-route', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ origin: origObj, destination: destObj })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to calculate smart navigation route');
+  }
+  return data;
+}
+
+export async function submitMissionEvidence(
+  incidentId: string | number,
+  formData: FormData
+): Promise<{ success: boolean; message: string; evidence: RescueEvidenceItem[] }> {
+  const token = getAuthToken();
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/rescue/missions/${encodeURIComponent(incidentId)}/evidence`, {
+    method: 'POST',
+    headers,
+    body: formData
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to submit mission evidence');
+  }
+  return data;
+}
+
+export async function fetchMissionEvidence(incidentId: string | number): Promise<MissionEvidenceResponse> {
+  const response = await fetchWithFallback(`/rescue/missions/${encodeURIComponent(incidentId)}/evidence`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to load mission evidence');
+  }
+  return data;
+}
+
+export async function fetchCollectorEvidence(district?: string, incidentId?: string | number): Promise<RescueEvidenceItem[]> {
+  const params = new URLSearchParams();
+  if (district) params.append('district', district);
+  if (incidentId) params.append('incidentId', String(incidentId));
+
+  const response = await fetchWithFallback(`/collector/evidence?${params.toString()}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch collector evidence');
+  }
+  return data.evidence || [];
+}
+
+// =========================================================================
+// RELIEF & COMPENSATION APPLICATION MODULE API SERVICES
+// =========================================================================
+
+export interface ReliefEvidence {
+  id: number;
+  claim_id: number;
+  file_path: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  evidence_type: string;
+  description?: string;
+  uploaded_at: string;
+}
+
+export interface ReliefStatusHistory {
+  id: number;
+  status: string;
+  old_status?: string;
+  oldStatus?: string;
+  remarks?: string;
+  created_at: string;
+  createdAt?: string;
+  updated_by_name?: string;
+  updated_by_role?: string;
+}
+
+export interface ReliefAiAssessment {
+  predicted_damage?: string;
+  predictedDamage?: string;
+  confidence_score?: number;
+  confidenceScore?: number;
+  model_version?: string;
+  modelVersion?: string;
+  result?: any;
+  created_at?: string;
+}
+
+export interface ReliefClaim {
+  id: number;
+  claim_id: string;
+  citizen_id: number;
+  incident_id?: number | null;
+  incident_code?: string;
+  disaster_type: string;
+  disaster_date: string;
+  relationship_to_affected: string;
+  affected_family_members: number;
+  vulnerable_person_category?: string[];
+  assistance_category: string;
+  damage_type?: string;
+  damage_severity: string;
+  damage_description?: string;
+  current_condition?: string;
+  estimated_loss: number;
+  house_ownership?: string;
+  house_type?: string;
+  house_rooms?: number;
+  house_damage_level?: string;
+  affected_area?: number;
+  habitability_status?: string;
+  is_displaced?: boolean;
+  current_accommodation?: string;
+  crop_type?: string;
+  agricultural_land_type?: string;
+  total_crop_area?: number;
+  affected_crop_area?: number;
+  crop_stage?: string;
+  crop_loss_percentage?: number;
+  livestock_type?: string;
+  livestock_lost?: number;
+  livestock_injured?: number;
+  deceased_person_name?: string;
+  legal_heir_relationship?: string;
+  latitude: number;
+  longitude: number;
+  district: string;
+  locality?: string;
+  location_verified?: boolean;
+  is_in_hazard_zone?: boolean;
+  hazard_zone_notes?: string;
+  bank_account_holder?: string;
+  bank_name?: string;
+  masked_account_number?: string;
+  ifsc_code?: string;
+  requested_amount?: number;
+  approved_amount: number;
+  status: string;
+  payment_status: string;
+  transaction_reference?: string;
+  disbursed_at?: string;
+  rejection_reason?: string;
+  field_officer_id?: number;
+  field_remarks?: string;
+  collector_remarks?: string;
+  declaration_accepted?: boolean;
+  penalty_warning_accepted?: boolean;
+  submitted_at?: string;
+  created_at: string;
+  updated_at: string;
+  evidence?: ReliefEvidence[];
+  statusHistory?: ReliefStatusHistory[];
+  status_history?: ReliefStatusHistory[];
+  aiAssessment?: ReliefAiAssessment;
+  ai_assessment?: ReliefAiAssessment;
+  applicant_name?: string;
+  applicant_phone?: string;
+  applicant_email?: string;
+}
+
+export interface ReliefNorm {
+  id: number;
+  fund_source: string;
+  assistance_category: string;
+  damage_category: string;
+  norm_description: string;
+  maximum_amount: number;
+  effective_from: string;
+  is_active: boolean;
+}
+
+export interface ReliefSummary {
+  activeApplications: number;
+  underVerification: number;
+  approved: number;
+  disbursed: number;
+  draftCount: number;
+  totalApprovedAmount: number;
+  totalDisbursedAmount: number;
+}
+
+export interface ReliefDraftPayload {
+  incidentId?: number | null;
+  disasterType?: string;
+  disasterDate?: string;
+  relationshipToAffected?: string;
+  affectedFamilyMembers?: number;
+  vulnerablePersonCategory?: string[];
+  assistanceCategory?: string;
+  damageType?: string;
+  damageSeverity?: string;
+  damageDescription?: string;
+  currentCondition?: string;
+  estimatedLoss?: number;
+  houseOwnership?: string;
+  houseType?: string;
+  houseRooms?: number | null;
+  houseDamageLevel?: string;
+  affectedArea?: number | null;
+  habitabilityStatus?: string;
+  isDisplaced?: boolean;
+  currentAccommodation?: string;
+  cropType?: string;
+  agriculturalLandType?: string;
+  totalCropArea?: number | null;
+  affectedCropArea?: number | null;
+  cropStage?: string;
+  cropLossPercentage?: number | null;
+  livestockType?: string;
+  livestockLost?: number | null;
+  livestockInjured?: number | null;
+  deceasedPersonName?: string;
+  legalHeirRelationship?: string;
+  latitude?: number;
+  longitude?: number;
+  district?: string;
+  locality?: string;
+  bankAccountHolder?: string;
+  bankName?: string;
+  accountNumber?: string;
+  confirmAccountNumber?: string;
+  maskedAccountNumber?: string;
+  ifscCode?: string;
+  requestedAmount?: number;
+  declarationAccepted?: boolean;
+  penaltyWarningAccepted?: boolean;
+}
+
+export async function fetchMyReliefSummary(): Promise<{
+  summary: ReliefSummary;
+  activeDraft: any;
+  recentClaims: ReliefClaim[];
+}> {
+  const response = await fetchWithFallback('/relief/summary/my', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch relief summary');
+  }
+  return data;
+}
+
+export async function fetchMyReliefClaims(): Promise<ReliefClaim[]> {
+  const response = await fetchWithFallback('/relief/claims/my', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch relief claims');
+  }
+  return data.claims || [];
+}
+
+export async function fetchReliefClaimById(claimId: string | number): Promise<ReliefClaim> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch claim details');
+  }
+  return data.claim;
+}
+
+export async function createReliefDraft(payload: ReliefDraftPayload): Promise<any> {
+  const response = await fetchWithFallback('/relief/claims/draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to create relief draft');
+  }
+  return data;
+}
+
+export async function updateReliefDraft(claimId: string | number, payload: Partial<ReliefDraftPayload>): Promise<any> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}/draft`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update relief draft');
+  }
+  return data;
+}
+
+export async function submitReliefClaim(claimId: string | number, payload: ReliefDraftPayload): Promise<any> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to submit relief application');
+  }
+  return data;
+}
+
+export async function uploadReliefEvidence(claimId: string | number, formData: FormData): Promise<any> {
+  const token = getAuthToken();
+  const url = `${API_BASE_URL}/relief/claims/${encodeURIComponent(claimId)}/evidence`;
+  
+  let res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    },
+    body: formData
+  });
+
+  if (!res.ok) {
+    // Try fallback
+    const fallbackUrl = `${API_FALLBACK_URL}/relief/claims/${encodeURIComponent(claimId)}/evidence`;
+    res = await fetch(fallbackUrl, {
+      method: 'POST',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
+      body: formData
+    });
+  }
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to upload supporting evidence');
+  }
+  return data;
+}
+
+export async function fetchReliefClaimHistory(claimId: string | number): Promise<ReliefStatusHistory[]> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}/history`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch status history');
+  }
+  return data.history || [];
+}
+
+export async function fetchReliefNorms(category?: string): Promise<ReliefNorm[]> {
+  const query = category ? `?category=${encodeURIComponent(category)}` : '';
+  const response = await fetchWithFallback(`/relief/norms${query}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch relief norms');
+  }
+  return data.norms || [];
+}
+
+export async function fetchReliefTransparencyStats(district?: string): Promise<any> {
+  const query = district ? `?district=${encodeURIComponent(district)}` : '';
+  const response = await fetchWithFallback(`/relief/transparency-stats${query}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch transparency stats');
+  }
+  return data;
+}
+
+export async function fieldVerifyReliefClaim(
+  claimId: string | number,
+  payload: { verifiedSeverity?: string; fieldRemarks?: string; isLocationConfirmed?: boolean }
+): Promise<any> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}/field-verify`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to record field verification');
+  }
+  return data;
+}
+
+export async function collectorReliefDecision(
+  claimId: string | number,
+  payload: { decision: 'APPROVE' | 'REJECT'; approvedAmount?: number; remarks?: string; rejectionReason?: string }
+): Promise<any> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}/collector-decision`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to record collector decision');
+  }
+  return data;
+}
+
+export async function simulateReliefDisbursement(claimId: string | number): Promise<any> {
+  const response = await fetchWithFallback(`/relief/claims/${encodeURIComponent(claimId)}/disburse`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to simulate disbursement');
+  }
+  return data;
+}
 

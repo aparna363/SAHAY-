@@ -47,6 +47,11 @@ export function App() {
       return 'reset_password';
     }
 
+    const hash = window.location.hash;
+    if (pathname.includes('/citizen/relief-fund') || hash.includes('relief-fund') || hash.includes('relief')) {
+      return 'citizen_dashboard';
+    }
+
     const savedUser = getStoredUser();
     const savedTab = sessionStorage.getItem('sahay_active_tab') || localStorage.getItem('sahay_active_tab');
 
@@ -85,13 +90,20 @@ export function App() {
       }
     });
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token') || urlParams.get('resetToken');
-    const pathname = window.location.pathname;
+    const handleUrlChange = () => {
+      const hash = window.location.hash || '';
+      const path = window.location.pathname || '';
+      if (path.includes('/citizen/relief-fund') || hash.includes('relief-fund') || hash.includes('relief')) {
+        setActiveTab('citizen_dashboard');
+      }
+    };
 
-    if (token || pathname.includes('/reset-password') || pathname.includes('reset_password')) {
-      setActiveTab('reset_password');
-    }
+    window.addEventListener('hashchange', handleUrlChange);
+    window.addEventListener('popstate', handleUrlChange);
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('popstate', handleUrlChange);
+    };
   }, []);
 
   const handleTabChange = (tab: string) => {

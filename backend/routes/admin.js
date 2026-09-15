@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const pool = require('../db');
-const { sendCollectorCredentialsEmail, ADMIN_EMAIL } = require('../services/email');
+const { sendCollectorCredentialsEmail, sendStationApprovalEmail, ADMIN_EMAIL } = require('../services/email');
+const { notifyStationApproval } = require('../services/notificationService');
 const { createAuditLog } = require('../utils/auditLogger');
 
 // Helper function for strict Indian Mobile Phone validation
@@ -434,7 +435,7 @@ router.get('/station-admins', async (req, res) => {
 // -------------------------------------------------------------
 router.post('/approve-station-admin', async (req, res) => {
   try {
-    const { stationAdminId, action } = req.body; // action: 'approve' | 'reject'
+    const { stationAdminId, action, remarks } = req.body; // action: 'approve' | 'reject'
 
     if (!stationAdminId) return res.status(400).json({ error: 'Station Admin ID is required' });
     if (!action || !['approve', 'reject'].includes(action)) {
@@ -444,7 +445,7 @@ router.post('/approve-station-admin', async (req, res) => {
     const newStatus = action === 'approve' ? 'approved' : 'rejected';
 
     const updateResult = await pool.query(
-      "UPDATE users SET status = $1 WHERE id = $2 RETURNING id, name, district, role, status",
+      "UPDATE users SET status = $1 WHERE id = $2 RETURNING id, name, email, district, role, status",
       [newStatus, stationAdminId]
     );
 
@@ -459,14 +460,36 @@ router.post('/approve-station-admin', async (req, res) => {
 
     const updatedUser = updateResult.rows[0];
 
+    // Create Audit Log
     await createAuditLog(req, action === 'approve' ? 'RESCUE_TEAM_APPROVED' : 'RESCUE_TEAM_REJECTED', 'RescueTeam', updatedUser.id, updatedUser.district, {
       stationName: updatedUser.name,
       status: newStatus
     });
 
+    // Create In-App Notification for Rescue Team
+    const notif = await notifyStationApproval({
+      userId: updatedUser.id,
+      district: updatedUser.district,
+      status: newStatus,
+      stationName: updatedUser.name,
+      remarks: remarks || ''
+    });
+
+    // Send Email Notification if recipient has email
+    if (updatedUser.email) {
+      sendStationApprovalEmail({
+        recipientEmail: updatedUser.email,
+        recipientName: updatedUser.name,
+        district: updatedUser.district,
+        status: newStatus,
+        actionReason: remarks || ''
+      }).catch(err => console.error('Station email trigger error:', err));
+    }
+
     return res.status(200).json({
-      message: `Station user ${updatedUser.name} has been ${newStatus.toUpperCase()} successfully.`,
-      user: updatedUser
+      message: `Station user ${updatedUser.name} has been ${newStatus.toUpperCase()} successfully. Approval/rejection notification sent to team.`,
+      user: updatedUser,
+      notification: notif
     });
 
   } catch (err) {

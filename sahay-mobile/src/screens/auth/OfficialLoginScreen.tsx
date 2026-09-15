@@ -46,10 +46,15 @@ export const OfficialLoginScreen: React.FC<OfficialLoginScreenProps> = ({
         role: 'rescue_team',
       });
 
-      if (user.status !== 'approved' && user.status !== 'active') {
+      if (user.status === 'rejected') {
         Alert.alert(
-          'Pending Approval',
-          `Station account is PENDING APPROVAL by District Collector of ${user.district || 'your district'}.`
+          'Registration Rejected ❌',
+          `Your Rescue Team registration request was REJECTED by the District Collector of ${user.district || 'your district'}. Please contact the District Collectorate for details.`
+        );
+      } else if (user.status !== 'approved' && user.status !== 'active') {
+        Alert.alert(
+          'Registration Pending Approval ⏳',
+          `Your Station account is PENDING APPROVAL by the District Collector of ${user.district || 'your district'}. Access will be unlocked upon official Collector approval.`
         );
       }
     } catch (err: any) {

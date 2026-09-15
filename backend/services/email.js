@@ -230,8 +230,118 @@ If you did not request a password reset, please ignore this message.
   }
 }
 
+/**
+ * Send Station Approval / Rejection Email Notification to Rescue Team / Station Admin
+ */
+async function sendStationApprovalEmail({ recipientEmail, recipientName, district, status, actionReason }) {
+  const portalUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const isApproved = status === 'approved';
+  const mailSubject = isApproved
+    ? `[SAHAY Disaster Portal] Rescue Team Registration Approved - ${district} District`
+    : `[SAHAY Disaster Portal] Rescue Team Registration Update - ${district} District`;
+
+  const statusTitle = isApproved ? 'Registration Approved ✅' : 'Registration Application Rejected ❌';
+  const statusColor = isApproved ? '#059669' : '#dc2626';
+  const statusBg = isApproved ? '#f0fdf4' : '#fef2f2';
+  const statusBorder = isApproved ? '#bbf7d0' : '#fecaca';
+
+  const htmlBody = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0;">
+      <!-- Header Banner -->
+      <div style="background-color: #0f172a; padding: 24px; border-radius: 12px; text-align: center;">
+        <h1 style="color: #10b981; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px;">SAHAY KERALA</h1>
+        <p style="color: #94a3b8; margin: 4px 0 0 0; font-size: 13px;">Official State Disaster Preparedness & Emergency Network</p>
+      </div>
+
+      <!-- Content Body -->
+      <div style="padding: 24px 16px; color: #1e293b;">
+        <h2 style="color: ${statusColor}; font-size: 20px; margin-top: 0;">${statusTitle}</h2>
+        <p style="font-size: 14px; line-height: 1.6; color: #334155;">
+          Dear <strong>${recipientName || 'Rescue Team Station Commander'}</strong>,
+        </p>
+        <p style="font-size: 14px; line-height: 1.6; color: #334155;">
+          Your registration request for <strong>${recipientName}</strong> under <strong>${district} District</strong> has been officially reviewed by the District Collector.
+        </p>
+
+        <!-- Status Card -->
+        <div style="background-color: ${statusBg}; border: 1px solid ${statusBorder}; border-radius: 12px; padding: 20px; margin: 20px 0;">
+          <h3 style="color: ${statusColor}; font-size: 15px; margin: 0 0 8px 0;">Official Status Decision:</h3>
+          <p style="font-size: 16px; font-weight: bold; color: ${statusColor}; margin: 0 0 8px 0;">
+            ${isApproved ? 'APPROVED & ACTIVATED' : 'APPLICATION REJECTED'}
+          </p>
+          <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0;">
+            ${isApproved 
+              ? `Your unit now has full operational access to the SAHAY Disaster Response Network. You may log in to manage emergency alerts, view assigned incidents, and coordinate rescue deployment.` 
+              : `Your registration request was rejected by the District Collectorate of ${district}. ${actionReason ? `Remarks: "${actionReason}"` : 'Please contact the Collectorate office for further details or verification clarification.'}`}
+          </p>
+        </div>
+
+        ${isApproved ? `
+        <!-- Button -->
+        <div style="text-align: center; margin: 25px 0;">
+          <a href="${portalUrl}" style="background-color: #059669; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: bold; font-size: 14px; display: inline-block;">
+            Access Rescue Team Control Dashboard →
+          </a>
+        </div>
+        ` : `
+        <p style="font-size: 13px; color: #64748b; line-height: 1.5;">
+          If you believe this decision was made in error, please contact the District Collectorate of ${district}.
+        </p>
+        `}
+      </div>
+
+      <!-- Footer -->
+      <div style="border-top: 1px solid #e2e8f0; padding-top: 16px; text-align: center; font-size: 12px; color: #94a3b8;">
+        <p style="margin: 0;">District Collectorate &bull; ${district} District</p>
+        <p style="margin: 4px 0 0 0;">SAHAY State Disaster Management Authority &bull; Government of Kerala</p>
+      </div>
+    </div>
+  `;
+
+  const textBody = `
+SAHAY KERALA - Rescue Team Registration Decision
+
+Dear ${recipientName || 'Rescue Team Station Commander'},
+
+Your registration request for ${recipientName} (${district} District) has been officially reviewed by the District Collector.
+
+Decision: ${isApproved ? 'APPROVED & ACTIVATED' : 'REJECTED'}
+
+${isApproved 
+  ? `Your unit now has full operational access to the SAHAY Disaster Response Network. Portal: ${portalUrl}` 
+  : `Your registration request was rejected by the District Collectorate of ${district}. Please contact the District Collectorate for details.`}
+
+District Collectorate • ${district} District
+SAHAY State Disaster Management Authority
+  `.trim();
+
+  const transporter = createTransporter();
+
+  if (!transporter) {
+    console.log(`✉️ [SIMULATED STATION APPROVAL EMAIL] Status: ${status} | To: ${recipientEmail || 'N/A'} | Station: ${recipientName}`);
+    return { sent: false, mode: 'logged', message: 'No SMTP configured' };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"SAHAY Emergency Portal" <${ADMIN_EMAIL}>`,
+      to: recipientEmail,
+      subject: mailSubject,
+      text: textBody,
+      html: htmlBody,
+    });
+    console.log(`✅ Station ${status} email sent to ${recipientEmail}: ${info.messageId}`);
+    return { sent: true, mode: 'smtp', messageId: info.messageId };
+  } catch (err) {
+    console.error(`⚠️ Failed to send station approval email:`, err.message);
+    return { sent: false, mode: 'failed', error: err.message };
+  }
+}
+
 module.exports = {
   sendCollectorCredentialsEmail,
   sendPasswordResetEmail,
+  sendStationApprovalEmail,
   ADMIN_EMAIL,
 };
+

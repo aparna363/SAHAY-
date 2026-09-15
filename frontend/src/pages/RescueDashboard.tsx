@@ -30,14 +30,7 @@ import {
   Plus,
   Trash2,
   UserPlus,
-  Minus,
-  ChevronRight,
-  Search,
-  Filter,
-  ArrowRight,
-  Clock,
-  ExternalLink,
-  Check
+  Camera
 } from 'lucide-react';
 import {
   getRescueDashboardStats,
@@ -54,11 +47,14 @@ import {
   fetchOfficialIncidents,
   type RescueTeamMember,
   type RescueProfileData,
-  type RescueAgencyConfig
+  type RescueAgencyConfig,
+  type RescueMapIncident
 } from '../services/api';
 import { OfficialIncidentDetailsPage } from './OfficialIncidentDetailsPage';
-import { KeralaAlertMap } from '../components/KeralaAlertMap';
 import { ActiveOperationsListView } from '../components/ActiveOperationsListView';
+import { RescueOperationalMap } from '../components/RescueMap/RescueOperationalMap';
+import { RescueSmartNavigation } from '../components/RescueMap/RescueSmartNavigation';
+import { DamageEvidenceSection } from '../components/RescueMission/DamageEvidenceSection';
 
 interface RescueDashboardProps {
   user?: any;
@@ -69,6 +65,7 @@ export type RescueSidebarTab =
   | 'dashboard'
   | 'assigned_incidents'
   | 'active_operations'
+  | 'evidence'
   | 'operation_history'
   | 'map'
   | 'navigation'
@@ -141,6 +138,8 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
 
   const [activeTab, setActiveTab] = useState<RescueSidebarTab>('dashboard');
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
+  const [navigatingIncident, setNavigatingIncident] = useState<RescueMapIncident | null>(null);
+  const [evidenceIncidentId, setEvidenceIncidentId] = useState<string | number | null>(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Core Data States
@@ -162,10 +161,6 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
 
   // Dynamic Incident State (100% DB Loaded)
   const [assignedIncidents, setAssignedIncidents] = useState<any[]>([]);
-
-  // Active Operations Filter & Search State
-  const [opSearchQuery, setOpSearchQuery] = useState('');
-  const [opFilterStatus, setOpFilterStatus] = useState<string>('ALL');
 
   // Operations History State
   const [operationHistory] = useState([
@@ -456,6 +451,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
           remainingCount: inc.remainingCount ?? 4,
           lat: parseFloat(inc.latitude) || 9.5916,
           lng: parseFloat(inc.longitude) || 76.5222,
+          source: inc.source,
           description: inc.description || `Emergency incident assigned in ${district} district.`
         }));
         setAssignedIncidents(formatted);
@@ -480,6 +476,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
           remainingCount: inc.status === 'RESOLVED' ? 0 : 4,
           lat: parseFloat(inc.latitude) || 9.5916,
           lng: parseFloat(inc.longitude) || 76.5222,
+          source: inc.source,
           description: inc.description || `Emergency incident assigned in ${district} district.`
         }));
         setAssignedIncidents(formatted);
@@ -597,25 +594,6 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
     }
   };
 
-  const handleUpdateRescuedCount = (incidentId: string, delta: number) => {
-    setAssignedIncidents(prev => prev.map(inc => {
-      if (inc.id === incidentId) {
-        const currentRescued = inc.rescuedCount || 0;
-        const totalPeople = inc.affectedPeople || 10;
-        const newRescued = Math.max(0, Math.min(totalPeople, currentRescued + delta));
-        const newRemaining = Math.max(0, totalPeople - newRescued);
-        return {
-          ...inc,
-          rescuedCount: newRescued,
-          remainingCount: newRemaining
-        };
-      }
-      return inc;
-    }));
-    setStatusMsg({ type: 'success', text: `Updated rescued survivor count for operation!` });
-    setTimeout(() => setStatusMsg(null), 3000);
-  };
-
   const handleSendSupportRequest = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -726,6 +704,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
       items: [
         { id: 'assigned_incidents', label: 'Assigned Incidents', icon: ShieldAlert, badge: `${assignedIncidents.length}`, badgeColor: 'bg-amber-500 text-slate-950 font-black' },
         { id: 'active_operations', label: 'Active Operations', icon: Activity, badge: `${assignedIncidents.filter(i => i.status !== 'RESOLVED').length}`, badgeColor: 'bg-red-600 text-white' },
+        { id: 'evidence', label: 'Damage & Evidence', icon: Camera, badge: 'Field' },
         { id: 'operation_history', label: 'Operation History', icon: History, badge: null }
       ]
     },
@@ -733,7 +712,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
       title: 'MAP & NAVIGATION',
       items: [
         { id: 'map', label: 'Live Disaster Map', icon: MapPin, badge: 'GIS' },
-        { id: 'navigation', label: 'Navigation', icon: NavIcon, badge: 'GPS' }
+        { id: 'navigation', label: 'Smart Navigation', icon: NavIcon, badge: 'Safe' }
       ]
     },
     {
@@ -888,13 +867,25 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
         {/* 3. DYNAMIC RIGHT MAIN CONTENT AREA */}
         <main className="flex-1 min-w-0 bg-slate-50 p-4 sm:p-6 lg:p-8 space-y-6 overflow-y-auto">
 
-          {/* Pending Approval Notification Guard */}
-          {!isApproved && (
+          {/* Pending / Approved Verification Banner */}
+          {!isApproved ? (
             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold flex items-center gap-3 shadow-xs animate-fadeIn">
               <Lock className="w-5 h-5 text-amber-600 shrink-0" />
               <div>
                 <span className="font-black text-slate-900">Registration Verification Pending:</span> Your rescue unit (<strong>{unitName}</strong> &bull; <span className="font-mono text-amber-800">{unitId}</span>) is currently under review by the District Collector ({district}). Full operational features will automatically unlock upon official approval.
               </div>
+            </div>
+          ) : (
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs font-medium flex items-center justify-between shadow-xs animate-fadeIn">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <div>
+                  <span className="font-black text-emerald-900">Registration Approved & Verified:</span> Your Rescue Unit (<strong>{unitName}</strong>) has been officially approved by the District Collector of {district}. All operational features, resource dispatches, and emergency alerts are active.
+                </div>
+              </div>
+              <span className="hidden sm:inline-block px-3 py-1 bg-emerald-700 text-white font-black text-[10px] uppercase tracking-wider rounded-lg shrink-0 shadow-xs">
+                Official Collector Clearance
+              </span>
             </div>
           )}
 
@@ -1093,7 +1084,18 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                     className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-extrabold text-xs shadow-md transition-all flex items-center gap-2"
                   >
                     <NavIcon className="w-4 h-4" />
-                    <span>Open Navigation</span>
+                    <span>Smart Navigation</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setEvidenceIncidentId(assignedIncidents[0]?.id || '12');
+                      setActiveTab('evidence');
+                    }}
+                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-extrabold text-xs shadow-md transition-all flex items-center gap-2"
+                  >
+                    <Camera className="w-4 h-4" />
+                    <span>Damage & Rescue Evidence</span>
                   </button>
 
                   <button
@@ -1184,6 +1186,12 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
                             <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black border border-slate-200">
                               {inc.code}
                             </span>
+
+                            {inc.source === 'AI_DISASTER_COPILOT' && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300 text-[11px] font-black flex items-center gap-1 shadow-2xs">
+                                🤖 AI-ASSISTED SOS
+                              </span>
+                            )}
 
                             <span className="text-xs text-slate-500 font-medium">
                               Reported: {inc.reportedTime} &bull; Assigned by: <strong>{inc.assignedBy}</strong>
@@ -1302,122 +1310,66 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
           {/* ------------------------------------------------------------- */}
           {activeTab === 'map' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-lg font-black text-slate-900">Live Field GIS Disaster Map</h2>
-                    <p className="text-xs text-slate-500">Real-time GPS positions of rescue teams, assigned incidents, shelters, and hazard zones.</p>
-                  </div>
-                </div>
-
-                <div className="h-[600px] rounded-3xl overflow-hidden border border-slate-200 shadow-inner">
-                  <KeralaAlertMap
-                    alerts={[
-                      { district: district, alertLevel: 'RED', alertType: 'Heavy Rainfall & Flood Warning', description: 'Extremely heavy rainfall predicted in Kottayam sector.' }
-                    ]}
-                    userLocation={{ latitude: 9.5916, longitude: 76.5222, district }}
-                    selectedDistrict={district}
-                    onSelectDistrict={() => {}}
-                    onLocateUser={() => {}}
-                  />
-                </div>
-              </div>
+              <RescueOperationalMap
+                district={district}
+                teamUnitId={unitId}
+                teamUnitName={unitName}
+                onSelectIncidentForDetails={(incId) => setSelectedIncidentId(String(incId))}
+                onGetSafestRoute={(inc) => {
+                  setNavigatingIncident(inc);
+                  setActiveTab('navigation');
+                }}
+              />
             </div>
           )}
 
           {/* ------------------------------------------------------------- */}
-          {/* VIEW 6: NAVIGATION */}
+          {/* VIEW 6: SMART NAVIGATION */}
           {/* ------------------------------------------------------------- */}
           {activeTab === 'navigation' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                    <NavIcon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-black text-slate-900">GPS Field Navigation & Emergency Route</h2>
-                    <p className="text-xs text-slate-500">From Rescue Station Base ➔ Selected Incident Site</p>
-                  </div>
-                </div>
+              <RescueSmartNavigation
+                incident={
+                  navigatingIncident || (assignedIncidents[0] ? {
+                    id: Number(assignedIncidents[0].id) || 12,
+                    incidentCode: assignedIncidents[0].code || 'INC-2026-0012',
+                    incidentTypeName: assignedIncidents[0].type || 'Disaster Incident',
+                    severity: assignedIncidents[0].severity || 'HIGH',
+                    description: assignedIncidents[0].description || 'Emergency operation in sector',
+                    latitude: assignedIncidents[0].lat || 9.6823,
+                    longitude: assignedIncidents[0].lng || 76.8821,
+                    locationAddress: assignedIncidents[0].location || `${district} Sector`,
+                    status: assignedIncidents[0].status || 'IN_PROGRESS',
+                    createdAt: new Date().toISOString()
+                  } : null)
+                }
+                teamUnitName={unitName}
+                onArrivedAtSite={(incId) => handleUpdateOperationStatus(String(incId), 'ARRIVED')}
+                onOpenEvidenceForm={(incId) => {
+                  setEvidenceIncidentId(incId);
+                  setActiveTab('evidence');
+                }}
+                onClose={() => setActiveTab('map')}
+              />
+            </div>
+          )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4 bg-slate-50 p-6 rounded-3xl border border-slate-200">
-                    <div className="space-y-2">
-                      <div className="text-xs font-black uppercase text-slate-400">Origin Point</div>
-                      <div className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-emerald-600" />
-                        <span>{unitName} Base Station</span>
-                      </div>
-                    </div>
-
-                    <div className="h-px bg-slate-200" />
-
-                    <div className="space-y-2">
-                      <div className="text-xs font-black uppercase text-slate-400">Destination Incident</div>
-                      <div className="font-extrabold text-red-600 text-sm flex items-center gap-2">
-                        <ShieldAlert className="w-4 h-4 text-red-600" />
-                        <span>Mundakayam Ward 4 (INC-2026-0012)</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 text-xs font-bold pt-2">
-                      <div className="bg-white p-3 rounded-2xl border border-slate-200">
-                        <div className="text-slate-500">Total Distance</div>
-                        <div className="text-xl font-black text-slate-900 font-mono">14.2 km</div>
-                      </div>
-                      <div className="bg-white p-3 rounded-2xl border border-slate-200">
-                        <div className="text-slate-500">Estimated Travel Time</div>
-                        <div className="text-xl font-black text-emerald-600 font-mono">22 mins</div>
-                      </div>
-                    </div>
-
-                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900 font-bold space-y-1">
-                      <div className="flex items-center gap-1.5 font-black text-amber-950">
-                        <AlertTriangle className="w-4 h-4 text-amber-600" />
-                        <span>Route Hazard Advisory</span>
-                      </div>
-                      <p className="font-normal text-[11px]">
-                        Waterlogging reported near bridge at km 4.5. Heavy emergency tenders should take the Erumeli-Pampa bypass road.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      <button
-                        onClick={() => alert("Navigation routing started. Live GPS active.")}
-                        className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold text-xs shadow-md transition-all flex items-center gap-2"
-                      >
-                        <NavIcon className="w-4 h-4" />
-                        <span>Start Navigation</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleUpdateOperationStatus('INC-2026-0012', 'ARRIVED')}
-                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold text-xs shadow-md transition-all flex items-center gap-2"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Mark Arrived</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-6">
-                    <div>
-                      <div className="text-xs font-black uppercase text-emerald-400 mb-2">Turn-by-Turn Route Guidance</div>
-                      <div className="space-y-4 text-xs font-medium">
-                        <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">1. Depart Base Station heading East on Erumeli Main Road (3.2 km)</div>
-                        <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">2. Turn Right onto High Range Highway SH-44 (6.5 km)</div>
-                        <div className="p-3 bg-amber-950/60 text-amber-200 rounded-xl border border-amber-800/80">3. CAUTION: Divert via Bridge Bypass Road (2.1 km)</div>
-                        <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">4. Arrive at Incident Sector - Mundakayam Ward 4 (2.4 km)</div>
-                      </div>
-                    </div>
-
-                    <div className="text-[11px] text-slate-400 text-center font-bold">
-                      Integrated PostGIS Spatial Road Network Telemetry
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* ------------------------------------------------------------- */}
+          {/* VIEW 6.5: DAMAGE & RESCUE EVIDENCE */}
+          {/* ------------------------------------------------------------- */}
+          {activeTab === 'evidence' && (
+            <div className="space-y-6 animate-fadeIn">
+              <DamageEvidenceSection
+                incidentId={evidenceIncidentId || assignedIncidents[0]?.id || '12'}
+                incidentCode={navigatingIncident?.incidentCode || assignedIncidents[0]?.code || 'INC-2026-0012'}
+                incidentLocation={navigatingIncident?.locationAddress || assignedIncidents[0]?.location || `${district} Operational Sector`}
+                missionCode="MISSION-204"
+                onMissionCompleted={() => {
+                  handleUpdateOperationStatus(String(evidenceIncidentId || assignedIncidents[0]?.id || '12'), 'RESOLVED');
+                  setActiveTab('dashboard');
+                }}
+                onClose={() => setActiveTab('dashboard')}
+              />
             </div>
           )}
 
