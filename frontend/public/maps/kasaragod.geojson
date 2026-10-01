@@ -1,0 +1,1181 @@
+{
+  "type": "FeatureCollection",
+  "name": "Kasaragod_Administrative_Subdivisions_KSDMA",
+  "district": "Kasaragod",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_kasaragod",
+      "properties": {
+        "adminType": "district",
+        "name": "Kasaragod District",
+        "district": "Kasaragod",
+        "headquarters": "Vidyanagar Collectorate",
+        "talukCount": 4,
+        "villageCount": 20,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Kasaragod"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.91,
+              12.64
+            ],
+            [
+              74.88,
+              12.78
+            ],
+            [
+              75.03,
+              12.85
+            ],
+            [
+              75.27,
+              12.85
+            ],
+            [
+              75.45,
+              12.675
+            ],
+            [
+              75.45,
+              12.36
+            ],
+            [
+              75.33,
+              12.15
+            ],
+            [
+              75.09,
+              12.15
+            ],
+            [
+              74.91,
+              12.255
+            ],
+            [
+              74.85,
+              12.5
+            ],
+            [
+              74.91,
+              12.64
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Kasaragod Town",
+        "village": "Kasaragod Town",
+        "taluk": "Kasaragod",
+        "district": "Kasaragod",
+        "color": "#f7c3f0",
+        "center": [
+          74.95333,
+          12.56
+        ],
+        "vulnerability": "Kasaragod Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.92,
+              12.5225
+            ],
+            [
+              74.98667,
+              12.5225
+            ],
+            [
+              74.98667,
+              12.5975
+            ],
+            [
+              74.92,
+              12.6025
+            ],
+            [
+              74.92,
+              12.5225
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Chengala",
+        "village": "Chengala",
+        "taluk": "Kasaragod",
+        "district": "Kasaragod",
+        "color": "#f7c3f0",
+        "center": [
+          75.02,
+          12.56
+        ],
+        "vulnerability": "Chengala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.98709,
+              12.51896
+            ],
+            [
+              75.05291,
+              12.51896
+            ],
+            [
+              75.05376,
+              12.60104
+            ],
+            [
+              74.98624,
+              12.59896
+            ],
+            [
+              74.98709,
+              12.51896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Madhur",
+        "village": "Madhur",
+        "taluk": "Kasaragod",
+        "district": "Kasaragod",
+        "color": "#f7c3f0",
+        "center": [
+          75.08667,
+          12.56
+        ],
+        "vulnerability": "Madhur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.0525,
+              12.51837
+            ],
+            [
+              75.12084,
+              12.51837
+            ],
+            [
+              75.11916,
+              12.60163
+            ],
+            [
+              75.05417,
+              12.59837
+            ],
+            [
+              75.0525,
+              12.51837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Kalanad",
+        "village": "Kalanad",
+        "taluk": "Kasaragod",
+        "district": "Kasaragod",
+        "color": "#f7c3f0",
+        "center": [
+          74.95333,
+          12.48
+        ],
+        "vulnerability": "Kalanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.92124,
+              12.4424
+            ],
+            [
+              74.98543,
+              12.4424
+            ],
+            [
+              74.9879,
+              12.5176
+            ],
+            [
+              74.91876,
+              12.5224
+            ],
+            [
+              74.92124,
+              12.4424
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Mogral",
+        "village": "Mogral",
+        "taluk": "Kasaragod",
+        "district": "Kasaragod",
+        "color": "#f7c3f0",
+        "center": [
+          75.02,
+          12.48
+        ],
+        "vulnerability": "Mogral Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.98506,
+              12.43964
+            ],
+            [
+              75.05494,
+              12.43964
+            ],
+            [
+              75.05172,
+              12.52036
+            ],
+            [
+              74.98828,
+              12.51964
+            ],
+            [
+              74.98506,
+              12.43964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kasaragod_kasaragod",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kasaragod Taluk",
+        "taluk": "Kasaragod",
+        "district": "Kasaragod",
+        "headquarters": "Kasaragod Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          74.9896,
+          12.5102
+        ],
+        "sdmaAuthority": "DDMA Kasaragod - Kasaragod Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.92,
+              12.44
+            ],
+            [
+              75.12,
+              12.44
+            ],
+            [
+              75.12,
+              12.6
+            ],
+            [
+              74.92,
+              12.6
+            ],
+            [
+              74.92,
+              12.44
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Kanhangad",
+        "village": "Kanhangad",
+        "taluk": "Hosdurg",
+        "district": "Kasaragod",
+        "color": "#cbf3c8",
+        "center": [
+          75.07,
+          12.355
+        ],
+        "vulnerability": "Kanhangad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.043,
+              12.31034
+            ],
+            [
+              75.097,
+              12.31034
+            ],
+            [
+              75.103,
+              12.39966
+            ],
+            [
+              75.037,
+              12.40034
+            ],
+            [
+              75.043,
+              12.31034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Nileshwar",
+        "village": "Nileshwar",
+        "taluk": "Hosdurg",
+        "district": "Kasaragod",
+        "color": "#cbf3c8",
+        "center": [
+          75.13,
+          12.355
+        ],
+        "vulnerability": "Nileshwar Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.09702,
+              12.30761
+            ],
+            [
+              75.16298,
+              12.30761
+            ],
+            [
+              75.15702,
+              12.40239
+            ],
+            [
+              75.10298,
+              12.39761
+            ],
+            [
+              75.09702,
+              12.30761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Ajanoor",
+        "village": "Ajanoor",
+        "taluk": "Hosdurg",
+        "district": "Kasaragod",
+        "color": "#cbf3c8",
+        "center": [
+          75.19,
+          12.355
+        ],
+        "vulnerability": "Ajanoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.16289,
+              12.31165
+            ],
+            [
+              75.21711,
+              12.31165
+            ],
+            [
+              75.22289,
+              12.39835
+            ],
+            [
+              75.15711,
+              12.40165
+            ],
+            [
+              75.16289,
+              12.31165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Pallikkara",
+        "village": "Pallikkara",
+        "taluk": "Hosdurg",
+        "district": "Kasaragod",
+        "color": "#cbf3c8",
+        "center": [
+          75.07,
+          12.265
+        ],
+        "vulnerability": "Pallikkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.03725,
+              12.22102
+            ],
+            [
+              75.10275,
+              12.22102
+            ],
+            [
+              75.09725,
+              12.30898
+            ],
+            [
+              75.04275,
+              12.31102
+            ],
+            [
+              75.03725,
+              12.22102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Madikai",
+        "village": "Madikai",
+        "taluk": "Hosdurg",
+        "district": "Kasaragod",
+        "color": "#cbf3c8",
+        "center": [
+          75.13,
+          12.265
+        ],
+        "vulnerability": "Madikai Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.10255,
+              12.2175
+            ],
+            [
+              75.15745,
+              12.2175
+            ],
+            [
+              75.16255,
+              12.3125
+            ],
+            [
+              75.09745,
+              12.3075
+            ],
+            [
+              75.10255,
+              12.2175
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kasaragod_hosdurg",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Hosdurg Taluk",
+        "taluk": "Hosdurg",
+        "district": "Kasaragod",
+        "headquarters": "Hosdurg Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          75.102,
+          12.315
+        ],
+        "sdmaAuthority": "DDMA Kasaragod - Hosdurg Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.04,
+              12.22
+            ],
+            [
+              75.22,
+              12.22
+            ],
+            [
+              75.22,
+              12.4
+            ],
+            [
+              75.04,
+              12.4
+            ],
+            [
+              75.04,
+              12.22
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Manjeshwar",
+        "village": "Manjeshwar",
+        "taluk": "Manjeshwaram",
+        "district": "Kasaragod",
+        "color": "#bce4fa",
+        "center": [
+          74.875,
+          12.765
+        ],
+        "vulnerability": "Manjeshwar Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.83992,
+              12.70759
+            ],
+            [
+              74.91008,
+              12.70759
+            ],
+            [
+              74.90992,
+              12.82241
+            ],
+            [
+              74.84008,
+              12.81759
+            ],
+            [
+              74.83992,
+              12.70759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Kumbla",
+        "village": "Kumbla",
+        "taluk": "Manjeshwaram",
+        "district": "Kasaragod",
+        "color": "#bce4fa",
+        "center": [
+          74.945,
+          12.765
+        ],
+        "vulnerability": "Kumbla Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.90966,
+              12.71039
+            ],
+            [
+              74.98034,
+              12.71039
+            ],
+            [
+              74.97966,
+              12.81961
+            ],
+            [
+              74.91034,
+              12.82039
+            ],
+            [
+              74.90966,
+              12.71039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Uppala",
+        "village": "Uppala",
+        "taluk": "Manjeshwaram",
+        "district": "Kasaragod",
+        "color": "#bce4fa",
+        "center": [
+          75.015,
+          12.765
+        ],
+        "vulnerability": "Uppala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.98076,
+              12.71209
+            ],
+            [
+              75.04924,
+              12.71209
+            ],
+            [
+              75.05076,
+              12.81791
+            ],
+            [
+              74.97924,
+              12.82209
+            ],
+            [
+              74.98076,
+              12.71209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Mangalpady",
+        "village": "Mangalpady",
+        "taluk": "Manjeshwaram",
+        "district": "Kasaragod",
+        "color": "#bce4fa",
+        "center": [
+          74.875,
+          12.655
+        ],
+        "vulnerability": "Mangalpady Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.83884,
+              12.59788
+            ],
+            [
+              74.91116,
+              12.59788
+            ],
+            [
+              74.90884,
+              12.71212
+            ],
+            [
+              74.84116,
+              12.70788
+            ],
+            [
+              74.83884,
+              12.59788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Paivalike",
+        "village": "Paivalike",
+        "taluk": "Manjeshwaram",
+        "district": "Kasaragod",
+        "color": "#bce4fa",
+        "center": [
+          74.945,
+          12.655
+        ],
+        "vulnerability": "Paivalike Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.91154,
+              12.59968
+            ],
+            [
+              74.97846,
+              12.59968
+            ],
+            [
+              74.98154,
+              12.71032
+            ],
+            [
+              74.90846,
+              12.70968
+            ],
+            [
+              74.91154,
+              12.59968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kasaragod_manjeshwaram",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Manjeshwaram Taluk",
+        "taluk": "Manjeshwaram",
+        "district": "Kasaragod",
+        "headquarters": "Manjeshwaram Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          74.895,
+          12.712
+        ],
+        "sdmaAuthority": "DDMA Kasaragod - Manjeshwaram Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.84,
+              12.6
+            ],
+            [
+              75.05,
+              12.6
+            ],
+            [
+              75.05,
+              12.82
+            ],
+            [
+              74.84,
+              12.82
+            ],
+            [
+              74.84,
+              12.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Vellarikundu",
+        "village": "Vellarikundu",
+        "taluk": "Vellarikundu",
+        "district": "Kasaragod",
+        "color": "#cf8282",
+        "center": [
+          75.25667,
+          12.425
+        ],
+        "vulnerability": "Vellarikundu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.217,
+              12.369
+            ],
+            [
+              75.29633,
+              12.369
+            ],
+            [
+              75.29034,
+              12.481
+            ],
+            [
+              75.223,
+              12.479
+            ],
+            [
+              75.217,
+              12.369
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "West Eleri",
+        "village": "West Eleri",
+        "taluk": "Vellarikundu",
+        "district": "Kasaragod",
+        "color": "#cf8282",
+        "center": [
+          75.33,
+          12.425
+        ],
+        "vulnerability": "West Eleri Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.29632,
+              12.3725
+            ],
+            [
+              75.36368,
+              12.3725
+            ],
+            [
+              75.36965,
+              12.4775
+            ],
+            [
+              75.29035,
+              12.4825
+            ],
+            [
+              75.29632,
+              12.3725
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "East Eleri",
+        "village": "East Eleri",
+        "taluk": "Vellarikundu",
+        "district": "Kasaragod",
+        "color": "#cf8282",
+        "center": [
+          75.40333,
+          12.425
+        ],
+        "vulnerability": "East Eleri Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.36376,
+              12.36892
+            ],
+            [
+              75.44291,
+              12.36892
+            ],
+            [
+              75.43709,
+              12.48108
+            ],
+            [
+              75.36958,
+              12.47892
+            ],
+            [
+              75.36376,
+              12.36892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Balal",
+        "village": "Balal",
+        "taluk": "Vellarikundu",
+        "district": "Kasaragod",
+        "color": "#cf8282",
+        "center": [
+          75.25667,
+          12.315
+        ],
+        "vulnerability": "Balal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.22278,
+              12.2584
+            ],
+            [
+              75.29055,
+              12.2584
+            ],
+            [
+              75.29611,
+              12.3716
+            ],
+            [
+              75.21722,
+              12.3684
+            ],
+            [
+              75.22278,
+              12.2584
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kasaragod_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Kinanoor",
+        "village": "Kinanoor",
+        "taluk": "Vellarikundu",
+        "district": "Kasaragod",
+        "color": "#cf8282",
+        "center": [
+          75.33,
+          12.315
+        ],
+        "vulnerability": "Kinanoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.29074,
+              12.26241
+            ],
+            [
+              75.36926,
+              12.26241
+            ],
+            [
+              75.36407,
+              12.36759
+            ],
+            [
+              75.29593,
+              12.37241
+            ],
+            [
+              75.29074,
+              12.26241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kasaragod_vellarikundu",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Vellarikundu Taluk",
+        "taluk": "Vellarikundu",
+        "district": "Kasaragod",
+        "headquarters": "Vellarikundu Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          75.328,
+          12.355
+        ],
+        "sdmaAuthority": "DDMA Kasaragod - Vellarikundu Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.22,
+              12.26
+            ],
+            [
+              75.44,
+              12.26
+            ],
+            [
+              75.44,
+              12.48
+            ],
+            [
+              75.22,
+              12.48
+            ],
+            [
+              75.22,
+              12.26
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -91,7 +91,15 @@ export const MapLegend: React.FC<MapLegendProps> = ({ role, className = '' }) =>
           <span className="p-1 rounded bg-purple-950 border border-purple-500/40 text-purple-400">
             <Map className="w-3 h-3" />
           </span>
-          <span>District Boundary</span>
+          <span>District Border</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-3.5 h-1 border-b-2 border-dashed border-emerald-400"></span>
+          <span>Taluk Boundary</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-3.5 h-1 border-b-2 border-dotted border-sky-400"></span>
+          <span>Village Sector</span>
         </div>
       </div>
     </div>

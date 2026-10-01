@@ -1,0 +1,1733 @@
+{
+  "type": "FeatureCollection",
+  "name": "Pathanamthitta_Administrative_Subdivisions_KSDMA",
+  "district": "Pathanamthitta",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_pathanamthitta",
+      "properties": {
+        "adminType": "district",
+        "name": "Pathanamthitta District",
+        "district": "Pathanamthitta",
+        "headquarters": "Pathanamthitta District Collectorate",
+        "talukCount": 6,
+        "villageCount": 30,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Pathanamthitta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.56,
+              9.379999999999999
+            ],
+            [
+              76.53,
+              9.46
+            ],
+            [
+              76.67999999999999,
+              9.5
+            ],
+            [
+              76.92,
+              9.5
+            ],
+            [
+              77.1,
+              9.4
+            ],
+            [
+              77.1,
+              9.219999999999999
+            ],
+            [
+              76.97999999999999,
+              9.1
+            ],
+            [
+              76.74,
+              9.1
+            ],
+            [
+              76.56,
+              9.16
+            ],
+            [
+              76.5,
+              9.3
+            ],
+            [
+              76.56,
+              9.379999999999999
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Pathanamthitta Town",
+        "village": "Pathanamthitta Town",
+        "taluk": "Kozhencherry",
+        "district": "Pathanamthitta",
+        "color": "#bce4fa",
+        "center": [
+          76.70833,
+          9.3175
+        ],
+        "vulnerability": "Pathanamthitta Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68,
+              9.2875
+            ],
+            [
+              76.73667,
+              9.2875
+            ],
+            [
+              76.73667,
+              9.3475
+            ],
+            [
+              76.68,
+              9.3525
+            ],
+            [
+              76.68,
+              9.2875
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Aranmula",
+        "village": "Aranmula",
+        "taluk": "Kozhencherry",
+        "district": "Pathanamthitta",
+        "color": "#bce4fa",
+        "center": [
+          76.765,
+          9.3175
+        ],
+        "vulnerability": "Aranmula Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.73709,
+              9.28396
+            ],
+            [
+              76.79291,
+              9.28396
+            ],
+            [
+              76.79376,
+              9.35104
+            ],
+            [
+              76.73624,
+              9.34896
+            ],
+            [
+              76.73709,
+              9.28396
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Kozhencherry",
+        "village": "Kozhencherry",
+        "taluk": "Kozhencherry",
+        "district": "Pathanamthitta",
+        "color": "#bce4fa",
+        "center": [
+          76.82167,
+          9.3175
+        ],
+        "vulnerability": "Kozhencherry Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.7925,
+              9.28337
+            ],
+            [
+              76.85084,
+              9.28337
+            ],
+            [
+              76.84916,
+              9.35163
+            ],
+            [
+              76.79417,
+              9.34837
+            ],
+            [
+              76.7925,
+              9.28337
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Naranganam",
+        "village": "Naranganam",
+        "taluk": "Kozhencherry",
+        "district": "Pathanamthitta",
+        "color": "#bce4fa",
+        "center": [
+          76.70833,
+          9.2525
+        ],
+        "vulnerability": "Naranganam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68124,
+              9.2224
+            ],
+            [
+              76.73543,
+              9.2224
+            ],
+            [
+              76.7379,
+              9.2826
+            ],
+            [
+              76.67876,
+              9.2874
+            ],
+            [
+              76.68124,
+              9.2224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Elanthoor",
+        "village": "Elanthoor",
+        "taluk": "Kozhencherry",
+        "district": "Pathanamthitta",
+        "color": "#bce4fa",
+        "center": [
+          76.765,
+          9.2525
+        ],
+        "vulnerability": "Elanthoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.73506,
+              9.21964
+            ],
+            [
+              76.79494,
+              9.21964
+            ],
+            [
+              76.79172,
+              9.28536
+            ],
+            [
+              76.73828,
+              9.28464
+            ],
+            [
+              76.73506,
+              9.21964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_pathanamthitta_kozhencherry",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kozhencherry Taluk",
+        "taluk": "Kozhencherry",
+        "district": "Pathanamthitta",
+        "headquarters": "Kozhencherry Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.787,
+          9.2648
+        ],
+        "sdmaAuthority": "DDMA Pathanamthitta - Kozhencherry Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68,
+              9.22
+            ],
+            [
+              76.85,
+              9.22
+            ],
+            [
+              76.85,
+              9.35
+            ],
+            [
+              76.68,
+              9.35
+            ],
+            [
+              76.68,
+              9.22
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Ranni",
+        "village": "Ranni",
+        "taluk": "Ranni",
+        "district": "Pathanamthitta",
+        "color": "#cbf3c8",
+        "center": [
+          76.805,
+          9.44
+        ],
+        "vulnerability": "Ranni Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.753,
+              9.40034
+            ],
+            [
+              76.857,
+              9.40034
+            ],
+            [
+              76.863,
+              9.47966
+            ],
+            [
+              76.747,
+              9.48034
+            ],
+            [
+              76.753,
+              9.40034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Vadasserikkara",
+        "village": "Vadasserikkara",
+        "taluk": "Ranni",
+        "district": "Pathanamthitta",
+        "color": "#cbf3c8",
+        "center": [
+          76.915,
+          9.44
+        ],
+        "vulnerability": "Vadasserikkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85702,
+              9.39761
+            ],
+            [
+              76.97298,
+              9.39761
+            ],
+            [
+              76.96702,
+              9.48239
+            ],
+            [
+              76.86298,
+              9.47761
+            ],
+            [
+              76.85702,
+              9.39761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Seethathode",
+        "village": "Seethathode",
+        "taluk": "Ranni",
+        "district": "Pathanamthitta",
+        "color": "#cbf3c8",
+        "center": [
+          77.025,
+          9.44
+        ],
+        "vulnerability": "Seethathode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.97289,
+              9.40165
+            ],
+            [
+              77.07711,
+              9.40165
+            ],
+            [
+              77.08289,
+              9.47835
+            ],
+            [
+              76.96711,
+              9.48165
+            ],
+            [
+              76.97289,
+              9.40165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Pazhavangadi",
+        "village": "Pazhavangadi",
+        "taluk": "Ranni",
+        "district": "Pathanamthitta",
+        "color": "#cbf3c8",
+        "center": [
+          76.805,
+          9.36
+        ],
+        "vulnerability": "Pazhavangadi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.74725,
+              9.32102
+            ],
+            [
+              76.86275,
+              9.32102
+            ],
+            [
+              76.85725,
+              9.39898
+            ],
+            [
+              76.75275,
+              9.40102
+            ],
+            [
+              76.74725,
+              9.32102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Perunad",
+        "village": "Perunad",
+        "taluk": "Ranni",
+        "district": "Pathanamthitta",
+        "color": "#cbf3c8",
+        "center": [
+          76.915,
+          9.36
+        ],
+        "vulnerability": "Perunad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.86255,
+              9.3175
+            ],
+            [
+              76.96745,
+              9.3175
+            ],
+            [
+              76.97255,
+              9.4025
+            ],
+            [
+              76.85745,
+              9.3975
+            ],
+            [
+              76.86255,
+              9.3175
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_pathanamthitta_ranni",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Ranni Taluk",
+        "taluk": "Ranni",
+        "district": "Pathanamthitta",
+        "headquarters": "Ranni Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.79,
+          9.385
+        ],
+        "sdmaAuthority": "DDMA Pathanamthitta - Ranni Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.75,
+              9.32
+            ],
+            [
+              77.08,
+              9.32
+            ],
+            [
+              77.08,
+              9.48
+            ],
+            [
+              76.75,
+              9.48
+            ],
+            [
+              76.75,
+              9.32
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Adoor",
+        "village": "Adoor",
+        "taluk": "Adoor",
+        "district": "Pathanamthitta",
+        "color": "#fbe4c8",
+        "center": [
+          76.67833,
+          9.205
+        ],
+        "vulnerability": "Adoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64992,
+              9.16759
+            ],
+            [
+              76.70675,
+              9.16759
+            ],
+            [
+              76.70659,
+              9.24241
+            ],
+            [
+              76.65008,
+              9.23759
+            ],
+            [
+              76.64992,
+              9.16759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Pandalam",
+        "village": "Pandalam",
+        "taluk": "Adoor",
+        "district": "Pathanamthitta",
+        "color": "#fbe4c8",
+        "center": [
+          76.735,
+          9.205
+        ],
+        "vulnerability": "Pandalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.70632,
+              9.17039
+            ],
+            [
+              76.76368,
+              9.17039
+            ],
+            [
+              76.76299,
+              9.23961
+            ],
+            [
+              76.70701,
+              9.24039
+            ],
+            [
+              76.70632,
+              9.17039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Kodumon",
+        "village": "Kodumon",
+        "taluk": "Adoor",
+        "district": "Pathanamthitta",
+        "color": "#fbe4c8",
+        "center": [
+          76.79167,
+          9.205
+        ],
+        "vulnerability": "Kodumon Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.76409,
+              9.17209
+            ],
+            [
+              76.81924,
+              9.17209
+            ],
+            [
+              76.82076,
+              9.23791
+            ],
+            [
+              76.76257,
+              9.24209
+            ],
+            [
+              76.76409,
+              9.17209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Ezhamkulam",
+        "village": "Ezhamkulam",
+        "taluk": "Adoor",
+        "district": "Pathanamthitta",
+        "color": "#fbe4c8",
+        "center": [
+          76.67833,
+          9.135
+        ],
+        "vulnerability": "Ezhamkulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64884,
+              9.09788
+            ],
+            [
+              76.70783,
+              9.09788
+            ],
+            [
+              76.7055,
+              9.17212
+            ],
+            [
+              76.65116,
+              9.16788
+            ],
+            [
+              76.64884,
+              9.09788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Enadimangalam",
+        "village": "Enadimangalam",
+        "taluk": "Adoor",
+        "district": "Pathanamthitta",
+        "color": "#fbe4c8",
+        "center": [
+          76.735,
+          9.135
+        ],
+        "vulnerability": "Enadimangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.70821,
+              9.09968
+            ],
+            [
+              76.76179,
+              9.09968
+            ],
+            [
+              76.76488,
+              9.17032
+            ],
+            [
+              76.70512,
+              9.16968
+            ],
+            [
+              76.70821,
+              9.09968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_pathanamthitta_adoor",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Adoor Taluk",
+        "taluk": "Adoor",
+        "district": "Pathanamthitta",
+        "headquarters": "Adoor Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.735,
+          9.152
+        ],
+        "sdmaAuthority": "DDMA Pathanamthitta - Adoor Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.65,
+              9.1
+            ],
+            [
+              76.82,
+              9.1
+            ],
+            [
+              76.82,
+              9.24
+            ],
+            [
+              76.65,
+              9.24
+            ],
+            [
+              76.65,
+              9.1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Konni",
+        "village": "Konni",
+        "taluk": "Konni",
+        "district": "Pathanamthitta",
+        "color": "#f7c3f0",
+        "center": [
+          76.84167,
+          9.26
+        ],
+        "vulnerability": "Konni Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.797,
+              9.219
+            ],
+            [
+              76.88633,
+              9.219
+            ],
+            [
+              76.88034,
+              9.301
+            ],
+            [
+              76.803,
+              9.299
+            ],
+            [
+              76.797,
+              9.219
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Thannithode",
+        "village": "Thannithode",
+        "taluk": "Konni",
+        "district": "Pathanamthitta",
+        "color": "#f7c3f0",
+        "center": [
+          76.925,
+          9.26
+        ],
+        "vulnerability": "Thannithode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.88632,
+              9.2225
+            ],
+            [
+              76.96368,
+              9.2225
+            ],
+            [
+              76.96965,
+              9.2975
+            ],
+            [
+              76.88035,
+              9.3025
+            ],
+            [
+              76.88632,
+              9.2225
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Kalanjoor",
+        "village": "Kalanjoor",
+        "taluk": "Konni",
+        "district": "Pathanamthitta",
+        "color": "#f7c3f0",
+        "center": [
+          77.00833,
+          9.26
+        ],
+        "vulnerability": "Kalanjoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.96376,
+              9.21892
+            ],
+            [
+              77.05291,
+              9.21892
+            ],
+            [
+              77.04709,
+              9.30108
+            ],
+            [
+              76.96958,
+              9.29892
+            ],
+            [
+              76.96376,
+              9.21892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Aruvappulam",
+        "village": "Aruvappulam",
+        "taluk": "Konni",
+        "district": "Pathanamthitta",
+        "color": "#f7c3f0",
+        "center": [
+          76.84167,
+          9.18
+        ],
+        "vulnerability": "Aruvappulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.80278,
+              9.1384
+            ],
+            [
+              76.88055,
+              9.1384
+            ],
+            [
+              76.88611,
+              9.2216
+            ],
+            [
+              76.79722,
+              9.2184
+            ],
+            [
+              76.80278,
+              9.1384
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Malayalapuzha",
+        "village": "Malayalapuzha",
+        "taluk": "Konni",
+        "district": "Pathanamthitta",
+        "color": "#f7c3f0",
+        "center": [
+          76.925,
+          9.18
+        ],
+        "vulnerability": "Malayalapuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.88074,
+              9.14241
+            ],
+            [
+              76.96926,
+              9.14241
+            ],
+            [
+              76.96407,
+              9.21759
+            ],
+            [
+              76.88593,
+              9.22241
+            ],
+            [
+              76.88074,
+              9.14241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_pathanamthitta_konni",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Konni Taluk",
+        "taluk": "Konni",
+        "district": "Pathanamthitta",
+        "headquarters": "Konni Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.852,
+          9.238
+        ],
+        "sdmaAuthority": "DDMA Pathanamthitta - Konni Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.8,
+              9.14
+            ],
+            [
+              77.05,
+              9.14
+            ],
+            [
+              77.05,
+              9.3
+            ],
+            [
+              76.8,
+              9.3
+            ],
+            [
+              76.8,
+              9.14
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Mallappally",
+        "village": "Mallappally",
+        "taluk": "Mallappally",
+        "district": "Pathanamthitta",
+        "color": "#fef08a",
+        "center": [
+          76.62,
+          9.4675
+        ],
+        "vulnerability": "Mallappally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60016,
+              9.44713
+            ],
+            [
+              76.63984,
+              9.44713
+            ],
+            [
+              76.64016,
+              9.48787
+            ],
+            [
+              76.59984,
+              9.49213
+            ],
+            [
+              76.60016,
+              9.44713
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Anicadu",
+        "village": "Anicadu",
+        "taluk": "Mallappally",
+        "district": "Pathanamthitta",
+        "color": "#fef08a",
+        "center": [
+          76.66,
+          9.4675
+        ],
+        "vulnerability": "Anicadu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64027,
+              9.4453
+            ],
+            [
+              76.67973,
+              9.4453
+            ],
+            [
+              76.68027,
+              9.4897
+            ],
+            [
+              76.63973,
+              9.4903
+            ],
+            [
+              76.64027,
+              9.4453
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Kaviyoor",
+        "village": "Kaviyoor",
+        "taluk": "Mallappally",
+        "district": "Pathanamthitta",
+        "color": "#fef08a",
+        "center": [
+          76.7,
+          9.4675
+        ],
+        "vulnerability": "Kaviyoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.67932,
+              9.44262
+            ],
+            [
+              76.72068,
+              9.44262
+            ],
+            [
+              76.71932,
+              9.49238
+            ],
+            [
+              76.68068,
+              9.48762
+            ],
+            [
+              76.67932,
+              9.44262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Kottangal",
+        "village": "Kottangal",
+        "taluk": "Mallappally",
+        "district": "Pathanamthitta",
+        "color": "#fef08a",
+        "center": [
+          76.62,
+          9.4225
+        ],
+        "vulnerability": "Kottangal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.60109,
+              9.40168
+            ],
+            [
+              76.63891,
+              9.40168
+            ],
+            [
+              76.64109,
+              9.44332
+            ],
+            [
+              76.59891,
+              9.44668
+            ],
+            [
+              76.60109,
+              9.40168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Kunnamthanam",
+        "village": "Kunnamthanam",
+        "taluk": "Mallappally",
+        "district": "Pathanamthitta",
+        "color": "#fef08a",
+        "center": [
+          76.66,
+          9.4225
+        ],
+        "vulnerability": "Kunnamthanam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63853,
+              9.40098
+            ],
+            [
+              76.68147,
+              9.40098
+            ],
+            [
+              76.67853,
+              9.44402
+            ],
+            [
+              76.64147,
+              9.44598
+            ],
+            [
+              76.63853,
+              9.40098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_pathanamthitta_mallappally",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Mallappally Taluk",
+        "taluk": "Mallappally",
+        "district": "Pathanamthitta",
+        "headquarters": "Mallappally Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          76.652,
+          9.452
+        ],
+        "sdmaAuthority": "DDMA Pathanamthitta - Mallappally Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6,
+              9.4
+            ],
+            [
+              76.72,
+              9.4
+            ],
+            [
+              76.72,
+              9.49
+            ],
+            [
+              76.6,
+              9.49
+            ],
+            [
+              76.6,
+              9.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Thiruvalla",
+        "village": "Thiruvalla",
+        "taluk": "Thiruvalla",
+        "district": "Pathanamthitta",
+        "color": "#cf8282",
+        "center": [
+          76.52333,
+          9.41
+        ],
+        "vulnerability": "Thiruvalla Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.50299,
+              9.38158
+            ],
+            [
+              76.54367,
+              9.38158
+            ],
+            [
+              76.54966,
+              9.43842
+            ],
+            [
+              76.49701,
+              9.44158
+            ],
+            [
+              76.50299,
+              9.38158
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Nedumpuram",
+        "village": "Nedumpuram",
+        "taluk": "Thiruvalla",
+        "district": "Pathanamthitta",
+        "color": "#cf8282",
+        "center": [
+          76.57,
+          9.41
+        ],
+        "vulnerability": "Nedumpuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.54368,
+              9.37758
+            ],
+            [
+              76.59632,
+              9.37758
+            ],
+            [
+              76.59034,
+              9.44242
+            ],
+            [
+              76.54966,
+              9.43758
+            ],
+            [
+              76.54368,
+              9.37758
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Peringara",
+        "village": "Peringara",
+        "taluk": "Thiruvalla",
+        "district": "Pathanamthitta",
+        "color": "#cf8282",
+        "center": [
+          76.61667,
+          9.41
+        ],
+        "vulnerability": "Peringara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.59626,
+              9.38043
+            ],
+            [
+              76.63707,
+              9.38043
+            ],
+            [
+              76.64293,
+              9.43957
+            ],
+            [
+              76.5904,
+              9.44043
+            ],
+            [
+              76.59626,
+              9.38043
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Kadapra",
+        "village": "Kadapra",
+        "taluk": "Thiruvalla",
+        "district": "Pathanamthitta",
+        "color": "#cf8282",
+        "center": [
+          76.52333,
+          9.35
+        ],
+        "vulnerability": "Kadapra Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.49719,
+              9.32206
+            ],
+            [
+              76.54948,
+              9.32206
+            ],
+            [
+              76.54386,
+              9.37794
+            ],
+            [
+              76.50281,
+              9.38206
+            ],
+            [
+              76.49719,
+              9.32206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_pathanamthitta_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Kuttoor",
+        "village": "Kuttoor",
+        "taluk": "Thiruvalla",
+        "district": "Pathanamthitta",
+        "color": "#cf8282",
+        "center": [
+          76.57,
+          9.35
+        ],
+        "vulnerability": "Kuttoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.5493,
+              9.31786
+            ],
+            [
+              76.5907,
+              9.31786
+            ],
+            [
+              76.59597,
+              9.38214
+            ],
+            [
+              76.54403,
+              9.37786
+            ],
+            [
+              76.5493,
+              9.31786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_pathanamthitta_thiruvalla",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thiruvalla Taluk",
+        "taluk": "Thiruvalla",
+        "district": "Pathanamthitta",
+        "headquarters": "Thiruvalla Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.572,
+          9.382
+        ],
+        "sdmaAuthority": "DDMA Pathanamthitta - Thiruvalla Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.5,
+              9.32
+            ],
+            [
+              76.64,
+              9.32
+            ],
+            [
+              76.64,
+              9.44
+            ],
+            [
+              76.5,
+              9.44
+            ],
+            [
+              76.5,
+              9.32
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

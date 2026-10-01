@@ -9,6 +9,7 @@ interface TopHeaderProps {
   onLanguageChange: (lang: Language) => void;
   onOpenContacts: () => void;
   onOpenOfficialLogin?: () => void;
+  onOpenSystemSettings?: () => void;
 }
 
 export const TopHeader: React.FC<TopHeaderProps> = ({
@@ -16,6 +17,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   onLanguageChange,
   onOpenContacts,
   onOpenOfficialLogin,
+  onOpenSystemSettings,
 }) => {
   const t = translations[currentLang];
   const { location, openPromptModal, loading } = useLocation();
@@ -40,7 +42,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         </div>
       </div>
 
-      {/* Right: Location Badge, Emergency Numbers, Official Portal & Language Selector */}
+      {/* Right: Location Badge, Emergency Numbers, Official Portal, Language Selector & Settings */}
       <div className="flex items-center flex-wrap gap-2 sm:gap-3">
         
         {/* Live Detected Location Pill */}
@@ -108,6 +110,18 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             <option value="hi" className="bg-[#043e2e] text-white">ഹിन्दी (HI)</option>
           </select>
         </div>
+
+        {/* System Settings Quick Button */}
+        {onOpenSystemSettings && (
+          <button
+            onClick={onOpenSystemSettings}
+            className="flex items-center gap-1.5 bg-[#032e22] hover:bg-[#065f46] text-emerald-200 hover:text-white px-3 py-1.5 rounded-lg border border-emerald-600/40 transition-all cursor-pointer text-xs font-bold shadow-sm"
+            title="Open System Settings"
+          >
+            <span>⚙️</span>
+            <span className="hidden sm:inline">Settings</span>
+          </button>
+        )}
       </div>
     </header>
   );

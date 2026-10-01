@@ -1,0 +1,1733 @@
+{
+  "type": "FeatureCollection",
+  "name": "Thrissur_Administrative_Subdivisions_KSDMA",
+  "district": "Thrissur",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_thrissur",
+      "properties": {
+        "adminType": "district",
+        "name": "Thrissur District",
+        "district": "Thrissur",
+        "headquarters": "Ayyanthole Collectorate",
+        "talukCount": 6,
+        "villageCount": 30,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Thrissur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.042,
+              10.57
+            ],
+            [
+              76.01100000000001,
+              10.69
+            ],
+            [
+              76.166,
+              10.75
+            ],
+            [
+              76.414,
+              10.75
+            ],
+            [
+              76.6,
+              10.6
+            ],
+            [
+              76.6,
+              10.33
+            ],
+            [
+              76.476,
+              10.15
+            ],
+            [
+              76.228,
+              10.15
+            ],
+            [
+              76.042,
+              10.24
+            ],
+            [
+              75.98,
+              10.45
+            ],
+            [
+              76.042,
+              10.57
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Thrissur Town",
+        "village": "Thrissur Town",
+        "taluk": "Thrissur",
+        "district": "Thrissur",
+        "color": "#f7c3f0",
+        "center": [
+          76.175,
+          10.5625
+        ],
+        "vulnerability": "Thrissur Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15,
+              10.5275
+            ],
+            [
+              76.2,
+              10.5275
+            ],
+            [
+              76.2,
+              10.5975
+            ],
+            [
+              76.15,
+              10.6025
+            ],
+            [
+              76.15,
+              10.5275
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Ayyanthole",
+        "village": "Ayyanthole",
+        "taluk": "Thrissur",
+        "district": "Thrissur",
+        "color": "#f7c3f0",
+        "center": [
+          76.225,
+          10.5625
+        ],
+        "vulnerability": "Ayyanthole Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.20042,
+              10.52396
+            ],
+            [
+              76.24958,
+              10.52396
+            ],
+            [
+              76.25042,
+              10.60104
+            ],
+            [
+              76.19958,
+              10.59896
+            ],
+            [
+              76.20042,
+              10.52396
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Ollur",
+        "village": "Ollur",
+        "taluk": "Thrissur",
+        "district": "Thrissur",
+        "color": "#f7c3f0",
+        "center": [
+          76.275,
+          10.5625
+        ],
+        "vulnerability": "Ollur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.24916,
+              10.52337
+            ],
+            [
+              76.30084,
+              10.52337
+            ],
+            [
+              76.29916,
+              10.60163
+            ],
+            [
+              76.25084,
+              10.59837
+            ],
+            [
+              76.24916,
+              10.52337
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Viyyur",
+        "village": "Viyyur",
+        "taluk": "Thrissur",
+        "district": "Thrissur",
+        "color": "#f7c3f0",
+        "center": [
+          76.175,
+          10.4875
+        ],
+        "vulnerability": "Viyyur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15124,
+              10.4524
+            ],
+            [
+              76.19876,
+              10.4524
+            ],
+            [
+              76.20124,
+              10.5226
+            ],
+            [
+              76.14876,
+              10.5274
+            ],
+            [
+              76.15124,
+              10.4524
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Koorkenchery",
+        "village": "Koorkenchery",
+        "taluk": "Thrissur",
+        "district": "Thrissur",
+        "color": "#f7c3f0",
+        "center": [
+          76.225,
+          10.4875
+        ],
+        "vulnerability": "Koorkenchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.19839,
+              10.44964
+            ],
+            [
+              76.25161,
+              10.44964
+            ],
+            [
+              76.24839,
+              10.52536
+            ],
+            [
+              76.20161,
+              10.52464
+            ],
+            [
+              76.19839,
+              10.44964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thrissur_thrissur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thrissur Taluk",
+        "taluk": "Thrissur",
+        "district": "Thrissur",
+        "headquarters": "Thrissur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.2144,
+          10.5276
+        ],
+        "sdmaAuthority": "DDMA Thrissur - Thrissur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15,
+              10.45
+            ],
+            [
+              76.3,
+              10.45
+            ],
+            [
+              76.3,
+              10.6
+            ],
+            [
+              76.15,
+              10.6
+            ],
+            [
+              76.15,
+              10.45
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Irinjalakuda",
+        "village": "Irinjalakuda",
+        "taluk": "Mukundapuram",
+        "district": "Thrissur",
+        "color": "#bce4fa",
+        "center": [
+          76.23,
+          10.385
+        ],
+        "vulnerability": "Irinjalakuda Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.203,
+              10.35034
+            ],
+            [
+              76.257,
+              10.35034
+            ],
+            [
+              76.263,
+              10.41966
+            ],
+            [
+              76.197,
+              10.42034
+            ],
+            [
+              76.203,
+              10.35034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Pudukkad",
+        "village": "Pudukkad",
+        "taluk": "Mukundapuram",
+        "district": "Thrissur",
+        "color": "#bce4fa",
+        "center": [
+          76.29,
+          10.385
+        ],
+        "vulnerability": "Pudukkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25702,
+              10.34761
+            ],
+            [
+              76.32298,
+              10.34761
+            ],
+            [
+              76.31702,
+              10.42239
+            ],
+            [
+              76.26298,
+              10.41761
+            ],
+            [
+              76.25702,
+              10.34761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Nenmenikkara",
+        "village": "Nenmenikkara",
+        "taluk": "Mukundapuram",
+        "district": "Thrissur",
+        "color": "#bce4fa",
+        "center": [
+          76.35,
+          10.385
+        ],
+        "vulnerability": "Nenmenikkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.32289,
+              10.35165
+            ],
+            [
+              76.37711,
+              10.35165
+            ],
+            [
+              76.38289,
+              10.41835
+            ],
+            [
+              76.31711,
+              10.42165
+            ],
+            [
+              76.32289,
+              10.35165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Muriyad",
+        "village": "Muriyad",
+        "taluk": "Mukundapuram",
+        "district": "Thrissur",
+        "color": "#bce4fa",
+        "center": [
+          76.23,
+          10.315
+        ],
+        "vulnerability": "Muriyad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.19725,
+              10.28102
+            ],
+            [
+              76.26275,
+              10.28102
+            ],
+            [
+              76.25725,
+              10.34898
+            ],
+            [
+              76.20275,
+              10.35102
+            ],
+            [
+              76.19725,
+              10.28102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Velookkara",
+        "village": "Velookkara",
+        "taluk": "Mukundapuram",
+        "district": "Thrissur",
+        "color": "#bce4fa",
+        "center": [
+          76.29,
+          10.315
+        ],
+        "vulnerability": "Velookkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.26255,
+              10.2775
+            ],
+            [
+              76.31745,
+              10.2775
+            ],
+            [
+              76.32255,
+              10.3525
+            ],
+            [
+              76.25745,
+              10.3475
+            ],
+            [
+              76.26255,
+              10.2775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thrissur_mukundapuram",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Mukundapuram Taluk",
+        "taluk": "Mukundapuram",
+        "district": "Thrissur",
+        "headquarters": "Mukundapuram Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.285,
+          10.352
+        ],
+        "sdmaAuthority": "DDMA Thrissur - Mukundapuram Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.2,
+              10.28
+            ],
+            [
+              76.38,
+              10.28
+            ],
+            [
+              76.38,
+              10.42
+            ],
+            [
+              76.2,
+              10.42
+            ],
+            [
+              76.2,
+              10.28
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Chavakkad",
+        "village": "Chavakkad",
+        "taluk": "Chavakkad",
+        "district": "Thrissur",
+        "color": "#cbf3c8",
+        "center": [
+          76.00333,
+          10.635
+        ],
+        "vulnerability": "Chavakkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.97992,
+              10.58759
+            ],
+            [
+              76.02675,
+              10.58759
+            ],
+            [
+              76.02659,
+              10.68241
+            ],
+            [
+              75.98008,
+              10.67759
+            ],
+            [
+              75.97992,
+              10.58759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Guruvayoor",
+        "village": "Guruvayoor",
+        "taluk": "Chavakkad",
+        "district": "Thrissur",
+        "color": "#cbf3c8",
+        "center": [
+          76.05,
+          10.635
+        ],
+        "vulnerability": "Guruvayoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.02632,
+              10.59039
+            ],
+            [
+              76.07368,
+              10.59039
+            ],
+            [
+              76.07299,
+              10.67961
+            ],
+            [
+              76.02701,
+              10.68039
+            ],
+            [
+              76.02632,
+              10.59039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Punnayoorkulam",
+        "village": "Punnayoorkulam",
+        "taluk": "Chavakkad",
+        "district": "Thrissur",
+        "color": "#cbf3c8",
+        "center": [
+          76.09667,
+          10.635
+        ],
+        "vulnerability": "Punnayoorkulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.07409,
+              10.59209
+            ],
+            [
+              76.11924,
+              10.59209
+            ],
+            [
+              76.12076,
+              10.67791
+            ],
+            [
+              76.07257,
+              10.68209
+            ],
+            [
+              76.07409,
+              10.59209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Orumanayoor",
+        "village": "Orumanayoor",
+        "taluk": "Chavakkad",
+        "district": "Thrissur",
+        "color": "#cbf3c8",
+        "center": [
+          76.00333,
+          10.545
+        ],
+        "vulnerability": "Orumanayoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.97884,
+              10.49788
+            ],
+            [
+              76.02783,
+              10.49788
+            ],
+            [
+              76.0255,
+              10.59212
+            ],
+            [
+              75.98116,
+              10.58788
+            ],
+            [
+              75.97884,
+              10.49788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Engandiyoor",
+        "village": "Engandiyoor",
+        "taluk": "Chavakkad",
+        "district": "Thrissur",
+        "color": "#cbf3c8",
+        "center": [
+          76.05,
+          10.545
+        ],
+        "vulnerability": "Engandiyoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.02821,
+              10.49968
+            ],
+            [
+              76.07179,
+              10.49968
+            ],
+            [
+              76.07488,
+              10.59032
+            ],
+            [
+              76.02512,
+              10.58968
+            ],
+            [
+              76.02821,
+              10.49968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thrissur_chavakkad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Chavakkad Taluk",
+        "taluk": "Chavakkad",
+        "district": "Thrissur",
+        "headquarters": "Chavakkad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.028,
+          10.582
+        ],
+        "sdmaAuthority": "DDMA Thrissur - Chavakkad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.98,
+              10.5
+            ],
+            [
+              76.12,
+              10.5
+            ],
+            [
+              76.12,
+              10.68
+            ],
+            [
+              75.98,
+              10.68
+            ],
+            [
+              75.98,
+              10.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Kodungallur",
+        "village": "Kodungallur",
+        "taluk": "Kodungallur",
+        "district": "Thrissur",
+        "color": "#cf8282",
+        "center": [
+          76.14333,
+          10.2625
+        ],
+        "vulnerability": "Kodungallur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.117,
+              10.224
+            ],
+            [
+              76.16966,
+              10.224
+            ],
+            [
+              76.16367,
+              10.301
+            ],
+            [
+              76.123,
+              10.299
+            ],
+            [
+              76.117,
+              10.224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Methala",
+        "village": "Methala",
+        "taluk": "Kodungallur",
+        "district": "Thrissur",
+        "color": "#cf8282",
+        "center": [
+          76.19,
+          10.2625
+        ],
+        "vulnerability": "Methala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.16965,
+              10.2275
+            ],
+            [
+              76.21035,
+              10.2275
+            ],
+            [
+              76.21632,
+              10.2975
+            ],
+            [
+              76.16368,
+              10.3025
+            ],
+            [
+              76.16965,
+              10.2275
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Lokamaleswaram",
+        "village": "Lokamaleswaram",
+        "taluk": "Kodungallur",
+        "district": "Thrissur",
+        "color": "#cf8282",
+        "center": [
+          76.23667,
+          10.2625
+        ],
+        "vulnerability": "Lokamaleswaram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.21042,
+              10.22392
+            ],
+            [
+              76.26291,
+              10.22392
+            ],
+            [
+              76.25709,
+              10.30108
+            ],
+            [
+              76.21624,
+              10.29892
+            ],
+            [
+              76.21042,
+              10.22392
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Eriyad",
+        "village": "Eriyad",
+        "taluk": "Kodungallur",
+        "district": "Thrissur",
+        "color": "#cf8282",
+        "center": [
+          76.14333,
+          10.1875
+        ],
+        "vulnerability": "Eriyad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.12278,
+              10.1484
+            ],
+            [
+              76.16389,
+              10.1484
+            ],
+            [
+              76.16945,
+              10.2266
+            ],
+            [
+              76.11722,
+              10.2234
+            ],
+            [
+              76.12278,
+              10.1484
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Edavilangu",
+        "village": "Edavilangu",
+        "taluk": "Kodungallur",
+        "district": "Thrissur",
+        "color": "#cf8282",
+        "center": [
+          76.19,
+          10.1875
+        ],
+        "vulnerability": "Edavilangu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.16407,
+              10.15241
+            ],
+            [
+              76.21593,
+              10.15241
+            ],
+            [
+              76.21074,
+              10.22259
+            ],
+            [
+              76.16926,
+              10.22741
+            ],
+            [
+              76.16407,
+              10.15241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thrissur_kodungallur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kodungallur Taluk",
+        "taluk": "Kodungallur",
+        "district": "Thrissur",
+        "headquarters": "Kodungallur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.195,
+          10.224
+        ],
+        "sdmaAuthority": "DDMA Thrissur - Kodungallur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.12,
+              10.15
+            ],
+            [
+              76.26,
+              10.15
+            ],
+            [
+              76.26,
+              10.3
+            ],
+            [
+              76.12,
+              10.3
+            ],
+            [
+              76.12,
+              10.15
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Wadakkanchery",
+        "village": "Wadakkanchery",
+        "taluk": "Thalapilly",
+        "district": "Thrissur",
+        "color": "#fbe4c8",
+        "center": [
+          76.21,
+          10.72
+        ],
+        "vulnerability": "Wadakkanchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.18016,
+              10.68213
+            ],
+            [
+              76.23984,
+              10.68213
+            ],
+            [
+              76.24016,
+              10.75787
+            ],
+            [
+              76.17984,
+              10.76213
+            ],
+            [
+              76.18016,
+              10.68213
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Chelakkara",
+        "village": "Chelakkara",
+        "taluk": "Thalapilly",
+        "district": "Thrissur",
+        "color": "#fbe4c8",
+        "center": [
+          76.27,
+          10.72
+        ],
+        "vulnerability": "Chelakkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.24027,
+              10.6803
+            ],
+            [
+              76.29973,
+              10.6803
+            ],
+            [
+              76.30027,
+              10.7597
+            ],
+            [
+              76.23973,
+              10.7603
+            ],
+            [
+              76.24027,
+              10.6803
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Desamangalam",
+        "village": "Desamangalam",
+        "taluk": "Thalapilly",
+        "district": "Thrissur",
+        "color": "#fbe4c8",
+        "center": [
+          76.33,
+          10.72
+        ],
+        "vulnerability": "Desamangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29932,
+              10.67762
+            ],
+            [
+              76.36068,
+              10.67762
+            ],
+            [
+              76.35932,
+              10.76238
+            ],
+            [
+              76.30068,
+              10.75762
+            ],
+            [
+              76.29932,
+              10.67762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Mullurkara",
+        "village": "Mullurkara",
+        "taluk": "Thalapilly",
+        "district": "Thrissur",
+        "color": "#fbe4c8",
+        "center": [
+          76.21,
+          10.64
+        ],
+        "vulnerability": "Mullurkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.18109,
+              10.60168
+            ],
+            [
+              76.23891,
+              10.60168
+            ],
+            [
+              76.24109,
+              10.67832
+            ],
+            [
+              76.17891,
+              10.68168
+            ],
+            [
+              76.18109,
+              10.60168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Pazhayannur",
+        "village": "Pazhayannur",
+        "taluk": "Thalapilly",
+        "district": "Thrissur",
+        "color": "#fbe4c8",
+        "center": [
+          76.27,
+          10.64
+        ],
+        "vulnerability": "Pazhayannur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.23853,
+              10.60098
+            ],
+            [
+              76.30147,
+              10.60098
+            ],
+            [
+              76.29853,
+              10.67902
+            ],
+            [
+              76.24147,
+              10.68098
+            ],
+            [
+              76.23853,
+              10.60098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thrissur_thalapilly",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thalapilly Taluk",
+        "taluk": "Thalapilly",
+        "district": "Thrissur",
+        "headquarters": "Thalapilly Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.265,
+          10.682
+        ],
+        "sdmaAuthority": "DDMA Thrissur - Thalapilly Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.18,
+              10.6
+            ],
+            [
+              76.36,
+              10.6
+            ],
+            [
+              76.36,
+              10.76
+            ],
+            [
+              76.18,
+              10.76
+            ],
+            [
+              76.18,
+              10.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Chalakudy",
+        "village": "Chalakudy",
+        "taluk": "Chalakkudy",
+        "district": "Thrissur",
+        "color": "#fef08a",
+        "center": [
+          76.35,
+          10.35
+        ],
+        "vulnerability": "Chalakudy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.30299,
+              10.30158
+            ],
+            [
+              76.39701,
+              10.30158
+            ],
+            [
+              76.40299,
+              10.39842
+            ],
+            [
+              76.29701,
+              10.40158
+            ],
+            [
+              76.30299,
+              10.30158
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Athirappilly",
+        "village": "Athirappilly",
+        "taluk": "Chalakkudy",
+        "district": "Thrissur",
+        "color": "#fef08a",
+        "center": [
+          76.45,
+          10.35
+        ],
+        "vulnerability": "Athirappilly Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.39701,
+              10.29758
+            ],
+            [
+              76.50299,
+              10.29758
+            ],
+            [
+              76.49701,
+              10.40242
+            ],
+            [
+              76.40299,
+              10.39758
+            ],
+            [
+              76.39701,
+              10.29758
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Koratty",
+        "village": "Koratty",
+        "taluk": "Chalakkudy",
+        "district": "Thrissur",
+        "color": "#fef08a",
+        "center": [
+          76.55,
+          10.35
+        ],
+        "vulnerability": "Koratty Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.50293,
+              10.30043
+            ],
+            [
+              76.59707,
+              10.30043
+            ],
+            [
+              76.60293,
+              10.39957
+            ],
+            [
+              76.49707,
+              10.40043
+            ],
+            [
+              76.50293,
+              10.30043
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Pariaram",
+        "village": "Pariaram",
+        "taluk": "Chalakkudy",
+        "district": "Thrissur",
+        "color": "#fef08a",
+        "center": [
+          76.35,
+          10.25
+        ],
+        "vulnerability": "Pariaram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29719,
+              10.20206
+            ],
+            [
+              76.40281,
+              10.20206
+            ],
+            [
+              76.39719,
+              10.29794
+            ],
+            [
+              76.30281,
+              10.30206
+            ],
+            [
+              76.29719,
+              10.20206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thrissur_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Meloor",
+        "village": "Meloor",
+        "taluk": "Chalakkudy",
+        "district": "Thrissur",
+        "color": "#fef08a",
+        "center": [
+          76.45,
+          10.25
+        ],
+        "vulnerability": "Meloor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.40263,
+              10.19786
+            ],
+            [
+              76.49737,
+              10.19786
+            ],
+            [
+              76.50263,
+              10.30214
+            ],
+            [
+              76.39737,
+              10.29786
+            ],
+            [
+              76.40263,
+              10.19786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thrissur_chalakkudy",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Chalakkudy Taluk",
+        "taluk": "Chalakkudy",
+        "district": "Thrissur",
+        "headquarters": "Chalakkudy Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          76.362,
+          10.305
+        ],
+        "sdmaAuthority": "DDMA Thrissur - Chalakkudy Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.3,
+              10.2
+            ],
+            [
+              76.6,
+              10.2
+            ],
+            [
+              76.6,
+              10.4
+            ],
+            [
+              76.3,
+              10.4
+            ],
+            [
+              76.3,
+              10.2
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

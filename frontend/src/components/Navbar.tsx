@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, User, ShieldCheck, LogIn, Menu, X, Settings, LogOut, LayoutDashboard } from 'lucide-react';
+import { ChevronDown, User, ShieldCheck, LogIn, Menu, X, Settings, LogOut, LayoutDashboard, UserCheck } from 'lucide-react';
 import logoSahay from '../assets/logo_sahay.png';
 import { translations } from '../translations';
 import type { Language } from '../translations';
@@ -14,6 +14,7 @@ interface NavbarProps {
   onSignOut?: () => void;
   onOpenProfileSettings?: () => void;
   onOpenOfficialLogin?: () => void;
+  onOpenSystemSettings?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -26,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSignOut,
   onOpenProfileSettings,
   onOpenOfficialLogin,
+  onOpenSystemSettings,
 }) => {
   const [isRegisterDropdownOpen, setIsRegisterDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -157,6 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsProfileDropdownOpen(false);
                         const role = (currentUser?.role || 'citizen').toLowerCase();
                         if (role === 'collector') setActiveTab('collector_dashboard');
+                        else if (role === 'field_officer') setActiveTab('field_officer_dashboard');
                         else if (role === 'admin' || role === 'super_admin') setActiveTab('super_admin_dashboard');
                         else if (role === 'station' || role === 'rescue_team' || role === 'station_admin') {
                           const status = (currentUser.status || '').toLowerCase();
@@ -173,8 +176,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                       className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#059669] flex items-center gap-2 transition-all border-b border-slate-100"
                     >
                       <LayoutDashboard className="w-4 h-4 text-[#059669]" />
-                      <span>{currentUser?.role && currentUser.role.toLowerCase() !== 'citizen' ? 'My Official Dashboard' : 'Citizen Dashboard'}</span>
+                      <span>
+                        {currentUser?.role && currentUser.role.toLowerCase() === 'field_officer'
+                          ? 'Field Officer Dashboard'
+                          : currentUser?.role && currentUser.role.toLowerCase() !== 'citizen'
+                          ? 'My Official Dashboard'
+                          : 'Citizen Dashboard'}
+                      </span>
                     </button>
+
+                    {['admin', 'collector', 'station', 'station_admin', 'rescue_team'].includes((currentUser?.role || '').toLowerCase()) && (
+                      <button
+                        onClick={() => {
+                          setIsProfileDropdownOpen(false);
+                          setActiveTab('field_officer_dashboard');
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition-all border-b border-slate-100"
+                      >
+                        <UserCheck className="w-4 h-4 text-emerald-600" />
+                        <span>Field Officer Portal</span>
+                      </button>
+                    )}
 
                     <button
                       onClick={() => {
@@ -185,6 +207,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <Settings className="w-4 h-4 text-[#059669]" />
                       <span>Profile Settings</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileDropdownOpen(false);
+                        if (onOpenSystemSettings) onOpenSystemSettings();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#059669] flex items-center gap-2 transition-all"
+                    >
+                      <span className="text-sm">⚙️</span>
+                      <span>System Settings</span>
                     </button>
 
                     <button
@@ -327,6 +360,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
+                    if (onOpenSystemSettings) onOpenSystemSettings();
+                  }}
+                  className="w-full btn-outline text-xs justify-center py-2.5 font-bold flex items-center gap-2 border-emerald-600 text-emerald-700"
+                >
+                  <span>⚙️</span>
+                  <span>System Settings</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
                     if (onSignOut) onSignOut();
                   }}
                   className="w-full btn-outline text-xs justify-center py-2 font-bold text-red-600 border-red-200 hover:bg-red-50 flex items-center gap-2"
@@ -337,6 +380,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             ) : (
               <>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    if (onOpenSystemSettings) onOpenSystemSettings();
+                  }}
+                  className="w-full btn-outline text-xs justify-center py-2 font-bold flex items-center gap-2 text-slate-700 border-slate-300"
+                >
+                  <span>⚙️ System Settings</span>
+                </button>
                 <button
                   onClick={() => {
                     onOpenLogin();

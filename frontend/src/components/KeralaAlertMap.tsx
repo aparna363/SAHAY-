@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { Compass, Locate, Plus, Minus, Maximize2, Shield } from 'lucide-react';
 import { KERALA_DISTRICTS_GEOJSON } from '../data/keralaDistricts';
 import { cleanDistrictName, getAlertColorHex, DISTRICT_CENTERS } from '../utils/districtUtils';
+import { useSystemSettings } from '../context/SettingsContext';
 
 export interface DistrictAlertItem {
   district: string;
@@ -46,6 +47,21 @@ export const KeralaAlertMap: React.FC<KeralaAlertMapProps> = ({
   const userMarkerRef = useRef<L.Marker | null>(null);
 
   const [mapTheme] = useState<'dark' | 'light'>('dark');
+  const { settings } = useSystemSettings();
+  const baseTileLayerRef = useRef<L.TileLayer | null>(null);
+
+  const getTileUrl = React.useCallback(() => {
+    if (settings?.defaultMap === 'satellite') {
+      return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+    }
+    if (settings?.defaultMap === 'terrain') {
+      return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}';
+    }
+    if (mapTheme === 'dark' || settings?.theme === 'dark') {
+      return 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    }
+    return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  }, [settings?.defaultMap, settings?.theme, mapTheme]);
 
   // Map district names to their alert object
   const alertMap = React.useMemo(() => {
@@ -81,25 +97,31 @@ export const KeralaAlertMap: React.FC<KeralaAlertMapProps> = ({
       maxBoundsViscosity: 0.9,
     });
 
-    // Clean base tile layer for GIS thematic look (no API key required)
-    const tileUrl = mapTheme === 'dark'
-      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const tileUrl = getTileUrl();
 
-    L.tileLayer(tileUrl, {
+    const tileLayer = L.tileLayer(tileUrl, {
       maxZoom: 18,
       attribution: '&copy; OpenStreetMap &copy; Esri',
     }).addTo(map);
 
+    baseTileLayerRef.current = tileLayer;
     mapRef.current = map;
 
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
+        baseTileLayerRef.current = null;
       }
     };
-  }, [mapTheme]);
+  }, []);
+
+  // Update tile layer whenever defaultMap or theme changes
+  useEffect(() => {
+    if (baseTileLayerRef.current) {
+      baseTileLayerRef.current.setUrl(getTileUrl());
+    }
+  }, [getTileUrl]);
 
   // Render & Update GeoJSON Districts + Permanent District Labels
   useEffect(() => {

@@ -1,0 +1,905 @@
+{
+  "type": "FeatureCollection",
+  "name": "Wayanad_Administrative_Subdivisions_KSDMA",
+  "district": "Wayanad",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_wayanad",
+      "properties": {
+        "adminType": "district",
+        "name": "Wayanad District",
+        "district": "Wayanad",
+        "headquarters": "Kalpetta North Collectorate",
+        "talukCount": 3,
+        "villageCount": 15,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Wayanad"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76,
+              11.799999999999999
+            ],
+            [
+              75.97500000000001,
+              11.899999999999999
+            ],
+            [
+              76.10000000000001,
+              11.95
+            ],
+            [
+              76.3,
+              11.95
+            ],
+            [
+              76.45,
+              11.825
+            ],
+            [
+              76.45,
+              11.6
+            ],
+            [
+              76.35000000000001,
+              11.45
+            ],
+            [
+              76.15,
+              11.45
+            ],
+            [
+              76,
+              11.524999999999999
+            ],
+            [
+              75.95,
+              11.7
+            ],
+            [
+              76,
+              11.799999999999999
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Kalpetta",
+        "village": "Kalpetta",
+        "taluk": "Vythiri",
+        "district": "Wayanad",
+        "color": "#f7c3f0",
+        "center": [
+          76.03,
+          11.6
+        ],
+        "vulnerability": "Kalpetta Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76,
+              11.5625
+            ],
+            [
+              76.06,
+              11.5625
+            ],
+            [
+              76.06,
+              11.6375
+            ],
+            [
+              76,
+              11.6425
+            ],
+            [
+              76,
+              11.5625
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Vythiri",
+        "village": "Vythiri",
+        "taluk": "Vythiri",
+        "district": "Wayanad",
+        "color": "#f7c3f0",
+        "center": [
+          76.09,
+          11.6
+        ],
+        "vulnerability": "Vythiri Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.06042,
+              11.55896
+            ],
+            [
+              76.11958,
+              11.55896
+            ],
+            [
+              76.12042,
+              11.64104
+            ],
+            [
+              76.05958,
+              11.63896
+            ],
+            [
+              76.06042,
+              11.55896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Meppadi (Chooralmala)",
+        "village": "Meppadi (Chooralmala)",
+        "taluk": "Vythiri",
+        "district": "Wayanad",
+        "color": "#f7c3f0",
+        "center": [
+          76.15,
+          11.6
+        ],
+        "vulnerability": "Meppadi (Chooralmala) Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.11916,
+              11.55837
+            ],
+            [
+              76.18084,
+              11.55837
+            ],
+            [
+              76.17916,
+              11.64163
+            ],
+            [
+              76.12084,
+              11.63837
+            ],
+            [
+              76.11916,
+              11.55837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Pozhuthana",
+        "village": "Pozhuthana",
+        "taluk": "Vythiri",
+        "district": "Wayanad",
+        "color": "#f7c3f0",
+        "center": [
+          76.03,
+          11.52
+        ],
+        "vulnerability": "Pozhuthana Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.00124,
+              11.4824
+            ],
+            [
+              76.05876,
+              11.4824
+            ],
+            [
+              76.06124,
+              11.5576
+            ],
+            [
+              75.99876,
+              11.5624
+            ],
+            [
+              76.00124,
+              11.4824
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Muppainad",
+        "village": "Muppainad",
+        "taluk": "Vythiri",
+        "district": "Wayanad",
+        "color": "#f7c3f0",
+        "center": [
+          76.09,
+          11.52
+        ],
+        "vulnerability": "Muppainad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.05839,
+              11.47964
+            ],
+            [
+              76.12161,
+              11.47964
+            ],
+            [
+              76.11839,
+              11.56036
+            ],
+            [
+              76.06161,
+              11.55964
+            ],
+            [
+              76.05839,
+              11.47964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_wayanad_vythiri",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Vythiri Taluk",
+        "taluk": "Vythiri",
+        "district": "Wayanad",
+        "headquarters": "Vythiri Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.082,
+          11.552
+        ],
+        "sdmaAuthority": "DDMA Wayanad - Vythiri Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76,
+              11.48
+            ],
+            [
+              76.18,
+              11.48
+            ],
+            [
+              76.18,
+              11.64
+            ],
+            [
+              76,
+              11.64
+            ],
+            [
+              76,
+              11.48
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Sulthan Bathery",
+        "village": "Sulthan Bathery",
+        "taluk": "Sulthan Bathery",
+        "district": "Wayanad",
+        "color": "#cbf3c8",
+        "center": [
+          76.22,
+          11.725
+        ],
+        "vulnerability": "Sulthan Bathery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.183,
+              11.67034
+            ],
+            [
+              76.257,
+              11.67034
+            ],
+            [
+              76.263,
+              11.77966
+            ],
+            [
+              76.177,
+              11.78034
+            ],
+            [
+              76.183,
+              11.67034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Ambalavayal",
+        "village": "Ambalavayal",
+        "taluk": "Sulthan Bathery",
+        "district": "Wayanad",
+        "color": "#cbf3c8",
+        "center": [
+          76.3,
+          11.725
+        ],
+        "vulnerability": "Ambalavayal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25702,
+              11.66761
+            ],
+            [
+              76.34298,
+              11.66761
+            ],
+            [
+              76.33702,
+              11.78239
+            ],
+            [
+              76.26298,
+              11.77761
+            ],
+            [
+              76.25702,
+              11.66761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Noolpuzha",
+        "village": "Noolpuzha",
+        "taluk": "Sulthan Bathery",
+        "district": "Wayanad",
+        "color": "#cbf3c8",
+        "center": [
+          76.38,
+          11.725
+        ],
+        "vulnerability": "Noolpuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.34289,
+              11.67165
+            ],
+            [
+              76.41711,
+              11.67165
+            ],
+            [
+              76.42289,
+              11.77835
+            ],
+            [
+              76.33711,
+              11.78165
+            ],
+            [
+              76.34289,
+              11.67165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Poothadi",
+        "village": "Poothadi",
+        "taluk": "Sulthan Bathery",
+        "district": "Wayanad",
+        "color": "#cbf3c8",
+        "center": [
+          76.22,
+          11.615
+        ],
+        "vulnerability": "Poothadi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.17725,
+              11.56102
+            ],
+            [
+              76.26275,
+              11.56102
+            ],
+            [
+              76.25725,
+              11.66898
+            ],
+            [
+              76.18275,
+              11.67102
+            ],
+            [
+              76.17725,
+              11.56102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Nenmeni",
+        "village": "Nenmeni",
+        "taluk": "Sulthan Bathery",
+        "district": "Wayanad",
+        "color": "#cbf3c8",
+        "center": [
+          76.3,
+          11.615
+        ],
+        "vulnerability": "Nenmeni Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.26255,
+              11.5575
+            ],
+            [
+              76.33745,
+              11.5575
+            ],
+            [
+              76.34255,
+              11.6725
+            ],
+            [
+              76.25745,
+              11.6675
+            ],
+            [
+              76.26255,
+              11.5575
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_wayanad_sulthan_bathery",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Sulthan Bathery Taluk",
+        "taluk": "Sulthan Bathery",
+        "district": "Wayanad",
+        "headquarters": "Sulthan Bathery Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.255,
+          11.662
+        ],
+        "sdmaAuthority": "DDMA Wayanad - Sulthan Bathery Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.18,
+              11.56
+            ],
+            [
+              76.42,
+              11.56
+            ],
+            [
+              76.42,
+              11.78
+            ],
+            [
+              76.18,
+              11.78
+            ],
+            [
+              76.18,
+              11.56
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Mananthavady",
+        "village": "Mananthavady",
+        "taluk": "Mananthavady",
+        "district": "Wayanad",
+        "color": "#bce4fa",
+        "center": [
+          75.96,
+          11.885
+        ],
+        "vulnerability": "Mananthavady Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.91992,
+              11.82759
+            ],
+            [
+              76.00008,
+              11.82759
+            ],
+            [
+              75.99992,
+              11.94241
+            ],
+            [
+              75.92008,
+              11.93759
+            ],
+            [
+              75.91992,
+              11.82759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Thirunelli",
+        "village": "Thirunelli",
+        "taluk": "Mananthavady",
+        "district": "Wayanad",
+        "color": "#bce4fa",
+        "center": [
+          76.04,
+          11.885
+        ],
+        "vulnerability": "Thirunelli Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.99966,
+              11.83039
+            ],
+            [
+              76.08034,
+              11.83039
+            ],
+            [
+              76.07966,
+              11.93961
+            ],
+            [
+              76.00034,
+              11.94039
+            ],
+            [
+              75.99966,
+              11.83039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Vellamunda",
+        "village": "Vellamunda",
+        "taluk": "Mananthavady",
+        "district": "Wayanad",
+        "color": "#bce4fa",
+        "center": [
+          76.12,
+          11.885
+        ],
+        "vulnerability": "Vellamunda Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.08076,
+              11.83209
+            ],
+            [
+              76.15924,
+              11.83209
+            ],
+            [
+              76.16076,
+              11.93791
+            ],
+            [
+              76.07924,
+              11.94209
+            ],
+            [
+              76.08076,
+              11.83209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Thondernad",
+        "village": "Thondernad",
+        "taluk": "Mananthavady",
+        "district": "Wayanad",
+        "color": "#bce4fa",
+        "center": [
+          75.96,
+          11.775
+        ],
+        "vulnerability": "Thondernad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.91884,
+              11.71788
+            ],
+            [
+              76.00116,
+              11.71788
+            ],
+            [
+              75.99884,
+              11.83212
+            ],
+            [
+              75.92116,
+              11.82788
+            ],
+            [
+              75.91884,
+              11.71788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_wayanad_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Panamaram",
+        "village": "Panamaram",
+        "taluk": "Mananthavady",
+        "district": "Wayanad",
+        "color": "#bce4fa",
+        "center": [
+          76.04,
+          11.775
+        ],
+        "vulnerability": "Panamaram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.00154,
+              11.71968
+            ],
+            [
+              76.07846,
+              11.71968
+            ],
+            [
+              76.08154,
+              11.83032
+            ],
+            [
+              75.99846,
+              11.82968
+            ],
+            [
+              76.00154,
+              11.71968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_wayanad_mananthavady",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Mananthavady Taluk",
+        "taluk": "Mananthavady",
+        "district": "Wayanad",
+        "headquarters": "Mananthavady Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.002,
+          11.802
+        ],
+        "sdmaAuthority": "DDMA Wayanad - Mananthavady Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.92,
+              11.72
+            ],
+            [
+              76.16,
+              11.72
+            ],
+            [
+              76.16,
+              11.94
+            ],
+            [
+              75.92,
+              11.94
+            ],
+            [
+              75.92,
+              11.72
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

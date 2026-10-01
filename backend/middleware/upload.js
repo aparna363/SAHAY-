@@ -134,4 +134,13 @@ const uploadReliefMedia = multer({
   }
 });
 
-module.exports = { uploadIncidentMedia, uploadRescueEvidence, uploadReliefMedia };
+const uploadSOSMedia = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1
+  }
+});
+
+module.exports = { uploadIncidentMedia, uploadRescueEvidence, uploadReliefMedia, uploadSOSMedia };

@@ -16,12 +16,13 @@ const requireRole = (allowedRoles = []) => {
       return next();
     }
 
-    // Match exact role or standard synonyms (rescue_team <-> station, etc.)
+    // Match exact role or standard synonyms (rescue_team <-> station, field_officer, etc.)
     const isAllowed = normalizedAllowed.some(role => {
       if (role === userRole) return true;
-      if (role === 'official' && ['station', 'collector', 'admin', 'rescue_team', 'station_admin'].includes(userRole)) return true;
+      if (role === 'official' && ['station', 'collector', 'admin', 'rescue_team', 'station_admin', 'field_officer'].includes(userRole)) return true;
       if (role === 'rescue_team' && userRole === 'station') return true;
       if (role === 'station' && userRole === 'rescue_team') return true;
+      if (role === 'field_officer' && ['field_officer', 'station', 'rescue_team', 'station_admin', 'collector', 'admin'].includes(userRole)) return true;
       return false;
     });
 

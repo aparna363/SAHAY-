@@ -8,6 +8,7 @@ import fullLogoSahay from '../assets/full_logo_sahay.png';
 import loginBg from '../assets/loginbg.jpg';
 import type { Language } from '../translations';
 import { resetPassword, getDistricts } from '../services/api';
+import { SystemSettingsModal } from '../components/SystemSettingsModal';
 
 interface ProfileSettingsPageProps {
   currentLang: Language;
@@ -24,6 +25,7 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
   // Edit mode toggle: false = Completed Profile View, true = Edit Mode Form
   const isProfileIncomplete = !user?.name || user?.name === '--------' || !user?.phone || user?.phone === '7000000000';
   const [isEditMode, setIsEditMode] = useState<boolean>(isProfileIncomplete);
+  const [activePageTab, setActivePageTab] = useState<'profile' | 'system'>('profile');
 
   // Personal Info state
   const [name, setName] = useState(user?.name || '');
@@ -317,8 +319,42 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
           </div>
         )}
 
-        {/* Main Form Container */}
-        <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/80 p-6 sm:p-8 space-y-8">
+        {/* Tab Switcher: Profile & Account Credentials vs System Settings */}
+        <div className="flex items-center gap-2 p-1.5 bg-white/95 backdrop-blur-md rounded-2xl border border-white/80 shadow-md">
+          <button
+            type="button"
+            onClick={() => setActivePageTab('profile')}
+            className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activePageTab === 'profile'
+                ? 'bg-[#059669] text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <User className="w-4 h-4" />
+            <span>Profile & Account Credentials</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActivePageTab('system')}
+            className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activePageTab === 'system'
+                ? 'bg-[#059669] text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <span>⚙️</span>
+            <span>System Settings</span>
+          </button>
+        </div>
+
+        {activePageTab === 'system' ? (
+          <div className="shadow-2xl rounded-3xl overflow-hidden animate-fadeIn">
+            <SystemSettingsModal isOpen={true} onClose={() => setActivePageTab('profile')} isInline={true} />
+          </div>
+        ) : (
+          <>
+            {/* Main Form Container */}
+            <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white/80 p-6 sm:p-8 space-y-8">
 
           {/* User Badge Top Banner with SINGLE EDIT PROFILE Button */}
           <div className="flex flex-col sm:flex-row items-center gap-4 p-5 bg-emerald-50/90 border border-emerald-200 rounded-2xl shadow-xs">
@@ -521,11 +557,10 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
                         setName(e.target.value);
                         if (!touched.name) markTouched('name');
                       }}
-                      className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
-                        touched.name && profileErrors.name
+                      className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${touched.name && profileErrors.name
                           ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400 text-red-900'
                           : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
+                        }`}
                     />
                   </div>
                   {touched.name && profileErrors.name && (
@@ -554,11 +589,10 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
                           if (!touched.phone) markTouched('phone');
                         }}
                         placeholder="10-digit mobile number"
-                        className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
-                          touched.phone && profileErrors.phone
+                        className={`w-full pl-10 pr-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${touched.phone && profileErrors.phone
                             ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400 text-red-900'
                             : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                        }`}
+                          }`}
                       />
                     </div>
                     {touched.phone && profileErrors.phone && (
@@ -622,11 +656,10 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
                         if (!touched.panchayat) markTouched('panchayat');
                       }}
                       placeholder="e.g. Munnar / Aluva / Elappara"
-                      className={`w-full px-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
-                        touched.panchayat && profileErrors.panchayat
+                      className={`w-full px-4 py-3 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${touched.panchayat && profileErrors.panchayat
                           ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400 text-red-900'
                           : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
+                        }`}
                     />
                     {touched.panchayat && profileErrors.panchayat && (
                       <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
@@ -770,11 +803,10 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
                         if (!touched.emergencyContactName) markTouched('emergencyContactName');
                       }}
                       placeholder="e.g. Rahul Sharma"
-                      className={`w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
-                        touched.emergencyContactName && profileErrors.emergencyContactName
+                      className={`w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${touched.emergencyContactName && profileErrors.emergencyContactName
                           ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400 text-red-900'
                           : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                      }`}
+                        }`}
                     />
                     {touched.emergencyContactName && profileErrors.emergencyContactName && (
                       <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1 animate-fadeIn">
@@ -816,11 +848,10 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
                           if (!touched.emergencyPhone) markTouched('emergencyPhone');
                         }}
                         placeholder="10-digit mobile number"
-                        className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${
-                          touched.emergencyPhone && profileErrors.emergencyPhone
+                        className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none transition-all ${touched.emergencyPhone && profileErrors.emergencyPhone
                             ? 'border-red-400 bg-red-50/50 focus:ring-2 focus:ring-red-400 text-red-900'
                             : 'border-slate-200 focus:ring-2 focus:ring-[#059669]'
-                        }`}
+                          }`}
                       />
                     </div>
                     {touched.emergencyPhone && profileErrors.emergencyPhone && (
@@ -1048,6 +1079,8 @@ export const ProfileSettingsPage: React.FC<ProfileSettingsPageProps> = ({
           </form>
 
         </div>
+        </>
+        )}
 
       </div>
     </div>

@@ -3,6 +3,7 @@ import { Layers, Shield, Home, Building2, AlertTriangle, CloudSun, Navigation, F
 
 export interface LayerState {
   incidents: boolean;
+  affectedAreas: boolean;
   rescueTeams: boolean;
   shelters: boolean;
   hospitals: boolean;
@@ -48,6 +49,19 @@ export const MapLayerControl: React.FC<MapLayerControlProps> = ({
         >
           <AlertTriangle className="w-3.5 h-3.5" />
           <span>{isRescue ? 'Assigned Incidents' : 'Incidents'}</span>
+        </button>
+
+        {/* Currently Affected & Normal Areas Layer */}
+        <button
+          onClick={() => onToggleLayer('affectedAreas')}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            layers.affectedAreas
+              ? 'bg-rose-700 text-white shadow-xs'
+              : 'bg-slate-800 text-slate-400 hover:text-white'
+          }`}
+        >
+          <Flame className="w-3.5 h-3.5" />
+          <span>Affected Sectors</span>
         </button>
 
         {/* Rescue Teams Telemetry (Hidden for Citizen) */}

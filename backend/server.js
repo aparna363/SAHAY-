@@ -24,6 +24,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const collectorRoutes = require('./routes/collector');
+const collectorReliefRoutes = require('./routes/collectorReliefRoutes');
+const fieldOfficerReliefRoutes = require('./routes/fieldOfficerReliefRoutes');
 const weatherRoutes = require('./routes/weather');
 const incidentRoutes = require('./routes/incidentRoutes');
 const incidentTypeRoutes = require('./routes/incidentTypeRoutes');
@@ -34,11 +36,14 @@ const familyRoutes = require('./routes/family');
 const mapRoutes = require('./routes/map');
 const reliefRoutes = require('./routes/reliefRoutes');
 const aiRoutes = require('./routes/ai.routes');
+const sosRoutes = require('./routes/sosRoutes');
 const { startPollingTimer } = require('./services/officialWeatherAlertFetcher');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/collector', collectorRoutes);
+app.use('/api/collector/relief', collectorReliefRoutes);
+app.use('/api/field-officer/relief', fieldOfficerReliefRoutes);
 app.use('/api/rescue', rescueRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/weather', weatherRoutes);
@@ -49,6 +54,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/family-members', familyRoutes);
 app.use('/api/relief', reliefRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/sos', sosRoutes);
 
 // Start official background weather alert polling every 20 mins
 startPollingTimer(20 * 60 * 1000);
@@ -136,4 +142,5 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`👥 Roles Configured: Citizen | Rescue Team | Collector | Admin`);
   console.log(`=======================================================`);
 });
+// SAHAY SOS Emergency System Mounted
 

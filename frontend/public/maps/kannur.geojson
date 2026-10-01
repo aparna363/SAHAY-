@@ -1,0 +1,1457 @@
+{
+  "type": "FeatureCollection",
+  "name": "Kannur_Administrative_Subdivisions_KSDMA",
+  "district": "Kannur",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_kannur",
+      "properties": {
+        "adminType": "district",
+        "name": "Kannur District",
+        "district": "Kannur",
+        "headquarters": "Kannur Collectorate",
+        "talukCount": 5,
+        "villageCount": 25,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Kannur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.32,
+              12.084999999999999
+            ],
+            [
+              75.285,
+              12.195
+            ],
+            [
+              75.46000000000001,
+              12.25
+            ],
+            [
+              75.74,
+              12.25
+            ],
+            [
+              75.95,
+              12.1125
+            ],
+            [
+              75.95,
+              11.865
+            ],
+            [
+              75.81,
+              11.7
+            ],
+            [
+              75.53,
+              11.7
+            ],
+            [
+              75.32,
+              11.782499999999999
+            ],
+            [
+              75.25,
+              11.975
+            ],
+            [
+              75.32,
+              12.084999999999999
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Kannur Town",
+        "village": "Kannur Town",
+        "taluk": "Kannur",
+        "district": "Kannur",
+        "color": "#f7c3f0",
+        "center": [
+          75.34333,
+          11.925
+        ],
+        "vulnerability": "Kannur Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.32,
+              11.8925
+            ],
+            [
+              75.36667,
+              11.8925
+            ],
+            [
+              75.36667,
+              11.9575
+            ],
+            [
+              75.32,
+              11.9625
+            ],
+            [
+              75.32,
+              11.8925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Edakkad",
+        "village": "Edakkad",
+        "taluk": "Kannur",
+        "district": "Kannur",
+        "color": "#f7c3f0",
+        "center": [
+          75.39,
+          11.925
+        ],
+        "vulnerability": "Edakkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.36709,
+              11.88896
+            ],
+            [
+              75.41291,
+              11.88896
+            ],
+            [
+              75.41376,
+              11.96104
+            ],
+            [
+              75.36624,
+              11.95896
+            ],
+            [
+              75.36709,
+              11.88896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Chala",
+        "village": "Chala",
+        "taluk": "Kannur",
+        "district": "Kannur",
+        "color": "#f7c3f0",
+        "center": [
+          75.43667,
+          11.925
+        ],
+        "vulnerability": "Chala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.4125,
+              11.88837
+            ],
+            [
+              75.46084,
+              11.88837
+            ],
+            [
+              75.45916,
+              11.96163
+            ],
+            [
+              75.41417,
+              11.95837
+            ],
+            [
+              75.4125,
+              11.88837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Pallikkunnu",
+        "village": "Pallikkunnu",
+        "taluk": "Kannur",
+        "district": "Kannur",
+        "color": "#f7c3f0",
+        "center": [
+          75.34333,
+          11.855
+        ],
+        "vulnerability": "Pallikkunnu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.32124,
+              11.8224
+            ],
+            [
+              75.36543,
+              11.8224
+            ],
+            [
+              75.3679,
+              11.8876
+            ],
+            [
+              75.31876,
+              11.8924
+            ],
+            [
+              75.32124,
+              11.8224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Puzhathi",
+        "village": "Puzhathi",
+        "taluk": "Kannur",
+        "district": "Kannur",
+        "color": "#f7c3f0",
+        "center": [
+          75.39,
+          11.855
+        ],
+        "vulnerability": "Puzhathi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.36506,
+              11.81964
+            ],
+            [
+              75.41494,
+              11.81964
+            ],
+            [
+              75.41172,
+              11.89036
+            ],
+            [
+              75.36828,
+              11.88964
+            ],
+            [
+              75.36506,
+              11.81964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kannur_kannur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kannur Taluk",
+        "taluk": "Kannur",
+        "district": "Kannur",
+        "headquarters": "Kannur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          75.3704,
+          11.8745
+        ],
+        "sdmaAuthority": "DDMA Kannur - Kannur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.32,
+              11.82
+            ],
+            [
+              75.46,
+              11.82
+            ],
+            [
+              75.46,
+              11.96
+            ],
+            [
+              75.32,
+              11.96
+            ],
+            [
+              75.32,
+              11.82
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Thalassery",
+        "village": "Thalassery",
+        "taluk": "Thalassery",
+        "district": "Kannur",
+        "color": "#bce4fa",
+        "center": [
+          75.47,
+          11.8125
+        ],
+        "vulnerability": "Thalassery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.443,
+              11.77534
+            ],
+            [
+              75.497,
+              11.77534
+            ],
+            [
+              75.503,
+              11.84966
+            ],
+            [
+              75.437,
+              11.85034
+            ],
+            [
+              75.443,
+              11.77534
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Panoor",
+        "village": "Panoor",
+        "taluk": "Thalassery",
+        "district": "Kannur",
+        "color": "#bce4fa",
+        "center": [
+          75.53,
+          11.8125
+        ],
+        "vulnerability": "Panoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.49702,
+              11.77261
+            ],
+            [
+              75.56298,
+              11.77261
+            ],
+            [
+              75.55702,
+              11.85239
+            ],
+            [
+              75.50298,
+              11.84761
+            ],
+            [
+              75.49702,
+              11.77261
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Kuthuparamba",
+        "village": "Kuthuparamba",
+        "taluk": "Thalassery",
+        "district": "Kannur",
+        "color": "#bce4fa",
+        "center": [
+          75.59,
+          11.8125
+        ],
+        "vulnerability": "Kuthuparamba Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.56289,
+              11.77665
+            ],
+            [
+              75.61711,
+              11.77665
+            ],
+            [
+              75.62289,
+              11.84835
+            ],
+            [
+              75.55711,
+              11.85165
+            ],
+            [
+              75.56289,
+              11.77665
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Dharmadam",
+        "village": "Dharmadam",
+        "taluk": "Thalassery",
+        "district": "Kannur",
+        "color": "#bce4fa",
+        "center": [
+          75.47,
+          11.7375
+        ],
+        "vulnerability": "Dharmadam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.43725,
+              11.70102
+            ],
+            [
+              75.50275,
+              11.70102
+            ],
+            [
+              75.49725,
+              11.77398
+            ],
+            [
+              75.44275,
+              11.77602
+            ],
+            [
+              75.43725,
+              11.70102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Pinarayi",
+        "village": "Pinarayi",
+        "taluk": "Thalassery",
+        "district": "Kannur",
+        "color": "#bce4fa",
+        "center": [
+          75.53,
+          11.7375
+        ],
+        "vulnerability": "Pinarayi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.50255,
+              11.6975
+            ],
+            [
+              75.55745,
+              11.6975
+            ],
+            [
+              75.56255,
+              11.7775
+            ],
+            [
+              75.49745,
+              11.7725
+            ],
+            [
+              75.50255,
+              11.6975
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kannur_thalassery",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thalassery Taluk",
+        "taluk": "Thalassery",
+        "district": "Kannur",
+        "headquarters": "Thalassery Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          75.492,
+          11.752
+        ],
+        "sdmaAuthority": "DDMA Kannur - Thalassery Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.44,
+              11.7
+            ],
+            [
+              75.62,
+              11.7
+            ],
+            [
+              75.62,
+              11.85
+            ],
+            [
+              75.44,
+              11.85
+            ],
+            [
+              75.44,
+              11.7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Taliparamba",
+        "village": "Taliparamba",
+        "taluk": "Taliparamba",
+        "district": "Kannur",
+        "color": "#cbf3c8",
+        "center": [
+          75.33667,
+          12.1075
+        ],
+        "vulnerability": "Taliparamba Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.29992,
+              12.06259
+            ],
+            [
+              75.37341,
+              12.06259
+            ],
+            [
+              75.37325,
+              12.15241
+            ],
+            [
+              75.30008,
+              12.14759
+            ],
+            [
+              75.29992,
+              12.06259
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Mayyil",
+        "village": "Mayyil",
+        "taluk": "Taliparamba",
+        "district": "Kannur",
+        "color": "#cbf3c8",
+        "center": [
+          75.41,
+          12.1075
+        ],
+        "vulnerability": "Mayyil Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.37299,
+              12.06539
+            ],
+            [
+              75.44701,
+              12.06539
+            ],
+            [
+              75.44632,
+              12.14961
+            ],
+            [
+              75.37368,
+              12.15039
+            ],
+            [
+              75.37299,
+              12.06539
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Kurumathur",
+        "village": "Kurumathur",
+        "taluk": "Taliparamba",
+        "district": "Kannur",
+        "color": "#cbf3c8",
+        "center": [
+          75.48333,
+          12.1075
+        ],
+        "vulnerability": "Kurumathur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.44743,
+              12.06709
+            ],
+            [
+              75.51924,
+              12.06709
+            ],
+            [
+              75.52076,
+              12.14791
+            ],
+            [
+              75.44591,
+              12.15209
+            ],
+            [
+              75.44743,
+              12.06709
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Pattuvam",
+        "village": "Pattuvam",
+        "taluk": "Taliparamba",
+        "district": "Kannur",
+        "color": "#cbf3c8",
+        "center": [
+          75.33667,
+          12.0225
+        ],
+        "vulnerability": "Pattuvam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.29884,
+              11.97788
+            ],
+            [
+              75.3745,
+              11.97788
+            ],
+            [
+              75.37217,
+              12.06712
+            ],
+            [
+              75.30116,
+              12.06288
+            ],
+            [
+              75.29884,
+              11.97788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Anthoor",
+        "village": "Anthoor",
+        "taluk": "Taliparamba",
+        "district": "Kannur",
+        "color": "#cbf3c8",
+        "center": [
+          75.41,
+          12.0225
+        ],
+        "vulnerability": "Anthoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.37488,
+              11.97968
+            ],
+            [
+              75.44512,
+              11.97968
+            ],
+            [
+              75.44821,
+              12.06532
+            ],
+            [
+              75.37179,
+              12.06468
+            ],
+            [
+              75.37488,
+              11.97968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kannur_taliparamba",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Taliparamba Taluk",
+        "taluk": "Taliparamba",
+        "district": "Kannur",
+        "headquarters": "Taliparamba Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          75.362,
+          12.045
+        ],
+        "sdmaAuthority": "DDMA Kannur - Taliparamba Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.3,
+              11.98
+            ],
+            [
+              75.52,
+              11.98
+            ],
+            [
+              75.52,
+              12.15
+            ],
+            [
+              75.3,
+              12.15
+            ],
+            [
+              75.3,
+              11.98
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Payyannur",
+        "village": "Payyannur",
+        "taluk": "Payyannur",
+        "district": "Kannur",
+        "color": "#cf8282",
+        "center": [
+          75.17,
+          12.185
+        ],
+        "vulnerability": "Payyannur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.137,
+              12.129
+            ],
+            [
+              75.203,
+              12.129
+            ],
+            [
+              75.197,
+              12.241
+            ],
+            [
+              75.143,
+              12.239
+            ],
+            [
+              75.137,
+              12.129
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Ramanthali",
+        "village": "Ramanthali",
+        "taluk": "Payyannur",
+        "district": "Kannur",
+        "color": "#cf8282",
+        "center": [
+          75.23,
+          12.185
+        ],
+        "vulnerability": "Ramanthali Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.20298,
+              12.1325
+            ],
+            [
+              75.25702,
+              12.1325
+            ],
+            [
+              75.26298,
+              12.2375
+            ],
+            [
+              75.19702,
+              12.2425
+            ],
+            [
+              75.20298,
+              12.1325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Karivellur",
+        "village": "Karivellur",
+        "taluk": "Payyannur",
+        "district": "Kannur",
+        "color": "#cf8282",
+        "center": [
+          75.29,
+          12.185
+        ],
+        "vulnerability": "Karivellur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.25709,
+              12.12892
+            ],
+            [
+              75.32291,
+              12.12892
+            ],
+            [
+              75.31709,
+              12.24108
+            ],
+            [
+              75.26291,
+              12.23892
+            ],
+            [
+              75.25709,
+              12.12892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Peringome",
+        "village": "Peringome",
+        "taluk": "Payyannur",
+        "district": "Kannur",
+        "color": "#cf8282",
+        "center": [
+          75.17,
+          12.075
+        ],
+        "vulnerability": "Peringome Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.14278,
+              12.0184
+            ],
+            [
+              75.19722,
+              12.0184
+            ],
+            [
+              75.20278,
+              12.1316
+            ],
+            [
+              75.13722,
+              12.1284
+            ],
+            [
+              75.14278,
+              12.0184
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Eramam",
+        "village": "Eramam",
+        "taluk": "Payyannur",
+        "district": "Kannur",
+        "color": "#cf8282",
+        "center": [
+          75.23,
+          12.075
+        ],
+        "vulnerability": "Eramam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.19741,
+              12.02241
+            ],
+            [
+              75.26259,
+              12.02241
+            ],
+            [
+              75.25741,
+              12.12759
+            ],
+            [
+              75.20259,
+              12.13241
+            ],
+            [
+              75.19741,
+              12.02241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kannur_payyannur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Payyannur Taluk",
+        "taluk": "Payyannur",
+        "district": "Kannur",
+        "headquarters": "Payyannur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          75.205,
+          12.102
+        ],
+        "sdmaAuthority": "DDMA Kannur - Payyannur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.14,
+              12.02
+            ],
+            [
+              75.32,
+              12.02
+            ],
+            [
+              75.32,
+              12.24
+            ],
+            [
+              75.14,
+              12.24
+            ],
+            [
+              75.14,
+              12.02
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Iritty",
+        "village": "Iritty",
+        "taluk": "Iritty",
+        "district": "Kannur",
+        "color": "#fbe4c8",
+        "center": [
+          75.60833,
+          12.065
+        ],
+        "vulnerability": "Iritty Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.55016,
+              12.01213
+            ],
+            [
+              75.66651,
+              12.01213
+            ],
+            [
+              75.66683,
+              12.11787
+            ],
+            [
+              75.54984,
+              12.12213
+            ],
+            [
+              75.55016,
+              12.01213
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Kelakam",
+        "village": "Kelakam",
+        "taluk": "Iritty",
+        "district": "Kannur",
+        "color": "#fbe4c8",
+        "center": [
+          75.725,
+          12.065
+        ],
+        "vulnerability": "Kelakam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.66693,
+              12.0103
+            ],
+            [
+              75.78307,
+              12.0103
+            ],
+            [
+              75.7836,
+              12.1197
+            ],
+            [
+              75.6664,
+              12.1203
+            ],
+            [
+              75.66693,
+              12.0103
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Aralam",
+        "village": "Aralam",
+        "taluk": "Iritty",
+        "district": "Kannur",
+        "color": "#fbe4c8",
+        "center": [
+          75.84167,
+          12.065
+        ],
+        "vulnerability": "Aralam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.78265,
+              12.00762
+            ],
+            [
+              75.90068,
+              12.00762
+            ],
+            [
+              75.89932,
+              12.12238
+            ],
+            [
+              75.78402,
+              12.11762
+            ],
+            [
+              75.78265,
+              12.00762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Payyavoor",
+        "village": "Payyavoor",
+        "taluk": "Iritty",
+        "district": "Kannur",
+        "color": "#fbe4c8",
+        "center": [
+          75.60833,
+          11.955
+        ],
+        "vulnerability": "Payyavoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.55109,
+              11.90168
+            ],
+            [
+              75.66558,
+              11.90168
+            ],
+            [
+              75.66776,
+              12.00832
+            ],
+            [
+              75.54891,
+              12.01168
+            ],
+            [
+              75.55109,
+              11.90168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kannur_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Peravoor",
+        "village": "Peravoor",
+        "taluk": "Iritty",
+        "district": "Kannur",
+        "color": "#fbe4c8",
+        "center": [
+          75.725,
+          11.955
+        ],
+        "vulnerability": "Peravoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.66519,
+              11.90098
+            ],
+            [
+              75.78481,
+              11.90098
+            ],
+            [
+              75.78186,
+              12.00902
+            ],
+            [
+              75.66814,
+              12.01098
+            ],
+            [
+              75.66519,
+              11.90098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kannur_iritty",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Iritty Taluk",
+        "taluk": "Iritty",
+        "district": "Kannur",
+        "headquarters": "Iritty Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          75.665,
+          11.982
+        ],
+        "sdmaAuthority": "DDMA Kannur - Iritty Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.55,
+              11.9
+            ],
+            [
+              75.9,
+              11.9
+            ],
+            [
+              75.9,
+              12.12
+            ],
+            [
+              75.55,
+              12.12
+            ],
+            [
+              75.55,
+              11.9
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1733 @@
+{
+  "type": "FeatureCollection",
+  "name": "Kollam_Administrative_Subdivisions_KSDMA",
+  "district": "Kollam",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_kollam",
+      "properties": {
+        "adminType": "district",
+        "name": "Kollam District",
+        "district": "Kollam",
+        "headquarters": "Kollam District Collectorate",
+        "talukCount": 6,
+        "villageCount": 30,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Kollam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.525,
+              9.030000000000001
+            ],
+            [
+              76.4875,
+              9.11
+            ],
+            [
+              76.675,
+              9.15
+            ],
+            [
+              76.97500000000001,
+              9.15
+            ],
+            [
+              77.2,
+              9.05
+            ],
+            [
+              77.2,
+              8.870000000000001
+            ],
+            [
+              77.05,
+              8.75
+            ],
+            [
+              76.75,
+              8.75
+            ],
+            [
+              76.525,
+              8.81
+            ],
+            [
+              76.45,
+              8.95
+            ],
+            [
+              76.525,
+              9.030000000000001
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Kollam Town",
+        "village": "Kollam Town",
+        "taluk": "Kollam",
+        "district": "Kollam",
+        "color": "#f7c3f0",
+        "center": [
+          76.54667,
+          8.94
+        ],
+        "vulnerability": "Kollam Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52,
+              8.9025
+            ],
+            [
+              76.57333,
+              8.9025
+            ],
+            [
+              76.57333,
+              8.9775
+            ],
+            [
+              76.52,
+              8.9825
+            ],
+            [
+              76.52,
+              8.9025
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Eravipuram",
+        "village": "Eravipuram",
+        "taluk": "Kollam",
+        "district": "Kollam",
+        "color": "#f7c3f0",
+        "center": [
+          76.6,
+          8.94
+        ],
+        "vulnerability": "Eravipuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.57376,
+              8.89896
+            ],
+            [
+              76.62624,
+              8.89896
+            ],
+            [
+              76.62709,
+              8.98104
+            ],
+            [
+              76.57291,
+              8.97896
+            ],
+            [
+              76.57376,
+              8.89896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Thrikkadavoor",
+        "village": "Thrikkadavoor",
+        "taluk": "Kollam",
+        "district": "Kollam",
+        "color": "#f7c3f0",
+        "center": [
+          76.65333,
+          8.94
+        ],
+        "vulnerability": "Thrikkadavoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62583,
+              8.89837
+            ],
+            [
+              76.68084,
+              8.89837
+            ],
+            [
+              76.67916,
+              8.98163
+            ],
+            [
+              76.6275,
+              8.97837
+            ],
+            [
+              76.62583,
+              8.89837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Chathannoor",
+        "village": "Chathannoor",
+        "taluk": "Kollam",
+        "district": "Kollam",
+        "color": "#f7c3f0",
+        "center": [
+          76.54667,
+          8.86
+        ],
+        "vulnerability": "Chathannoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52124,
+              8.8224
+            ],
+            [
+              76.5721,
+              8.8224
+            ],
+            [
+              76.57457,
+              8.8976
+            ],
+            [
+              76.51876,
+              8.9024
+            ],
+            [
+              76.52124,
+              8.8224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Mayyanad",
+        "village": "Mayyanad",
+        "taluk": "Kollam",
+        "district": "Kollam",
+        "color": "#f7c3f0",
+        "center": [
+          76.6,
+          8.86
+        ],
+        "vulnerability": "Mayyanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.57172,
+              8.81964
+            ],
+            [
+              76.62828,
+              8.81964
+            ],
+            [
+              76.62506,
+              8.90036
+            ],
+            [
+              76.57494,
+              8.89964
+            ],
+            [
+              76.57172,
+              8.81964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kollam_kollam",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kollam Taluk",
+        "taluk": "Kollam",
+        "district": "Kollam",
+        "headquarters": "Kollam Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.6033,
+          8.8932
+        ],
+        "sdmaAuthority": "DDMA Kollam - Kollam Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52,
+              8.82
+            ],
+            [
+              76.68,
+              8.82
+            ],
+            [
+              76.68,
+              8.98
+            ],
+            [
+              76.52,
+              8.98
+            ],
+            [
+              76.52,
+              8.82
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Karunagappally",
+        "village": "Karunagappally",
+        "taluk": "Karunagappally",
+        "district": "Kollam",
+        "color": "#bce4fa",
+        "center": [
+          76.50333,
+          9.085
+        ],
+        "vulnerability": "Karunagappally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.483,
+              9.05034
+            ],
+            [
+              76.52367,
+              9.05034
+            ],
+            [
+              76.52967,
+              9.11966
+            ],
+            [
+              76.477,
+              9.12034
+            ],
+            [
+              76.483,
+              9.05034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Chavara",
+        "village": "Chavara",
+        "taluk": "Karunagappally",
+        "district": "Kollam",
+        "color": "#bce4fa",
+        "center": [
+          76.55,
+          9.085
+        ],
+        "vulnerability": "Chavara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52369,
+              9.04761
+            ],
+            [
+              76.57631,
+              9.04761
+            ],
+            [
+              76.57036,
+              9.12239
+            ],
+            [
+              76.52964,
+              9.11761
+            ],
+            [
+              76.52369,
+              9.04761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Oachira",
+        "village": "Oachira",
+        "taluk": "Karunagappally",
+        "district": "Kollam",
+        "color": "#bce4fa",
+        "center": [
+          76.59667,
+          9.085
+        ],
+        "vulnerability": "Oachira Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.57622,
+              9.05165
+            ],
+            [
+              76.61711,
+              9.05165
+            ],
+            [
+              76.62289,
+              9.11835
+            ],
+            [
+              76.57044,
+              9.12165
+            ],
+            [
+              76.57622,
+              9.05165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Alappad",
+        "village": "Alappad",
+        "taluk": "Karunagappally",
+        "district": "Kollam",
+        "color": "#bce4fa",
+        "center": [
+          76.50333,
+          9.015
+        ],
+        "vulnerability": "Alappad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.47725,
+              8.98102
+            ],
+            [
+              76.52942,
+              8.98102
+            ],
+            [
+              76.52392,
+              9.04898
+            ],
+            [
+              76.48275,
+              9.05102
+            ],
+            [
+              76.47725,
+              8.98102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Panmana",
+        "village": "Panmana",
+        "taluk": "Karunagappally",
+        "district": "Kollam",
+        "color": "#bce4fa",
+        "center": [
+          76.55,
+          9.015
+        ],
+        "vulnerability": "Panmana Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52922,
+              8.9775
+            ],
+            [
+              76.57078,
+              8.9775
+            ],
+            [
+              76.57589,
+              9.0525
+            ],
+            [
+              76.52411,
+              9.0475
+            ],
+            [
+              76.52922,
+              8.9775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kollam_karunagappally",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Karunagappally Taluk",
+        "taluk": "Karunagappally",
+        "district": "Kollam",
+        "headquarters": "Karunagappally Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.535,
+          9.052
+        ],
+        "sdmaAuthority": "DDMA Kollam - Karunagappally Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.48,
+              8.98
+            ],
+            [
+              76.62,
+              8.98
+            ],
+            [
+              76.62,
+              9.12
+            ],
+            [
+              76.48,
+              9.12
+            ],
+            [
+              76.48,
+              8.98
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Kottarakkara",
+        "village": "Kottarakkara",
+        "taluk": "Kottarakkara",
+        "district": "Kollam",
+        "color": "#cbf3c8",
+        "center": [
+          76.71333,
+          9.025
+        ],
+        "vulnerability": "Kottarakkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.67992,
+              8.98759
+            ],
+            [
+              76.74675,
+              8.98759
+            ],
+            [
+              76.74659,
+              9.06241
+            ],
+            [
+              76.68008,
+              9.05759
+            ],
+            [
+              76.67992,
+              8.98759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Pooyappally",
+        "village": "Pooyappally",
+        "taluk": "Kottarakkara",
+        "district": "Kollam",
+        "color": "#cbf3c8",
+        "center": [
+          76.78,
+          9.025
+        ],
+        "vulnerability": "Pooyappally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.74632,
+              8.99039
+            ],
+            [
+              76.81368,
+              8.99039
+            ],
+            [
+              76.81299,
+              9.05961
+            ],
+            [
+              76.74701,
+              9.06039
+            ],
+            [
+              76.74632,
+              8.99039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Neduvathoor",
+        "village": "Neduvathoor",
+        "taluk": "Kottarakkara",
+        "district": "Kollam",
+        "color": "#cbf3c8",
+        "center": [
+          76.84667,
+          9.025
+        ],
+        "vulnerability": "Neduvathoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.81409,
+              8.99209
+            ],
+            [
+              76.87924,
+              8.99209
+            ],
+            [
+              76.88076,
+              9.05791
+            ],
+            [
+              76.81257,
+              9.06209
+            ],
+            [
+              76.81409,
+              8.99209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Ezhukone",
+        "village": "Ezhukone",
+        "taluk": "Kottarakkara",
+        "district": "Kollam",
+        "color": "#cbf3c8",
+        "center": [
+          76.71333,
+          8.955
+        ],
+        "vulnerability": "Ezhukone Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.67884,
+              8.91788
+            ],
+            [
+              76.74783,
+              8.91788
+            ],
+            [
+              76.7455,
+              8.99212
+            ],
+            [
+              76.68116,
+              8.98788
+            ],
+            [
+              76.67884,
+              8.91788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Veliyam",
+        "village": "Veliyam",
+        "taluk": "Kottarakkara",
+        "district": "Kollam",
+        "color": "#cbf3c8",
+        "center": [
+          76.78,
+          8.955
+        ],
+        "vulnerability": "Veliyam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.74821,
+              8.91968
+            ],
+            [
+              76.81179,
+              8.91968
+            ],
+            [
+              76.81488,
+              8.99032
+            ],
+            [
+              76.74512,
+              8.98968
+            ],
+            [
+              76.74821,
+              8.91968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kollam_kottarakkara",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kottarakkara Taluk",
+        "taluk": "Kottarakkara",
+        "district": "Kollam",
+        "headquarters": "Kottarakkara Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.772,
+          8.998
+        ],
+        "sdmaAuthority": "DDMA Kollam - Kottarakkara Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68,
+              8.92
+            ],
+            [
+              76.88,
+              8.92
+            ],
+            [
+              76.88,
+              9.06
+            ],
+            [
+              76.68,
+              9.06
+            ],
+            [
+              76.68,
+              8.92
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Sasthamcotta",
+        "village": "Sasthamcotta",
+        "taluk": "Kunnathur",
+        "district": "Kollam",
+        "color": "#fbe4c8",
+        "center": [
+          76.64167,
+          9.11
+        ],
+        "vulnerability": "Sasthamcotta Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.617,
+              9.079
+            ],
+            [
+              76.66633,
+              9.079
+            ],
+            [
+              76.66034,
+              9.141
+            ],
+            [
+              76.623,
+              9.139
+            ],
+            [
+              76.617,
+              9.079
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Kunnathur",
+        "village": "Kunnathur",
+        "taluk": "Kunnathur",
+        "district": "Kollam",
+        "color": "#fbe4c8",
+        "center": [
+          76.685,
+          9.11
+        ],
+        "vulnerability": "Kunnathur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.66632,
+              9.0825
+            ],
+            [
+              76.70368,
+              9.0825
+            ],
+            [
+              76.70965,
+              9.1375
+            ],
+            [
+              76.66035,
+              9.1425
+            ],
+            [
+              76.66632,
+              9.0825
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Poruvazhy",
+        "village": "Poruvazhy",
+        "taluk": "Kunnathur",
+        "district": "Kollam",
+        "color": "#fbe4c8",
+        "center": [
+          76.72833,
+          9.11
+        ],
+        "vulnerability": "Poruvazhy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.70376,
+              9.07892
+            ],
+            [
+              76.75291,
+              9.07892
+            ],
+            [
+              76.74709,
+              9.14108
+            ],
+            [
+              76.70958,
+              9.13892
+            ],
+            [
+              76.70376,
+              9.07892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Sooranad",
+        "village": "Sooranad",
+        "taluk": "Kunnathur",
+        "district": "Kollam",
+        "color": "#fbe4c8",
+        "center": [
+          76.64167,
+          9.05
+        ],
+        "vulnerability": "Sooranad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62278,
+              9.0184
+            ],
+            [
+              76.66055,
+              9.0184
+            ],
+            [
+              76.66611,
+              9.0816
+            ],
+            [
+              76.61722,
+              9.0784
+            ],
+            [
+              76.62278,
+              9.0184
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Mynagappally",
+        "village": "Mynagappally",
+        "taluk": "Kunnathur",
+        "district": "Kollam",
+        "color": "#fbe4c8",
+        "center": [
+          76.685,
+          9.05
+        ],
+        "vulnerability": "Mynagappally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.66074,
+              9.02241
+            ],
+            [
+              76.70926,
+              9.02241
+            ],
+            [
+              76.70407,
+              9.07759
+            ],
+            [
+              76.66593,
+              9.08241
+            ],
+            [
+              76.66074,
+              9.02241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kollam_kunnathur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kunnathur Taluk",
+        "taluk": "Kunnathur",
+        "district": "Kollam",
+        "headquarters": "Kunnathur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.685,
+          9.075
+        ],
+        "sdmaAuthority": "DDMA Kollam - Kunnathur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62,
+              9.02
+            ],
+            [
+              76.75,
+              9.02
+            ],
+            [
+              76.75,
+              9.14
+            ],
+            [
+              76.62,
+              9.14
+            ],
+            [
+              76.62,
+              9.02
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Pathanapuram",
+        "village": "Pathanapuram",
+        "taluk": "Pathanapuram",
+        "district": "Kollam",
+        "color": "#fef08a",
+        "center": [
+          76.82667,
+          9.1175
+        ],
+        "vulnerability": "Pathanapuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.80016,
+              9.08713
+            ],
+            [
+              76.85317,
+              9.08713
+            ],
+            [
+              76.85349,
+              9.14787
+            ],
+            [
+              76.79984,
+              9.15213
+            ],
+            [
+              76.80016,
+              9.08713
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Piravanthoor",
+        "village": "Piravanthoor",
+        "taluk": "Pathanapuram",
+        "district": "Kollam",
+        "color": "#fef08a",
+        "center": [
+          76.88,
+          9.1175
+        ],
+        "vulnerability": "Piravanthoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.8536,
+              9.0853
+            ],
+            [
+              76.9064,
+              9.0853
+            ],
+            [
+              76.90693,
+              9.1497
+            ],
+            [
+              76.85307,
+              9.1503
+            ],
+            [
+              76.8536,
+              9.0853
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Pattazhy",
+        "village": "Pattazhy",
+        "taluk": "Pathanapuram",
+        "district": "Kollam",
+        "color": "#fef08a",
+        "center": [
+          76.93333,
+          9.1175
+        ],
+        "vulnerability": "Pattazhy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.90598,
+              9.08262
+            ],
+            [
+              76.96068,
+              9.08262
+            ],
+            [
+              76.95932,
+              9.15238
+            ],
+            [
+              76.90735,
+              9.14762
+            ],
+            [
+              76.90598,
+              9.08262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Thalavoor",
+        "village": "Thalavoor",
+        "taluk": "Pathanapuram",
+        "district": "Kollam",
+        "color": "#fef08a",
+        "center": [
+          76.82667,
+          9.0525
+        ],
+        "vulnerability": "Thalavoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.80109,
+              9.02168
+            ],
+            [
+              76.85224,
+              9.02168
+            ],
+            [
+              76.85442,
+              9.08332
+            ],
+            [
+              76.79891,
+              9.08668
+            ],
+            [
+              76.80109,
+              9.02168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Vilakkudy",
+        "village": "Vilakkudy",
+        "taluk": "Pathanapuram",
+        "district": "Kollam",
+        "color": "#fef08a",
+        "center": [
+          76.88,
+          9.0525
+        ],
+        "vulnerability": "Vilakkudy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85186,
+              9.02098
+            ],
+            [
+              76.90814,
+              9.02098
+            ],
+            [
+              76.90519,
+              9.08402
+            ],
+            [
+              76.85481,
+              9.08598
+            ],
+            [
+              76.85186,
+              9.02098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kollam_pathanapuram",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Pathanapuram Taluk",
+        "taluk": "Pathanapuram",
+        "district": "Kollam",
+        "headquarters": "Pathanapuram Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          76.862,
+          9.085
+        ],
+        "sdmaAuthority": "DDMA Kollam - Pathanapuram Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.8,
+              9.02
+            ],
+            [
+              76.96,
+              9.02
+            ],
+            [
+              76.96,
+              9.15
+            ],
+            [
+              76.8,
+              9.15
+            ],
+            [
+              76.8,
+              9.02
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Punalur",
+        "village": "Punalur",
+        "taluk": "Punalur",
+        "district": "Kollam",
+        "color": "#cf8282",
+        "center": [
+          76.95,
+          9.0225
+        ],
+        "vulnerability": "Punalur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.90299,
+              8.96658
+            ],
+            [
+              76.99701,
+              8.96658
+            ],
+            [
+              77.00299,
+              9.07842
+            ],
+            [
+              76.89701,
+              9.08158
+            ],
+            [
+              76.90299,
+              8.96658
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Anchal",
+        "village": "Anchal",
+        "taluk": "Punalur",
+        "district": "Kollam",
+        "color": "#cf8282",
+        "center": [
+          77.05,
+          9.0225
+        ],
+        "vulnerability": "Anchal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.99701,
+              8.96258
+            ],
+            [
+              77.10299,
+              8.96258
+            ],
+            [
+              77.09701,
+              9.08242
+            ],
+            [
+              77.00299,
+              9.07758
+            ],
+            [
+              76.99701,
+              8.96258
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Aryankavu",
+        "village": "Aryankavu",
+        "taluk": "Punalur",
+        "district": "Kollam",
+        "color": "#cf8282",
+        "center": [
+          77.15,
+          9.0225
+        ],
+        "vulnerability": "Aryankavu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.10293,
+              8.96543
+            ],
+            [
+              77.19707,
+              8.96543
+            ],
+            [
+              77.20293,
+              9.07957
+            ],
+            [
+              77.09707,
+              9.08043
+            ],
+            [
+              77.10293,
+              8.96543
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Thenmala",
+        "village": "Thenmala",
+        "taluk": "Punalur",
+        "district": "Kollam",
+        "color": "#cf8282",
+        "center": [
+          76.95,
+          8.9075
+        ],
+        "vulnerability": "Thenmala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.89719,
+              8.85206
+            ],
+            [
+              77.00281,
+              8.85206
+            ],
+            [
+              76.99719,
+              8.96294
+            ],
+            [
+              76.90281,
+              8.96706
+            ],
+            [
+              76.89719,
+              8.85206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kollam_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Kulathupuzha",
+        "village": "Kulathupuzha",
+        "taluk": "Punalur",
+        "district": "Kollam",
+        "color": "#cf8282",
+        "center": [
+          77.05,
+          8.9075
+        ],
+        "vulnerability": "Kulathupuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.00263,
+              8.84786
+            ],
+            [
+              77.09737,
+              8.84786
+            ],
+            [
+              77.10263,
+              8.96714
+            ],
+            [
+              76.99737,
+              8.96286
+            ],
+            [
+              77.00263,
+              8.84786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kollam_punalur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Punalur Taluk",
+        "taluk": "Punalur",
+        "district": "Kollam",
+        "headquarters": "Punalur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.965,
+          9.015
+        ],
+        "sdmaAuthority": "DDMA Kollam - Punalur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.9,
+              8.85
+            ],
+            [
+              77.2,
+              8.85
+            ],
+            [
+              77.2,
+              9.08
+            ],
+            [
+              76.9,
+              9.08
+            ],
+            [
+              76.9,
+              8.85
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

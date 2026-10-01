@@ -67,6 +67,8 @@ const notifyRoadHazardUpdate = (hazard) => broadcastEvent('road:hazard_update', 
 const notifyHazardZoneUpdate = (zone) => broadcastEvent('hazard_zone:updated', zone);
 const notifyIoTSensorUpdate = (sensor) => broadcastEvent('iot_sensor:updated', sensor, sensor.district);
 const notifyShelterUpdate = (shelter) => broadcastEvent('shelter:capacity_update', shelter, shelter.district);
+const notifyNewSOS = (sosData) => broadcastEvent('sos:created', sosData, sosData.sos?.district);
+const notifySOSUpdate = (sos) => broadcastEvent('sos:updated', sos, sos.district);
 
 module.exports = {
   initSocketServer,
@@ -77,5 +79,7 @@ module.exports = {
   notifyRoadHazardUpdate,
   notifyHazardZoneUpdate,
   notifyIoTSensorUpdate,
-  notifyShelterUpdate
+  notifyShelterUpdate,
+  notifyNewSOS,
+  notifySOSUpdate
 };

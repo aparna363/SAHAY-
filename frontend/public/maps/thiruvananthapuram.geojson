@@ -1,0 +1,1733 @@
+{
+  "type": "FeatureCollection",
+  "name": "Thiruvananthapuram_Administrative_Subdivisions_KSDMA",
+  "district": "Thiruvananthapuram",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_thiruvananthapuram",
+      "properties": {
+        "adminType": "district",
+        "name": "Thiruvananthapuram District",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Kudappanakunnu Collectorate",
+        "talukCount": 6,
+        "villageCount": 30,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Thiruvananthapuram"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.755,
+              8.635
+            ],
+            [
+              76.7275,
+              8.745000000000001
+            ],
+            [
+              76.86500000000001,
+              8.8
+            ],
+            [
+              77.08500000000001,
+              8.8
+            ],
+            [
+              77.25,
+              8.662500000000001
+            ],
+            [
+              77.25,
+              8.415000000000001
+            ],
+            [
+              77.14,
+              8.25
+            ],
+            [
+              76.92,
+              8.25
+            ],
+            [
+              76.755,
+              8.3325
+            ],
+            [
+              76.7,
+              8.525
+            ],
+            [
+              76.755,
+              8.635
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Thampanoor",
+        "village": "Thampanoor",
+        "taluk": "Thiruvananthapuram",
+        "district": "Thiruvananthapuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.90333,
+          8.54
+        ],
+        "vulnerability": "Thampanoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.88,
+              8.5025
+            ],
+            [
+              76.92667,
+              8.5025
+            ],
+            [
+              76.92667,
+              8.5775
+            ],
+            [
+              76.88,
+              8.5825
+            ],
+            [
+              76.88,
+              8.5025
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Kazhakkoottam",
+        "village": "Kazhakkoottam",
+        "taluk": "Thiruvananthapuram",
+        "district": "Thiruvananthapuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.95,
+          8.54
+        ],
+        "vulnerability": "Kazhakkoottam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.92709,
+              8.49896
+            ],
+            [
+              76.97291,
+              8.49896
+            ],
+            [
+              76.97376,
+              8.58104
+            ],
+            [
+              76.92624,
+              8.57896
+            ],
+            [
+              76.92709,
+              8.49896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Kowdiar",
+        "village": "Kowdiar",
+        "taluk": "Thiruvananthapuram",
+        "district": "Thiruvananthapuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.99667,
+          8.54
+        ],
+        "vulnerability": "Kowdiar Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.9725,
+              8.49837
+            ],
+            [
+              77.02084,
+              8.49837
+            ],
+            [
+              77.01916,
+              8.58163
+            ],
+            [
+              76.97417,
+              8.57837
+            ],
+            [
+              76.9725,
+              8.49837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Nemom",
+        "village": "Nemom",
+        "taluk": "Thiruvananthapuram",
+        "district": "Thiruvananthapuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.90333,
+          8.46
+        ],
+        "vulnerability": "Nemom Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.88124,
+              8.4224
+            ],
+            [
+              76.92543,
+              8.4224
+            ],
+            [
+              76.9279,
+              8.4976
+            ],
+            [
+              76.87876,
+              8.5024
+            ],
+            [
+              76.88124,
+              8.4224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Vizhinjam",
+        "village": "Vizhinjam",
+        "taluk": "Thiruvananthapuram",
+        "district": "Thiruvananthapuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.95,
+          8.46
+        ],
+        "vulnerability": "Vizhinjam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.92506,
+              8.41964
+            ],
+            [
+              76.97494,
+              8.41964
+            ],
+            [
+              76.97172,
+              8.50036
+            ],
+            [
+              76.92828,
+              8.49964
+            ],
+            [
+              76.92506,
+              8.41964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thiruvananthapuram_thiruvananthapuram",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thiruvananthapuram Taluk",
+        "taluk": "Thiruvananthapuram",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Thiruvananthapuram Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.951,
+          8.489
+        ],
+        "sdmaAuthority": "DDMA Thiruvananthapuram - Thiruvananthapuram Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.88,
+              8.42
+            ],
+            [
+              77.02,
+              8.42
+            ],
+            [
+              77.02,
+              8.58
+            ],
+            [
+              76.88,
+              8.58
+            ],
+            [
+              76.88,
+              8.42
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Neyyattinkara",
+        "village": "Neyyattinkara",
+        "taluk": "Neyyattinkara",
+        "district": "Thiruvananthapuram",
+        "color": "#bce4fa",
+        "center": [
+          77.05333,
+          8.415
+        ],
+        "vulnerability": "Neyyattinkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.023,
+              8.37034
+            ],
+            [
+              77.08367,
+              8.37034
+            ],
+            [
+              77.08967,
+              8.45966
+            ],
+            [
+              77.017,
+              8.46034
+            ],
+            [
+              77.023,
+              8.37034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Poovar",
+        "village": "Poovar",
+        "taluk": "Neyyattinkara",
+        "district": "Thiruvananthapuram",
+        "color": "#bce4fa",
+        "center": [
+          77.12,
+          8.415
+        ],
+        "vulnerability": "Poovar Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.08369,
+              8.36761
+            ],
+            [
+              77.15631,
+              8.36761
+            ],
+            [
+              77.15036,
+              8.46239
+            ],
+            [
+              77.08964,
+              8.45761
+            ],
+            [
+              77.08369,
+              8.36761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Parassala",
+        "village": "Parassala",
+        "taluk": "Neyyattinkara",
+        "district": "Thiruvananthapuram",
+        "color": "#bce4fa",
+        "center": [
+          77.18667,
+          8.415
+        ],
+        "vulnerability": "Parassala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.15622,
+              8.37165
+            ],
+            [
+              77.21711,
+              8.37165
+            ],
+            [
+              77.22289,
+              8.45835
+            ],
+            [
+              77.15044,
+              8.46165
+            ],
+            [
+              77.15622,
+              8.37165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Balaramapuram",
+        "village": "Balaramapuram",
+        "taluk": "Neyyattinkara",
+        "district": "Thiruvananthapuram",
+        "color": "#bce4fa",
+        "center": [
+          77.05333,
+          8.325
+        ],
+        "vulnerability": "Balaramapuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.01725,
+              8.28102
+            ],
+            [
+              77.08942,
+              8.28102
+            ],
+            [
+              77.08392,
+              8.36898
+            ],
+            [
+              77.02275,
+              8.37102
+            ],
+            [
+              77.01725,
+              8.28102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Kanjiramkulam",
+        "village": "Kanjiramkulam",
+        "taluk": "Neyyattinkara",
+        "district": "Thiruvananthapuram",
+        "color": "#bce4fa",
+        "center": [
+          77.12,
+          8.325
+        ],
+        "vulnerability": "Kanjiramkulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.08922,
+              8.2775
+            ],
+            [
+              77.15078,
+              8.2775
+            ],
+            [
+              77.15589,
+              8.3725
+            ],
+            [
+              77.08411,
+              8.3675
+            ],
+            [
+              77.08922,
+              8.2775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thiruvananthapuram_neyyattinkara",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Neyyattinkara Taluk",
+        "taluk": "Neyyattinkara",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Neyyattinkara Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          77.085,
+          8.402
+        ],
+        "sdmaAuthority": "DDMA Thiruvananthapuram - Neyyattinkara Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.02,
+              8.28
+            ],
+            [
+              77.22,
+              8.28
+            ],
+            [
+              77.22,
+              8.46
+            ],
+            [
+              77.02,
+              8.46
+            ],
+            [
+              77.02,
+              8.28
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Nedumangad",
+        "village": "Nedumangad",
+        "taluk": "Nedumangad",
+        "district": "Thiruvananthapuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.975,
+          8.675
+        ],
+        "vulnerability": "Nedumangad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.93992,
+              8.62759
+            ],
+            [
+              77.01008,
+              8.62759
+            ],
+            [
+              77.00992,
+              8.72241
+            ],
+            [
+              76.94008,
+              8.71759
+            ],
+            [
+              76.93992,
+              8.62759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Palode",
+        "village": "Palode",
+        "taluk": "Nedumangad",
+        "district": "Thiruvananthapuram",
+        "color": "#cbf3c8",
+        "center": [
+          77.045,
+          8.675
+        ],
+        "vulnerability": "Palode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.00966,
+              8.63039
+            ],
+            [
+              77.08034,
+              8.63039
+            ],
+            [
+              77.07966,
+              8.71961
+            ],
+            [
+              77.01034,
+              8.72039
+            ],
+            [
+              77.00966,
+              8.63039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Aruvikkara",
+        "village": "Aruvikkara",
+        "taluk": "Nedumangad",
+        "district": "Thiruvananthapuram",
+        "color": "#cbf3c8",
+        "center": [
+          77.115,
+          8.675
+        ],
+        "vulnerability": "Aruvikkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.08076,
+              8.63209
+            ],
+            [
+              77.14924,
+              8.63209
+            ],
+            [
+              77.15076,
+              8.71791
+            ],
+            [
+              77.07924,
+              8.72209
+            ],
+            [
+              77.08076,
+              8.63209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Vembayam",
+        "village": "Vembayam",
+        "taluk": "Nedumangad",
+        "district": "Thiruvananthapuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.975,
+          8.585
+        ],
+        "vulnerability": "Vembayam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.93884,
+              8.53788
+            ],
+            [
+              77.01116,
+              8.53788
+            ],
+            [
+              77.00884,
+              8.63212
+            ],
+            [
+              76.94116,
+              8.62788
+            ],
+            [
+              76.93884,
+              8.53788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Aryanad",
+        "village": "Aryanad",
+        "taluk": "Nedumangad",
+        "district": "Thiruvananthapuram",
+        "color": "#cbf3c8",
+        "center": [
+          77.045,
+          8.585
+        ],
+        "vulnerability": "Aryanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.01154,
+              8.53968
+            ],
+            [
+              77.07846,
+              8.53968
+            ],
+            [
+              77.08154,
+              8.63032
+            ],
+            [
+              77.00846,
+              8.62968
+            ],
+            [
+              77.01154,
+              8.53968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thiruvananthapuram_nedumangad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Nedumangad Taluk",
+        "taluk": "Nedumangad",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Nedumangad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          77.005,
+          8.602
+        ],
+        "sdmaAuthority": "DDMA Thiruvananthapuram - Nedumangad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.94,
+              8.54
+            ],
+            [
+              77.15,
+              8.54
+            ],
+            [
+              77.15,
+              8.72
+            ],
+            [
+              76.94,
+              8.72
+            ],
+            [
+              76.94,
+              8.54
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Attingal",
+        "village": "Attingal",
+        "taluk": "Chirayinkeezhu",
+        "district": "Thiruvananthapuram",
+        "color": "#fbe4c8",
+        "center": [
+          76.77167,
+          8.69
+        ],
+        "vulnerability": "Attingal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.747,
+              8.659
+            ],
+            [
+              76.79633,
+              8.659
+            ],
+            [
+              76.79034,
+              8.721
+            ],
+            [
+              76.753,
+              8.719
+            ],
+            [
+              76.747,
+              8.659
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Chirayinkeezhu",
+        "village": "Chirayinkeezhu",
+        "taluk": "Chirayinkeezhu",
+        "district": "Thiruvananthapuram",
+        "color": "#fbe4c8",
+        "center": [
+          76.815,
+          8.69
+        ],
+        "vulnerability": "Chirayinkeezhu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.79632,
+              8.6625
+            ],
+            [
+              76.83368,
+              8.6625
+            ],
+            [
+              76.83965,
+              8.7175
+            ],
+            [
+              76.79035,
+              8.7225
+            ],
+            [
+              76.79632,
+              8.6625
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Vakkom",
+        "village": "Vakkom",
+        "taluk": "Chirayinkeezhu",
+        "district": "Thiruvananthapuram",
+        "color": "#fbe4c8",
+        "center": [
+          76.85833,
+          8.69
+        ],
+        "vulnerability": "Vakkom Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.83376,
+              8.65892
+            ],
+            [
+              76.88291,
+              8.65892
+            ],
+            [
+              76.87709,
+              8.72108
+            ],
+            [
+              76.83958,
+              8.71892
+            ],
+            [
+              76.83376,
+              8.65892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Kadakkavoor",
+        "village": "Kadakkavoor",
+        "taluk": "Chirayinkeezhu",
+        "district": "Thiruvananthapuram",
+        "color": "#fbe4c8",
+        "center": [
+          76.77167,
+          8.63
+        ],
+        "vulnerability": "Kadakkavoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.75278,
+              8.5984
+            ],
+            [
+              76.79055,
+              8.5984
+            ],
+            [
+              76.79611,
+              8.6616
+            ],
+            [
+              76.74722,
+              8.6584
+            ],
+            [
+              76.75278,
+              8.5984
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Mudakkal",
+        "village": "Mudakkal",
+        "taluk": "Chirayinkeezhu",
+        "district": "Thiruvananthapuram",
+        "color": "#fbe4c8",
+        "center": [
+          76.815,
+          8.63
+        ],
+        "vulnerability": "Mudakkal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.79074,
+              8.60241
+            ],
+            [
+              76.83926,
+              8.60241
+            ],
+            [
+              76.83407,
+              8.65759
+            ],
+            [
+              76.79593,
+              8.66241
+            ],
+            [
+              76.79074,
+              8.60241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thiruvananthapuram_chirayinkeezhu",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Chirayinkeezhu Taluk",
+        "taluk": "Chirayinkeezhu",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Chirayinkeezhu Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.792,
+          8.652
+        ],
+        "sdmaAuthority": "DDMA Thiruvananthapuram - Chirayinkeezhu Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.75,
+              8.6
+            ],
+            [
+              76.88,
+              8.6
+            ],
+            [
+              76.88,
+              8.72
+            ],
+            [
+              76.75,
+              8.72
+            ],
+            [
+              76.75,
+              8.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Varkala",
+        "village": "Varkala",
+        "taluk": "Varkala",
+        "district": "Thiruvananthapuram",
+        "color": "#cf8282",
+        "center": [
+          76.69667,
+          8.775
+        ],
+        "vulnerability": "Varkala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68016,
+              8.75213
+            ],
+            [
+              76.71317,
+              8.75213
+            ],
+            [
+              76.71349,
+              8.79787
+            ],
+            [
+              76.67984,
+              8.80213
+            ],
+            [
+              76.68016,
+              8.75213
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Edava",
+        "village": "Edava",
+        "taluk": "Varkala",
+        "district": "Thiruvananthapuram",
+        "color": "#cf8282",
+        "center": [
+          76.73,
+          8.775
+        ],
+        "vulnerability": "Edava Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.7136,
+              8.7503
+            ],
+            [
+              76.7464,
+              8.7503
+            ],
+            [
+              76.74693,
+              8.7997
+            ],
+            [
+              76.71307,
+              8.8003
+            ],
+            [
+              76.7136,
+              8.7503
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Chemmaruthy",
+        "village": "Chemmaruthy",
+        "taluk": "Varkala",
+        "district": "Thiruvananthapuram",
+        "color": "#cf8282",
+        "center": [
+          76.76333,
+          8.775
+        ],
+        "vulnerability": "Chemmaruthy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.74598,
+              8.74762
+            ],
+            [
+              76.78068,
+              8.74762
+            ],
+            [
+              76.77932,
+              8.80238
+            ],
+            [
+              76.74735,
+              8.79762
+            ],
+            [
+              76.74598,
+              8.74762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Madavoor",
+        "village": "Madavoor",
+        "taluk": "Varkala",
+        "district": "Thiruvananthapuram",
+        "color": "#cf8282",
+        "center": [
+          76.69667,
+          8.725
+        ],
+        "vulnerability": "Madavoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68109,
+              8.70168
+            ],
+            [
+              76.71224,
+              8.70168
+            ],
+            [
+              76.71442,
+              8.74832
+            ],
+            [
+              76.67891,
+              8.75168
+            ],
+            [
+              76.68109,
+              8.70168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Navaikulam",
+        "village": "Navaikulam",
+        "taluk": "Varkala",
+        "district": "Thiruvananthapuram",
+        "color": "#cf8282",
+        "center": [
+          76.73,
+          8.725
+        ],
+        "vulnerability": "Navaikulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.71186,
+              8.70098
+            ],
+            [
+              76.74814,
+              8.70098
+            ],
+            [
+              76.74519,
+              8.74902
+            ],
+            [
+              76.71481,
+              8.75098
+            ],
+            [
+              76.71186,
+              8.70098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thiruvananthapuram_varkala",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Varkala Taluk",
+        "taluk": "Varkala",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Varkala Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.722,
+          8.742
+        ],
+        "sdmaAuthority": "DDMA Thiruvananthapuram - Varkala Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.68,
+              8.7
+            ],
+            [
+              76.78,
+              8.7
+            ],
+            [
+              76.78,
+              8.8
+            ],
+            [
+              76.68,
+              8.8
+            ],
+            [
+              76.68,
+              8.7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Kattakada",
+        "village": "Kattakada",
+        "taluk": "Kattakada",
+        "district": "Thiruvananthapuram",
+        "color": "#fef08a",
+        "center": [
+          77.04667,
+          8.565
+        ],
+        "vulnerability": "Kattakada Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.02299,
+              8.53158
+            ],
+            [
+              77.07034,
+              8.53158
+            ],
+            [
+              77.07633,
+              8.59842
+            ],
+            [
+              77.01701,
+              8.60158
+            ],
+            [
+              77.02299,
+              8.53158
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Vellanad",
+        "village": "Vellanad",
+        "taluk": "Kattakada",
+        "district": "Thiruvananthapuram",
+        "color": "#fef08a",
+        "center": [
+          77.1,
+          8.565
+        ],
+        "vulnerability": "Vellanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.07034,
+              8.52758
+            ],
+            [
+              77.12966,
+              8.52758
+            ],
+            [
+              77.12368,
+              8.60242
+            ],
+            [
+              77.07632,
+              8.59758
+            ],
+            [
+              77.07034,
+              8.52758
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Vilappil",
+        "village": "Vilappil",
+        "taluk": "Kattakada",
+        "district": "Thiruvananthapuram",
+        "color": "#fef08a",
+        "center": [
+          77.15333,
+          8.565
+        ],
+        "vulnerability": "Vilappil Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.1296,
+              8.53043
+            ],
+            [
+              77.17707,
+              8.53043
+            ],
+            [
+              77.18293,
+              8.59957
+            ],
+            [
+              77.12374,
+              8.60043
+            ],
+            [
+              77.1296,
+              8.53043
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Amboori",
+        "village": "Amboori",
+        "taluk": "Kattakada",
+        "district": "Thiruvananthapuram",
+        "color": "#fef08a",
+        "center": [
+          77.04667,
+          8.495
+        ],
+        "vulnerability": "Amboori Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.01719,
+              8.46206
+            ],
+            [
+              77.07614,
+              8.46206
+            ],
+            [
+              77.07052,
+              8.52794
+            ],
+            [
+              77.02281,
+              8.53206
+            ],
+            [
+              77.01719,
+              8.46206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_thiruvananthapuram_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Malayinkeezhu",
+        "village": "Malayinkeezhu",
+        "taluk": "Kattakada",
+        "district": "Thiruvananthapuram",
+        "color": "#fef08a",
+        "center": [
+          77.1,
+          8.495
+        ],
+        "vulnerability": "Malayinkeezhu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.07597,
+              8.45786
+            ],
+            [
+              77.12403,
+              8.45786
+            ],
+            [
+              77.1293,
+              8.53214
+            ],
+            [
+              77.0707,
+              8.52786
+            ],
+            [
+              77.07597,
+              8.45786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_thiruvananthapuram_kattakada",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kattakada Taluk",
+        "taluk": "Kattakada",
+        "district": "Thiruvananthapuram",
+        "headquarters": "Kattakada Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          77.082,
+          8.512
+        ],
+        "sdmaAuthority": "DDMA Thiruvananthapuram - Kattakada Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.02,
+              8.46
+            ],
+            [
+              77.18,
+              8.46
+            ],
+            [
+              77.18,
+              8.6
+            ],
+            [
+              77.02,
+              8.6
+            ],
+            [
+              77.02,
+              8.46
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

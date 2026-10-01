@@ -19,20 +19,38 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { SuperAdminDashboard } from './pages/SuperAdminDashboard';
 import { CollectorDashboard } from './pages/CollectorDashboard';
 import { RescueDashboard } from './pages/RescueDashboard';
+import { FieldOfficerDashboardPage } from './pages/FieldOfficerDashboardPage';
 import { CitizenDashboard } from './pages/CitizenDashboard';
 import { ProfileSettingsPage } from './pages/ProfileSettingsPage';
+import { SystemSettingsPage } from './pages/SystemSettingsPage';
+import { SystemSettingsModal } from './components/SystemSettingsModal';
 import { EmergencyContactsModal } from './components/EmergencyContactsModal';
 import { Footer } from './components/Footer';
 import type { Language } from './translations';
 
 import { getCurrentUserSession, getStoredUser, clearAuthSession } from './services/api';
 import { LocationProvider } from './context/LocationContext';
+import { SettingsProvider } from './context/SettingsContext';
 import { LocationPermissionModal } from './components/LocationPermissionModal';
 
 export function App() {
-  const [currentLang, setCurrentLang] = useState<Language>('en');
+  const [currentLang, setCurrentLang] = useState<Language>(() => {
+    try {
+      const savedLang = localStorage.getItem('sahay_lang') as Language;
+      if (savedLang && ['en', 'ml', 'hi'].includes(savedLang)) return savedLang;
+      const stored = localStorage.getItem('sahay_system_settings');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.language && ['en', 'ml', 'hi'].includes(parsed.language)) return parsed.language;
+      }
+    } catch (e) {
+      console.error('Error reading saved language:', e);
+    }
+    return 'en';
+  });
   const [registerRole, setRegisterRole] = useState<'citizen' | 'official'>('citizen');
   const [isContactsOpen, setIsContactsOpen] = useState(false);
+  const [isSystemSettingsOpen, setIsSystemSettingsOpen] = useState(false);
 
   const [currentUser, setCurrentUser] = useState<any>(() => {
     return getStoredUser();
@@ -64,6 +82,7 @@ export function App() {
         }
 
         if (role === 'collector') return 'collector_dashboard';
+        if (role === 'field_officer') return 'field_officer_dashboard';
         if (role === 'admin' || role === 'super_admin') return 'super_admin_dashboard';
         if (role === 'station' || role === 'rescue_team' || role === 'station_admin') {
           const status = (savedUser?.status || '').toLowerCase();
@@ -144,6 +163,8 @@ export function App() {
       targetTab = 'super_admin_dashboard';
     } else if (role === 'collector') {
       targetTab = 'collector_dashboard';
+    } else if (role === 'field_officer') {
+      targetTab = 'field_officer_dashboard';
     } else if (role === 'rescue_team' || role === 'station' || role === 'station_admin') {
       if (status !== 'approved' && status !== 'active') {
         alert(`Your Station account is PENDING APPROVAL by the District Collector of ${user.district || 'your district'}. Station Dashboard access will be granted after Collector approval.`);
@@ -227,6 +248,20 @@ export function App() {
               const role = (currentUser?.role || 'citizen').toLowerCase();
               if (role === 'super_admin' || role === 'admin') setActiveTab('super_admin_dashboard');
               else if (role === 'collector') setActiveTab('collector_dashboard');
+              else if (role === 'field_officer') setActiveTab('field_officer_dashboard');
+              else if (role === 'rescue_team' || role === 'station' || role === 'station_admin') setActiveTab('rescue_dashboard');
+              else setActiveTab('home');
+            }}
+          />
+        );
+      case 'system_settings':
+        return (
+          <SystemSettingsPage
+            onBack={() => {
+              const role = (currentUser?.role || 'citizen').toLowerCase();
+              if (role === 'super_admin' || role === 'admin') setActiveTab('super_admin_dashboard');
+              else if (role === 'collector') setActiveTab('collector_dashboard');
+              else if (role === 'field_officer') setActiveTab('field_officer_dashboard');
               else if (role === 'rescue_team' || role === 'station' || role === 'station_admin') setActiveTab('rescue_dashboard');
               else setActiveTab('home');
             }}
@@ -244,6 +279,14 @@ export function App() {
           <CollectorDashboard
             user={currentUser}
             onSignOut={handleSignOut}
+          />
+        );
+      case 'field_officer_dashboard':
+        return (
+          <FieldOfficerDashboardPage
+            user={currentUser}
+            onSignOut={handleSignOut}
+            onNavigateToTab={(tab) => handleTabChange(tab)}
           />
         );
       case 'rescue_dashboard':
@@ -312,78 +355,94 @@ export function App() {
 
   if (activeTab === 'citizen_dashboard') {
     return (
-      <LocationProvider>
-        <LocationPermissionModal currentLang={currentLang} />
-        <CitizenDashboard
-          currentLang={currentLang}
-          user={currentUser}
-          onSignOut={handleSignOut}
-          onNavigateToTab={(tab) => handleTabChange(tab)}
-        />
-      </LocationProvider>
+      <SettingsProvider onLanguageChange={(lang) => setCurrentLang(lang)}>
+        <LocationProvider>
+          <LocationPermissionModal currentLang={currentLang} />
+          <CitizenDashboard
+            currentLang={currentLang}
+            user={currentUser}
+            onSignOut={handleSignOut}
+            onNavigateToTab={(tab) => handleTabChange(tab)}
+          />
+          <SystemSettingsModal
+            isOpen={isSystemSettingsOpen}
+            onClose={() => setIsSystemSettingsOpen(false)}
+          />
+        </LocationProvider>
+      </SettingsProvider>
     );
   }
 
   return (
-    <LocationProvider>
-      <div className="min-h-screen flex flex-col bg-slate-50 font-sans antialiased text-slate-900 selection:bg-emerald-200 selection:text-emerald-900">
-        {/* App Location Permission Popup Window */}
-        <LocationPermissionModal currentLang={currentLang} />
+    <SettingsProvider onLanguageChange={(lang) => setCurrentLang(lang)}>
+      <LocationProvider>
+        <div className="min-h-screen flex flex-col bg-slate-50 font-sans antialiased text-slate-900 selection:bg-emerald-200 selection:text-emerald-900">
+          {/* App Location Permission Popup Window */}
+          <LocationPermissionModal currentLang={currentLang} />
 
-        {/* 1. Government Banner Header with Language Selector & Location Badge */}
-        <TopHeader
-          currentLang={currentLang}
-          onLanguageChange={(lang) => setCurrentLang(lang)}
-          onOpenContacts={() => setIsContactsOpen(true)}
-          onOpenOfficialLogin={handleOpenOfficialLogin}
-        />
-
-        {/* 2. Red Alert Live Ticker */}
-        <LiveAlertTicker
-          currentLang={currentLang}
-          onAlertClick={() => setActiveTab('alerts')}
-        />
-
-        {/* 3. Main Navbar with SAHAY logo, User Profile Icon & Settings Dropdown */}
-        <Navbar
-          currentLang={currentLang}
-          activeTab={activeTab}
-          setActiveTab={(tab) => {
-            handleTabChange(tab);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenLogin={handleOpenLogin}
-          onOpenRegister={handleOpenRegister}
-          currentUser={currentUser}
-          onSignOut={handleSignOut}
-          onOpenProfileSettings={() => {
-            handleTabChange('profile_settings');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenOfficialLogin={handleOpenOfficialLogin}
-        />
-
-        {/* 4. Main Dynamic Page View */}
-        <main className="flex-1">
-          {renderCurrentView()}
-        </main>
-
-        {/* 5. Footer (Hidden on Official & Admin Dashboards) */}
-        {!['super_admin_dashboard', 'collector_dashboard', 'rescue_dashboard'].includes(activeTab) && (
-          <Footer
+          {/* 1. Government Banner Header with Language Selector & Location Badge */}
+          <TopHeader
             currentLang={currentLang}
+            onLanguageChange={(lang) => setCurrentLang(lang)}
             onOpenContacts={() => setIsContactsOpen(true)}
-            onOpenRegister={handleOpenRegister}
+            onOpenOfficialLogin={handleOpenOfficialLogin}
+            onOpenSystemSettings={() => setIsSystemSettingsOpen(true)}
           />
-        )}
 
-        {/* Emergency Contacts Quick Modal */}
-        <EmergencyContactsModal
-          isOpen={isContactsOpen}
-          onClose={() => setIsContactsOpen(false)}
-        />
-      </div>
-    </LocationProvider>
+          {/* 2. Red Alert Live Ticker */}
+          <LiveAlertTicker
+            currentLang={currentLang}
+            onAlertClick={() => setActiveTab('alerts')}
+          />
+
+          {/* 3. Main Navbar with SAHAY logo, User Profile Icon & Settings Dropdown */}
+          <Navbar
+            currentLang={currentLang}
+            activeTab={activeTab}
+            setActiveTab={(tab) => {
+              handleTabChange(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenLogin={handleOpenLogin}
+            onOpenRegister={handleOpenRegister}
+            currentUser={currentUser}
+            onSignOut={handleSignOut}
+            onOpenProfileSettings={() => {
+              handleTabChange('profile_settings');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenOfficialLogin={handleOpenOfficialLogin}
+            onOpenSystemSettings={() => setIsSystemSettingsOpen(true)}
+          />
+
+          {/* 4. Main Dynamic Page View */}
+          <main className="flex-1">
+            {renderCurrentView()}
+          </main>
+
+          {/* 5. Footer (Hidden on Official & Admin Dashboards) */}
+          {!['super_admin_dashboard', 'collector_dashboard', 'rescue_dashboard', 'field_officer_dashboard'].includes(activeTab) && (
+            <Footer
+              currentLang={currentLang}
+              onOpenContacts={() => setIsContactsOpen(true)}
+              onOpenRegister={handleOpenRegister}
+            />
+          )}
+
+          {/* Emergency Contacts Quick Modal */}
+          <EmergencyContactsModal
+            isOpen={isContactsOpen}
+            onClose={() => setIsContactsOpen(false)}
+          />
+
+          {/* Global System Settings Modal */}
+          <SystemSettingsModal
+            isOpen={isSystemSettingsOpen}
+            onClose={() => setIsSystemSettingsOpen(false)}
+          />
+        </div>
+      </LocationProvider>
+    </SettingsProvider>
   );
 }
 

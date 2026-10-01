@@ -55,6 +55,7 @@ import { ActiveOperationsListView } from '../components/ActiveOperationsListView
 import { RescueOperationalMap } from '../components/RescueMap/RescueOperationalMap';
 import { RescueSmartNavigation } from '../components/RescueMap/RescueSmartNavigation';
 import { DamageEvidenceSection } from '../components/RescueMission/DamageEvidenceSection';
+import { RescueSOSFeed } from '../components/rescue/RescueSOSFeed';
 
 interface RescueDashboardProps {
   user?: any;
@@ -63,6 +64,7 @@ interface RescueDashboardProps {
 
 export type RescueSidebarTab =
   | 'dashboard'
+  | 'sos_feed'
   | 'assigned_incidents'
   | 'active_operations'
   | 'evidence'
@@ -702,6 +704,7 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
     {
       title: 'OPERATIONS',
       items: [
+        { id: 'sos_feed', label: '🚨 SOS Emergency Feed', icon: Radio, badge: 'LIVE', badgeColor: 'bg-red-600 text-white animate-pulse' },
         { id: 'assigned_incidents', label: 'Assigned Incidents', icon: ShieldAlert, badge: `${assignedIncidents.length}`, badgeColor: 'bg-amber-500 text-slate-950 font-black' },
         { id: 'active_operations', label: 'Active Operations', icon: Activity, badge: `${assignedIncidents.filter(i => i.status !== 'RESOLVED').length}`, badgeColor: 'bg-red-600 text-white' },
         { id: 'evidence', label: 'Damage & Evidence', icon: Camera, badge: 'Field' },
@@ -1011,6 +1014,14 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
 
               </div>
 
+              {/* 🚨 PROMINENT EMERGENCY SOS FEED */}
+              <RescueSOSFeed
+                district={district}
+                onNavigateToMap={(_lat, _lng) => {
+                  setActiveTab('map');
+                }}
+              />
+
               {/* 5. CURRENT RESCUE OPERATION LARGE CARD */}
               <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-[#043e2e] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-6 relative overflow-hidden">
                 
@@ -1132,6 +1143,20 @@ export const RescueDashboard: React.FC<RescueDashboardProps> = ({ user }) => {
               <OfficialIncidentDetailsPage
                 incidentId={selectedIncidentId}
                 onBack={() => setSelectedIncidentId(null)}
+              />
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------- */}
+          {/* VIEW: SOS EMERGENCY FEED */}
+          {/* ------------------------------------------------------------- */}
+          {activeTab === 'sos_feed' && (
+            <div className="space-y-6 animate-fadeIn">
+              <RescueSOSFeed
+                district={district}
+                onNavigateToMap={(_lat, _lng) => {
+                  setActiveTab('map');
+                }}
               />
             </div>
           )}

@@ -1,0 +1,1733 @@
+{
+  "type": "FeatureCollection",
+  "name": "Palakkad_Administrative_Subdivisions_KSDMA",
+  "district": "Palakkad",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_palakkad",
+      "properties": {
+        "adminType": "district",
+        "name": "Palakkad District",
+        "district": "Palakkad",
+        "headquarters": "Kenathuparambu Civil Station",
+        "talukCount": 6,
+        "villageCount": 30,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Palakkad"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.32,
+              10.959999999999999
+            ],
+            [
+              76.285,
+              11.12
+            ],
+            [
+              76.46000000000001,
+              11.2
+            ],
+            [
+              76.74,
+              11.2
+            ],
+            [
+              76.95,
+              11
+            ],
+            [
+              76.95,
+              10.64
+            ],
+            [
+              76.81,
+              10.4
+            ],
+            [
+              76.53,
+              10.4
+            ],
+            [
+              76.32,
+              10.52
+            ],
+            [
+              76.25,
+              10.8
+            ],
+            [
+              76.32,
+              10.959999999999999
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Palakkad Town",
+        "village": "Palakkad Town",
+        "taluk": "Palakkad",
+        "district": "Palakkad",
+        "color": "#f7c3f0",
+        "center": [
+          76.60833,
+          10.825
+        ],
+        "vulnerability": "Palakkad Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.58,
+              10.7925
+            ],
+            [
+              76.63667,
+              10.7925
+            ],
+            [
+              76.63667,
+              10.8575
+            ],
+            [
+              76.58,
+              10.8625
+            ],
+            [
+              76.58,
+              10.7925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Malampuzha",
+        "village": "Malampuzha",
+        "taluk": "Palakkad",
+        "district": "Palakkad",
+        "color": "#f7c3f0",
+        "center": [
+          76.665,
+          10.825
+        ],
+        "vulnerability": "Malampuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63709,
+              10.78896
+            ],
+            [
+              76.69291,
+              10.78896
+            ],
+            [
+              76.69376,
+              10.86104
+            ],
+            [
+              76.63624,
+              10.85896
+            ],
+            [
+              76.63709,
+              10.78896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Pirayiri",
+        "village": "Pirayiri",
+        "taluk": "Palakkad",
+        "district": "Palakkad",
+        "color": "#f7c3f0",
+        "center": [
+          76.72167,
+          10.825
+        ],
+        "vulnerability": "Pirayiri Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6925,
+              10.78837
+            ],
+            [
+              76.75084,
+              10.78837
+            ],
+            [
+              76.74916,
+              10.86163
+            ],
+            [
+              76.69417,
+              10.85837
+            ],
+            [
+              76.6925,
+              10.78837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Parli",
+        "village": "Parli",
+        "taluk": "Palakkad",
+        "district": "Palakkad",
+        "color": "#f7c3f0",
+        "center": [
+          76.60833,
+          10.755
+        ],
+        "vulnerability": "Parli Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.58124,
+              10.7224
+            ],
+            [
+              76.63543,
+              10.7224
+            ],
+            [
+              76.6379,
+              10.7876
+            ],
+            [
+              76.57876,
+              10.7924
+            ],
+            [
+              76.58124,
+              10.7224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Marutharode",
+        "village": "Marutharode",
+        "taluk": "Palakkad",
+        "district": "Palakkad",
+        "color": "#f7c3f0",
+        "center": [
+          76.665,
+          10.755
+        ],
+        "vulnerability": "Marutharode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.63506,
+              10.71964
+            ],
+            [
+              76.69494,
+              10.71964
+            ],
+            [
+              76.69172,
+              10.79036
+            ],
+            [
+              76.63828,
+              10.78964
+            ],
+            [
+              76.63506,
+              10.71964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_palakkad_palakkad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Palakkad Taluk",
+        "taluk": "Palakkad",
+        "district": "Palakkad",
+        "headquarters": "Palakkad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.6548,
+          10.7867
+        ],
+        "sdmaAuthority": "DDMA Palakkad - Palakkad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.58,
+              10.72
+            ],
+            [
+              76.75,
+              10.72
+            ],
+            [
+              76.75,
+              10.86
+            ],
+            [
+              76.58,
+              10.86
+            ],
+            [
+              76.58,
+              10.72
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Mannarkkad",
+        "village": "Mannarkkad",
+        "taluk": "Mannarkkad",
+        "district": "Palakkad",
+        "color": "#cbf3c8",
+        "center": [
+          76.44167,
+          11.125
+        ],
+        "vulnerability": "Mannarkkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.383,
+              11.05034
+            ],
+            [
+              76.50033,
+              11.05034
+            ],
+            [
+              76.50633,
+              11.19966
+            ],
+            [
+              76.377,
+              11.20034
+            ],
+            [
+              76.383,
+              11.05034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Agali Attappadi",
+        "village": "Agali Attappadi",
+        "taluk": "Mannarkkad",
+        "district": "Palakkad",
+        "color": "#cbf3c8",
+        "center": [
+          76.565,
+          11.125
+        ],
+        "vulnerability": "Agali Attappadi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.50036,
+              11.04761
+            ],
+            [
+              76.62964,
+              11.04761
+            ],
+            [
+              76.62369,
+              11.20239
+            ],
+            [
+              76.50631,
+              11.19761
+            ],
+            [
+              76.50036,
+              11.04761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Kanjirappuzha",
+        "village": "Kanjirappuzha",
+        "taluk": "Mannarkkad",
+        "district": "Palakkad",
+        "color": "#cbf3c8",
+        "center": [
+          76.68833,
+          11.125
+        ],
+        "vulnerability": "Kanjirappuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.62956,
+              11.05165
+            ],
+            [
+              76.74711,
+              11.05165
+            ],
+            [
+              76.75289,
+              11.19835
+            ],
+            [
+              76.62378,
+              11.20165
+            ],
+            [
+              76.62956,
+              11.05165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Thachanattukara",
+        "village": "Thachanattukara",
+        "taluk": "Mannarkkad",
+        "district": "Palakkad",
+        "color": "#cbf3c8",
+        "center": [
+          76.44167,
+          10.975
+        ],
+        "vulnerability": "Thachanattukara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.37725,
+              10.90102
+            ],
+            [
+              76.50608,
+              10.90102
+            ],
+            [
+              76.50058,
+              11.04898
+            ],
+            [
+              76.38275,
+              11.05102
+            ],
+            [
+              76.37725,
+              10.90102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Kottopadam",
+        "village": "Kottopadam",
+        "taluk": "Mannarkkad",
+        "district": "Palakkad",
+        "color": "#cbf3c8",
+        "center": [
+          76.565,
+          10.975
+        ],
+        "vulnerability": "Kottopadam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.50589,
+              10.8975
+            ],
+            [
+              76.62411,
+              10.8975
+            ],
+            [
+              76.62922,
+              11.0525
+            ],
+            [
+              76.50078,
+              11.0475
+            ],
+            [
+              76.50589,
+              10.8975
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_palakkad_mannarkkad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Mannarkkad Taluk",
+        "taluk": "Mannarkkad",
+        "district": "Palakkad",
+        "headquarters": "Mannarkkad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.462,
+          10.992
+        ],
+        "sdmaAuthority": "DDMA Palakkad - Mannarkkad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.38,
+              10.9
+            ],
+            [
+              76.75,
+              10.9
+            ],
+            [
+              76.75,
+              11.2
+            ],
+            [
+              76.38,
+              11.2
+            ],
+            [
+              76.38,
+              10.9
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Ottappalam",
+        "village": "Ottappalam",
+        "taluk": "Ottappalam",
+        "district": "Palakkad",
+        "color": "#bce4fa",
+        "center": [
+          76.33,
+          10.8125
+        ],
+        "vulnerability": "Ottappalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29992,
+              10.77259
+            ],
+            [
+              76.36008,
+              10.77259
+            ],
+            [
+              76.35992,
+              10.85241
+            ],
+            [
+              76.30008,
+              10.84759
+            ],
+            [
+              76.29992,
+              10.77259
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Shornur",
+        "village": "Shornur",
+        "taluk": "Ottappalam",
+        "district": "Palakkad",
+        "color": "#bce4fa",
+        "center": [
+          76.39,
+          10.8125
+        ],
+        "vulnerability": "Shornur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.35966,
+              10.77539
+            ],
+            [
+              76.42034,
+              10.77539
+            ],
+            [
+              76.41966,
+              10.84961
+            ],
+            [
+              76.36034,
+              10.85039
+            ],
+            [
+              76.35966,
+              10.77539
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Cherpulassery",
+        "village": "Cherpulassery",
+        "taluk": "Ottappalam",
+        "district": "Palakkad",
+        "color": "#bce4fa",
+        "center": [
+          76.45,
+          10.8125
+        ],
+        "vulnerability": "Cherpulassery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.42076,
+              10.77709
+            ],
+            [
+              76.47924,
+              10.77709
+            ],
+            [
+              76.48076,
+              10.84791
+            ],
+            [
+              76.41924,
+              10.85209
+            ],
+            [
+              76.42076,
+              10.77709
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Vaniyamkulam",
+        "village": "Vaniyamkulam",
+        "taluk": "Ottappalam",
+        "district": "Palakkad",
+        "color": "#bce4fa",
+        "center": [
+          76.33,
+          10.7375
+        ],
+        "vulnerability": "Vaniyamkulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29884,
+              10.69788
+            ],
+            [
+              76.36116,
+              10.69788
+            ],
+            [
+              76.35884,
+              10.77712
+            ],
+            [
+              76.30116,
+              10.77288
+            ],
+            [
+              76.29884,
+              10.69788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Lakkidi",
+        "village": "Lakkidi",
+        "taluk": "Ottappalam",
+        "district": "Palakkad",
+        "color": "#bce4fa",
+        "center": [
+          76.39,
+          10.7375
+        ],
+        "vulnerability": "Lakkidi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.36154,
+              10.69968
+            ],
+            [
+              76.41846,
+              10.69968
+            ],
+            [
+              76.42154,
+              10.77532
+            ],
+            [
+              76.35846,
+              10.77468
+            ],
+            [
+              76.36154,
+              10.69968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_palakkad_ottappalam",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Ottappalam Taluk",
+        "taluk": "Ottappalam",
+        "district": "Palakkad",
+        "headquarters": "Ottappalam Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.382,
+          10.772
+        ],
+        "sdmaAuthority": "DDMA Palakkad - Ottappalam Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.3,
+              10.7
+            ],
+            [
+              76.48,
+              10.7
+            ],
+            [
+              76.48,
+              10.85
+            ],
+            [
+              76.3,
+              10.85
+            ],
+            [
+              76.3,
+              10.7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Alathur",
+        "village": "Alathur",
+        "taluk": "Alathur",
+        "district": "Palakkad",
+        "color": "#fbe4c8",
+        "center": [
+          76.47833,
+          10.6775
+        ],
+        "vulnerability": "Alathur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.447,
+              10.634
+            ],
+            [
+              76.50966,
+              10.634
+            ],
+            [
+              76.50367,
+              10.721
+            ],
+            [
+              76.453,
+              10.719
+            ],
+            [
+              76.447,
+              10.634
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Vadakkencherry",
+        "village": "Vadakkencherry",
+        "taluk": "Alathur",
+        "district": "Palakkad",
+        "color": "#fbe4c8",
+        "center": [
+          76.535,
+          10.6775
+        ],
+        "vulnerability": "Vadakkencherry Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.50965,
+              10.6375
+            ],
+            [
+              76.56035,
+              10.6375
+            ],
+            [
+              76.56632,
+              10.7175
+            ],
+            [
+              76.50368,
+              10.7225
+            ],
+            [
+              76.50965,
+              10.6375
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Kuzhalmannam",
+        "village": "Kuzhalmannam",
+        "taluk": "Alathur",
+        "district": "Palakkad",
+        "color": "#fbe4c8",
+        "center": [
+          76.59167,
+          10.6775
+        ],
+        "vulnerability": "Kuzhalmannam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.56042,
+              10.63392
+            ],
+            [
+              76.62291,
+              10.63392
+            ],
+            [
+              76.61709,
+              10.72108
+            ],
+            [
+              76.56624,
+              10.71892
+            ],
+            [
+              76.56042,
+              10.63392
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Kizhakkencherry",
+        "village": "Kizhakkencherry",
+        "taluk": "Alathur",
+        "district": "Palakkad",
+        "color": "#fbe4c8",
+        "center": [
+          76.47833,
+          10.5925
+        ],
+        "vulnerability": "Kizhakkencherry Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.45278,
+              10.5484
+            ],
+            [
+              76.50389,
+              10.5484
+            ],
+            [
+              76.50945,
+              10.6366
+            ],
+            [
+              76.44722,
+              10.6334
+            ],
+            [
+              76.45278,
+              10.5484
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Tarur",
+        "village": "Tarur",
+        "taluk": "Alathur",
+        "district": "Palakkad",
+        "color": "#fbe4c8",
+        "center": [
+          76.535,
+          10.5925
+        ],
+        "vulnerability": "Tarur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.50407,
+              10.55241
+            ],
+            [
+              76.56593,
+              10.55241
+            ],
+            [
+              76.56074,
+              10.63259
+            ],
+            [
+              76.50926,
+              10.63741
+            ],
+            [
+              76.50407,
+              10.55241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_palakkad_alathur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Alathur Taluk",
+        "taluk": "Alathur",
+        "district": "Palakkad",
+        "headquarters": "Alathur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.545,
+          10.645
+        ],
+        "sdmaAuthority": "DDMA Palakkad - Alathur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.45,
+              10.55
+            ],
+            [
+              76.62,
+              10.55
+            ],
+            [
+              76.62,
+              10.72
+            ],
+            [
+              76.45,
+              10.72
+            ],
+            [
+              76.45,
+              10.55
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Chittur",
+        "village": "Chittur",
+        "taluk": "Chittur",
+        "district": "Palakkad",
+        "color": "#fef08a",
+        "center": [
+          76.695,
+          10.73
+        ],
+        "vulnerability": "Chittur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.65016,
+              10.68213
+            ],
+            [
+              76.73984,
+              10.68213
+            ],
+            [
+              76.74016,
+              10.77787
+            ],
+            [
+              76.64984,
+              10.78213
+            ],
+            [
+              76.65016,
+              10.68213
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Kozhinjampara",
+        "village": "Kozhinjampara",
+        "taluk": "Chittur",
+        "district": "Palakkad",
+        "color": "#fef08a",
+        "center": [
+          76.785,
+          10.73
+        ],
+        "vulnerability": "Kozhinjampara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.74027,
+              10.6803
+            ],
+            [
+              76.82973,
+              10.6803
+            ],
+            [
+              76.83027,
+              10.7797
+            ],
+            [
+              76.73973,
+              10.7803
+            ],
+            [
+              76.74027,
+              10.6803
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Nallepilly",
+        "village": "Nallepilly",
+        "taluk": "Chittur",
+        "district": "Palakkad",
+        "color": "#fef08a",
+        "center": [
+          76.875,
+          10.73
+        ],
+        "vulnerability": "Nallepilly Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.82932,
+              10.67762
+            ],
+            [
+              76.92068,
+              10.67762
+            ],
+            [
+              76.91932,
+              10.78238
+            ],
+            [
+              76.83068,
+              10.77762
+            ],
+            [
+              76.82932,
+              10.67762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Pattanchery",
+        "village": "Pattanchery",
+        "taluk": "Chittur",
+        "district": "Palakkad",
+        "color": "#fef08a",
+        "center": [
+          76.695,
+          10.63
+        ],
+        "vulnerability": "Pattanchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.65109,
+              10.58168
+            ],
+            [
+              76.73891,
+              10.58168
+            ],
+            [
+              76.74109,
+              10.67832
+            ],
+            [
+              76.64891,
+              10.68168
+            ],
+            [
+              76.65109,
+              10.58168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Koduvayur",
+        "village": "Koduvayur",
+        "taluk": "Chittur",
+        "district": "Palakkad",
+        "color": "#fef08a",
+        "center": [
+          76.785,
+          10.63
+        ],
+        "vulnerability": "Koduvayur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.73853,
+              10.58098
+            ],
+            [
+              76.83147,
+              10.58098
+            ],
+            [
+              76.82853,
+              10.67902
+            ],
+            [
+              76.74147,
+              10.68098
+            ],
+            [
+              76.73853,
+              10.58098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_palakkad_chittur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Chittur Taluk",
+        "taluk": "Chittur",
+        "district": "Palakkad",
+        "headquarters": "Chittur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          76.722,
+          10.705
+        ],
+        "sdmaAuthority": "DDMA Palakkad - Chittur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.65,
+              10.58
+            ],
+            [
+              76.92,
+              10.58
+            ],
+            [
+              76.92,
+              10.78
+            ],
+            [
+              76.65,
+              10.78
+            ],
+            [
+              76.65,
+              10.58
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Pattambi",
+        "village": "Pattambi",
+        "taluk": "Pattambi",
+        "district": "Palakkad",
+        "color": "#cf8282",
+        "center": [
+          76.14667,
+          10.845
+        ],
+        "vulnerability": "Pattambi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.12299,
+              10.81158
+            ],
+            [
+              76.17034,
+              10.81158
+            ],
+            [
+              76.17633,
+              10.87842
+            ],
+            [
+              76.11701,
+              10.88158
+            ],
+            [
+              76.12299,
+              10.81158
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Koppam",
+        "village": "Koppam",
+        "taluk": "Pattambi",
+        "district": "Palakkad",
+        "color": "#cf8282",
+        "center": [
+          76.2,
+          10.845
+        ],
+        "vulnerability": "Koppam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.17034,
+              10.80758
+            ],
+            [
+              76.22966,
+              10.80758
+            ],
+            [
+              76.22368,
+              10.88242
+            ],
+            [
+              76.17632,
+              10.87758
+            ],
+            [
+              76.17034,
+              10.80758
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Thiruvegappura",
+        "village": "Thiruvegappura",
+        "taluk": "Pattambi",
+        "district": "Palakkad",
+        "color": "#cf8282",
+        "center": [
+          76.25333,
+          10.845
+        ],
+        "vulnerability": "Thiruvegappura Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.2296,
+              10.81043
+            ],
+            [
+              76.27707,
+              10.81043
+            ],
+            [
+              76.28293,
+              10.87957
+            ],
+            [
+              76.22374,
+              10.88043
+            ],
+            [
+              76.2296,
+              10.81043
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Muthuthala",
+        "village": "Muthuthala",
+        "taluk": "Pattambi",
+        "district": "Palakkad",
+        "color": "#cf8282",
+        "center": [
+          76.14667,
+          10.775
+        ],
+        "vulnerability": "Muthuthala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.11719,
+              10.74206
+            ],
+            [
+              76.17614,
+              10.74206
+            ],
+            [
+              76.17052,
+              10.80794
+            ],
+            [
+              76.12281,
+              10.81206
+            ],
+            [
+              76.11719,
+              10.74206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_palakkad_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Ongallur",
+        "village": "Ongallur",
+        "taluk": "Pattambi",
+        "district": "Palakkad",
+        "color": "#cf8282",
+        "center": [
+          76.2,
+          10.775
+        ],
+        "vulnerability": "Ongallur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.17597,
+              10.73786
+            ],
+            [
+              76.22403,
+              10.73786
+            ],
+            [
+              76.2293,
+              10.81214
+            ],
+            [
+              76.1707,
+              10.80786
+            ],
+            [
+              76.17597,
+              10.73786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_palakkad_pattambi",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Pattambi Taluk",
+        "taluk": "Pattambi",
+        "district": "Palakkad",
+        "headquarters": "Pattambi Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.195,
+          10.805
+        ],
+        "sdmaAuthority": "DDMA Palakkad - Pattambi Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.12,
+              10.74
+            ],
+            [
+              76.28,
+              10.74
+            ],
+            [
+              76.28,
+              10.88
+            ],
+            [
+              76.12,
+              10.88
+            ],
+            [
+              76.12,
+              10.74
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

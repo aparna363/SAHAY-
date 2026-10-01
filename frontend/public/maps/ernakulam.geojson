@@ -1,0 +1,2009 @@
+{
+  "type": "FeatureCollection",
+  "name": "Ernakulam_Administrative_Subdivisions_KSDMA",
+  "district": "Ernakulam",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_ernakulam",
+      "properties": {
+        "adminType": "district",
+        "name": "Ernakulam District",
+        "district": "Ernakulam",
+        "headquarters": "Kakkanad Civil Station",
+        "talukCount": 7,
+        "villageCount": 35,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Ernakulam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.21000000000001,
+              10.1
+            ],
+            [
+              76.18,
+              10.2
+            ],
+            [
+              76.33,
+              10.25
+            ],
+            [
+              76.57000000000001,
+              10.25
+            ],
+            [
+              76.75,
+              10.125
+            ],
+            [
+              76.75,
+              9.9
+            ],
+            [
+              76.63,
+              9.75
+            ],
+            [
+              76.39,
+              9.75
+            ],
+            [
+              76.21000000000001,
+              9.825
+            ],
+            [
+              76.15,
+              10
+            ],
+            [
+              76.21000000000001,
+              10.1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Ernakulam",
+        "village": "Ernakulam",
+        "taluk": "Kanayannur",
+        "district": "Ernakulam",
+        "color": "#f7c3f0",
+        "center": [
+          76.27167,
+          10.0125
+        ],
+        "vulnerability": "Ernakulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25,
+              9.9775
+            ],
+            [
+              76.29333,
+              9.9775
+            ],
+            [
+              76.29333,
+              10.0475
+            ],
+            [
+              76.25,
+              10.0525
+            ],
+            [
+              76.25,
+              9.9775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Kakkanad",
+        "village": "Kakkanad",
+        "taluk": "Kanayannur",
+        "district": "Ernakulam",
+        "color": "#f7c3f0",
+        "center": [
+          76.315,
+          10.0125
+        ],
+        "vulnerability": "Kakkanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29376,
+              9.97396
+            ],
+            [
+              76.33624,
+              9.97396
+            ],
+            [
+              76.33709,
+              10.05104
+            ],
+            [
+              76.29291,
+              10.04896
+            ],
+            [
+              76.29376,
+              9.97396
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Edappally",
+        "village": "Edappally",
+        "taluk": "Kanayannur",
+        "district": "Ernakulam",
+        "color": "#f7c3f0",
+        "center": [
+          76.35833,
+          10.0125
+        ],
+        "vulnerability": "Edappally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.33583,
+              9.97337
+            ],
+            [
+              76.38084,
+              9.97337
+            ],
+            [
+              76.37916,
+              10.05163
+            ],
+            [
+              76.3375,
+              10.04837
+            ],
+            [
+              76.33583,
+              9.97337
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Tripunithura",
+        "village": "Tripunithura",
+        "taluk": "Kanayannur",
+        "district": "Ernakulam",
+        "color": "#f7c3f0",
+        "center": [
+          76.27167,
+          9.9375
+        ],
+        "vulnerability": "Tripunithura Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25124,
+              9.9024
+            ],
+            [
+              76.2921,
+              9.9024
+            ],
+            [
+              76.29457,
+              9.9726
+            ],
+            [
+              76.24876,
+              9.9774
+            ],
+            [
+              76.25124,
+              9.9024
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Maradu",
+        "village": "Maradu",
+        "taluk": "Kanayannur",
+        "district": "Ernakulam",
+        "color": "#f7c3f0",
+        "center": [
+          76.315,
+          9.9375
+        ],
+        "vulnerability": "Maradu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29172,
+              9.89964
+            ],
+            [
+              76.33828,
+              9.89964
+            ],
+            [
+              76.33506,
+              9.97536
+            ],
+            [
+              76.29494,
+              9.97464
+            ],
+            [
+              76.29172,
+              9.89964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_kanayannur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kanayannur Taluk",
+        "taluk": "Kanayannur",
+        "district": "Ernakulam",
+        "headquarters": "Kanayannur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.312,
+          9.985
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Kanayannur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25,
+              9.9
+            ],
+            [
+              76.38,
+              9.9
+            ],
+            [
+              76.38,
+              10.05
+            ],
+            [
+              76.25,
+              10.05
+            ],
+            [
+              76.25,
+              9.9
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Fort Kochi",
+        "village": "Fort Kochi",
+        "taluk": "Kochi",
+        "district": "Ernakulam",
+        "color": "#bce4fa",
+        "center": [
+          76.21333,
+          9.97
+        ],
+        "vulnerability": "Fort Kochi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.203,
+              9.94034
+            ],
+            [
+              76.22367,
+              9.94034
+            ],
+            [
+              76.22967,
+              9.99966
+            ],
+            [
+              76.197,
+              10.00034
+            ],
+            [
+              76.203,
+              9.94034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Mattancherry",
+        "village": "Mattancherry",
+        "taluk": "Kochi",
+        "district": "Ernakulam",
+        "color": "#bce4fa",
+        "center": [
+          76.24,
+          9.97
+        ],
+        "vulnerability": "Mattancherry Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.22369,
+              9.93761
+            ],
+            [
+              76.25631,
+              9.93761
+            ],
+            [
+              76.25036,
+              10.00239
+            ],
+            [
+              76.22964,
+              9.99761
+            ],
+            [
+              76.22369,
+              9.93761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Palluruthy",
+        "village": "Palluruthy",
+        "taluk": "Kochi",
+        "district": "Ernakulam",
+        "color": "#bce4fa",
+        "center": [
+          76.26667,
+          9.97
+        ],
+        "vulnerability": "Palluruthy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25622,
+              9.94165
+            ],
+            [
+              76.27711,
+              9.94165
+            ],
+            [
+              76.28289,
+              9.99835
+            ],
+            [
+              76.25044,
+              10.00165
+            ],
+            [
+              76.25622,
+              9.94165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Kumbalangi",
+        "village": "Kumbalangi",
+        "taluk": "Kochi",
+        "district": "Ernakulam",
+        "color": "#bce4fa",
+        "center": [
+          76.21333,
+          9.91
+        ],
+        "vulnerability": "Kumbalangi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.19725,
+              9.88102
+            ],
+            [
+              76.22942,
+              9.88102
+            ],
+            [
+              76.22392,
+              9.93898
+            ],
+            [
+              76.20275,
+              9.94102
+            ],
+            [
+              76.19725,
+              9.88102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Chellanam",
+        "village": "Chellanam",
+        "taluk": "Kochi",
+        "district": "Ernakulam",
+        "color": "#bce4fa",
+        "center": [
+          76.24,
+          9.91
+        ],
+        "vulnerability": "Chellanam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.22922,
+              9.8775
+            ],
+            [
+              76.25078,
+              9.8775
+            ],
+            [
+              76.25589,
+              9.9425
+            ],
+            [
+              76.22411,
+              9.9375
+            ],
+            [
+              76.22922,
+              9.8775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_kochi",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kochi Taluk",
+        "taluk": "Kochi",
+        "district": "Ernakulam",
+        "headquarters": "Kochi Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.242,
+          9.935
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Kochi Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.2,
+              9.88
+            ],
+            [
+              76.28,
+              9.88
+            ],
+            [
+              76.28,
+              10
+            ],
+            [
+              76.2,
+              10
+            ],
+            [
+              76.2,
+              9.88
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Aluva",
+        "village": "Aluva",
+        "taluk": "Aluva",
+        "district": "Ernakulam",
+        "color": "#cbf3c8",
+        "center": [
+          76.325,
+          10.14
+        ],
+        "vulnerability": "Aluva Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29992,
+              10.09759
+            ],
+            [
+              76.35008,
+              10.09759
+            ],
+            [
+              76.34992,
+              10.18241
+            ],
+            [
+              76.30008,
+              10.17759
+            ],
+            [
+              76.29992,
+              10.09759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Angamaly",
+        "village": "Angamaly",
+        "taluk": "Aluva",
+        "district": "Ernakulam",
+        "color": "#cbf3c8",
+        "center": [
+          76.375,
+          10.14
+        ],
+        "vulnerability": "Angamaly Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.34966,
+              10.10039
+            ],
+            [
+              76.40034,
+              10.10039
+            ],
+            [
+              76.39966,
+              10.17961
+            ],
+            [
+              76.35034,
+              10.18039
+            ],
+            [
+              76.34966,
+              10.10039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Nedumbassery",
+        "village": "Nedumbassery",
+        "taluk": "Aluva",
+        "district": "Ernakulam",
+        "color": "#cbf3c8",
+        "center": [
+          76.425,
+          10.14
+        ],
+        "vulnerability": "Nedumbassery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.40076,
+              10.10209
+            ],
+            [
+              76.44924,
+              10.10209
+            ],
+            [
+              76.45076,
+              10.17791
+            ],
+            [
+              76.39924,
+              10.18209
+            ],
+            [
+              76.40076,
+              10.10209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Kalady",
+        "village": "Kalady",
+        "taluk": "Aluva",
+        "district": "Ernakulam",
+        "color": "#cbf3c8",
+        "center": [
+          76.325,
+          10.06
+        ],
+        "vulnerability": "Kalady Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29884,
+              10.01788
+            ],
+            [
+              76.35116,
+              10.01788
+            ],
+            [
+              76.34884,
+              10.10212
+            ],
+            [
+              76.30116,
+              10.09788
+            ],
+            [
+              76.29884,
+              10.01788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Chengamanad",
+        "village": "Chengamanad",
+        "taluk": "Aluva",
+        "district": "Ernakulam",
+        "color": "#cbf3c8",
+        "center": [
+          76.375,
+          10.06
+        ],
+        "vulnerability": "Chengamanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.35154,
+              10.01968
+            ],
+            [
+              76.39846,
+              10.01968
+            ],
+            [
+              76.40154,
+              10.10032
+            ],
+            [
+              76.34846,
+              10.09968
+            ],
+            [
+              76.35154,
+              10.01968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_aluva",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Aluva Taluk",
+        "taluk": "Aluva",
+        "district": "Ernakulam",
+        "headquarters": "Aluva Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.355,
+          10.108
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Aluva Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.3,
+              10.02
+            ],
+            [
+              76.45,
+              10.02
+            ],
+            [
+              76.45,
+              10.18
+            ],
+            [
+              76.3,
+              10.18
+            ],
+            [
+              76.3,
+              10.02
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "North Paravur",
+        "village": "North Paravur",
+        "taluk": "Paravur",
+        "district": "Ernakulam",
+        "color": "#cf8282",
+        "center": [
+          76.17167,
+          10.185
+        ],
+        "vulnerability": "North Paravur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.147,
+              10.149
+            ],
+            [
+              76.19633,
+              10.149
+            ],
+            [
+              76.19034,
+              10.221
+            ],
+            [
+              76.153,
+              10.219
+            ],
+            [
+              76.147,
+              10.149
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Varapuzha",
+        "village": "Varapuzha",
+        "taluk": "Paravur",
+        "district": "Ernakulam",
+        "color": "#cf8282",
+        "center": [
+          76.215,
+          10.185
+        ],
+        "vulnerability": "Varapuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.19632,
+              10.1525
+            ],
+            [
+              76.23368,
+              10.1525
+            ],
+            [
+              76.23965,
+              10.2175
+            ],
+            [
+              76.19035,
+              10.2225
+            ],
+            [
+              76.19632,
+              10.1525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Chennamangalam",
+        "village": "Chennamangalam",
+        "taluk": "Paravur",
+        "district": "Ernakulam",
+        "color": "#cf8282",
+        "center": [
+          76.25833,
+          10.185
+        ],
+        "vulnerability": "Chennamangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.23376,
+              10.14892
+            ],
+            [
+              76.28291,
+              10.14892
+            ],
+            [
+              76.27709,
+              10.22108
+            ],
+            [
+              76.23958,
+              10.21892
+            ],
+            [
+              76.23376,
+              10.14892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Vadakkekara",
+        "village": "Vadakkekara",
+        "taluk": "Paravur",
+        "district": "Ernakulam",
+        "color": "#cf8282",
+        "center": [
+          76.17167,
+          10.115
+        ],
+        "vulnerability": "Vadakkekara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15278,
+              10.0784
+            ],
+            [
+              76.19055,
+              10.0784
+            ],
+            [
+              76.19611,
+              10.1516
+            ],
+            [
+              76.14722,
+              10.1484
+            ],
+            [
+              76.15278,
+              10.0784
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Moothakunnam",
+        "village": "Moothakunnam",
+        "taluk": "Paravur",
+        "district": "Ernakulam",
+        "color": "#cf8282",
+        "center": [
+          76.215,
+          10.115
+        ],
+        "vulnerability": "Moothakunnam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.19074,
+              10.08241
+            ],
+            [
+              76.23926,
+              10.08241
+            ],
+            [
+              76.23407,
+              10.14759
+            ],
+            [
+              76.19593,
+              10.15241
+            ],
+            [
+              76.19074,
+              10.08241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_paravur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Paravur Taluk",
+        "taluk": "Paravur",
+        "district": "Ernakulam",
+        "headquarters": "Paravur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.228,
+          10.145
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Paravur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15,
+              10.08
+            ],
+            [
+              76.28,
+              10.08
+            ],
+            [
+              76.28,
+              10.22
+            ],
+            [
+              76.15,
+              10.22
+            ],
+            [
+              76.15,
+              10.08
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Perumbavoor",
+        "village": "Perumbavoor",
+        "taluk": "Kunnathunad",
+        "district": "Ernakulam",
+        "color": "#fbe4c8",
+        "center": [
+          76.43,
+          10.0625
+        ],
+        "vulnerability": "Perumbavoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.40016,
+              10.02713
+            ],
+            [
+              76.45984,
+              10.02713
+            ],
+            [
+              76.46016,
+              10.09787
+            ],
+            [
+              76.39984,
+              10.10213
+            ],
+            [
+              76.40016,
+              10.02713
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Kolenchery",
+        "village": "Kolenchery",
+        "taluk": "Kunnathunad",
+        "district": "Ernakulam",
+        "color": "#fbe4c8",
+        "center": [
+          76.49,
+          10.0625
+        ],
+        "vulnerability": "Kolenchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.46027,
+              10.0253
+            ],
+            [
+              76.51973,
+              10.0253
+            ],
+            [
+              76.52027,
+              10.0997
+            ],
+            [
+              76.45973,
+              10.1003
+            ],
+            [
+              76.46027,
+              10.0253
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Vengola",
+        "village": "Vengola",
+        "taluk": "Kunnathunad",
+        "district": "Ernakulam",
+        "color": "#fbe4c8",
+        "center": [
+          76.55,
+          10.0625
+        ],
+        "vulnerability": "Vengola Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.51932,
+              10.02262
+            ],
+            [
+              76.58068,
+              10.02262
+            ],
+            [
+              76.57932,
+              10.10238
+            ],
+            [
+              76.52068,
+              10.09762
+            ],
+            [
+              76.51932,
+              10.02262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Aikaranad",
+        "village": "Aikaranad",
+        "taluk": "Kunnathunad",
+        "district": "Ernakulam",
+        "color": "#fbe4c8",
+        "center": [
+          76.43,
+          9.9875
+        ],
+        "vulnerability": "Aikaranad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.40109,
+              9.95168
+            ],
+            [
+              76.45891,
+              9.95168
+            ],
+            [
+              76.46109,
+              10.02332
+            ],
+            [
+              76.39891,
+              10.02668
+            ],
+            [
+              76.40109,
+              9.95168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Rayamangalam",
+        "village": "Rayamangalam",
+        "taluk": "Kunnathunad",
+        "district": "Ernakulam",
+        "color": "#fbe4c8",
+        "center": [
+          76.49,
+          9.9875
+        ],
+        "vulnerability": "Rayamangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.45853,
+              9.95098
+            ],
+            [
+              76.52147,
+              9.95098
+            ],
+            [
+              76.51853,
+              10.02402
+            ],
+            [
+              76.46147,
+              10.02598
+            ],
+            [
+              76.45853,
+              9.95098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_kunnathunad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kunnathunad Taluk",
+        "taluk": "Kunnathunad",
+        "district": "Ernakulam",
+        "headquarters": "Kunnathunad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.475,
+          10.025
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Kunnathunad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.4,
+              9.95
+            ],
+            [
+              76.58,
+              9.95
+            ],
+            [
+              76.58,
+              10.1
+            ],
+            [
+              76.4,
+              10.1
+            ],
+            [
+              76.4,
+              9.95
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Muvattupuzha",
+        "village": "Muvattupuzha",
+        "taluk": "Muvattupuzha",
+        "district": "Ernakulam",
+        "color": "#fef08a",
+        "center": [
+          76.55,
+          10.035
+        ],
+        "vulnerability": "Muvattupuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52299,
+              9.99158
+            ],
+            [
+              76.57701,
+              9.99158
+            ],
+            [
+              76.58299,
+              10.07842
+            ],
+            [
+              76.51701,
+              10.08158
+            ],
+            [
+              76.52299,
+              9.99158
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Piravom",
+        "village": "Piravom",
+        "taluk": "Muvattupuzha",
+        "district": "Ernakulam",
+        "color": "#fef08a",
+        "center": [
+          76.61,
+          10.035
+        ],
+        "vulnerability": "Piravom Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.57701,
+              9.98758
+            ],
+            [
+              76.64299,
+              9.98758
+            ],
+            [
+              76.63701,
+              10.08242
+            ],
+            [
+              76.58299,
+              10.07758
+            ],
+            [
+              76.57701,
+              9.98758
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Koothattukulam",
+        "village": "Koothattukulam",
+        "taluk": "Muvattupuzha",
+        "district": "Ernakulam",
+        "color": "#fef08a",
+        "center": [
+          76.67,
+          10.035
+        ],
+        "vulnerability": "Koothattukulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64293,
+              9.99043
+            ],
+            [
+              76.69707,
+              9.99043
+            ],
+            [
+              76.70293,
+              10.07957
+            ],
+            [
+              76.63707,
+              10.08043
+            ],
+            [
+              76.64293,
+              9.99043
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Pampakuda",
+        "village": "Pampakuda",
+        "taluk": "Muvattupuzha",
+        "district": "Ernakulam",
+        "color": "#fef08a",
+        "center": [
+          76.55,
+          9.945
+        ],
+        "vulnerability": "Pampakuda Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.51719,
+              9.90206
+            ],
+            [
+              76.58281,
+              9.90206
+            ],
+            [
+              76.57719,
+              9.98794
+            ],
+            [
+              76.52281,
+              9.99206
+            ],
+            [
+              76.51719,
+              9.90206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Arakuzha",
+        "village": "Arakuzha",
+        "taluk": "Muvattupuzha",
+        "district": "Ernakulam",
+        "color": "#fef08a",
+        "center": [
+          76.61,
+          9.945
+        ],
+        "vulnerability": "Arakuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.58263,
+              9.89786
+            ],
+            [
+              76.63737,
+              9.89786
+            ],
+            [
+              76.64263,
+              9.99214
+            ],
+            [
+              76.57737,
+              9.98786
+            ],
+            [
+              76.58263,
+              9.89786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_muvattupuzha",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Muvattupuzha Taluk",
+        "taluk": "Muvattupuzha",
+        "district": "Ernakulam",
+        "headquarters": "Muvattupuzha Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          76.578,
+          9.985
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Muvattupuzha Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.52,
+              9.9
+            ],
+            [
+              76.7,
+              9.9
+            ],
+            [
+              76.7,
+              10.08
+            ],
+            [
+              76.52,
+              10.08
+            ],
+            [
+              76.52,
+              9.9
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_31",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 31,
+        "name": "Kothamangalam",
+        "village": "Kothamangalam",
+        "taluk": "Kothamangalam",
+        "district": "Ernakulam",
+        "color": "#a7f3d0",
+        "center": [
+          76.63,
+          10.145
+        ],
+        "vulnerability": "Kothamangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.59976,
+              10.0883
+            ],
+            [
+              76.66024,
+              10.0883
+            ],
+            [
+              76.65976,
+              10.2017
+            ],
+            [
+              76.60024,
+              10.1983
+            ],
+            [
+              76.59976,
+              10.0883
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_32",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 32,
+        "name": "Neriamangalam",
+        "village": "Neriamangalam",
+        "taluk": "Kothamangalam",
+        "district": "Ernakulam",
+        "color": "#a7f3d0",
+        "center": [
+          76.69,
+          10.145
+        ],
+        "vulnerability": "Neriamangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.65981,
+              10.08904
+            ],
+            [
+              76.72019,
+              10.08904
+            ],
+            [
+              76.71981,
+              10.20096
+            ],
+            [
+              76.66019,
+              10.19904
+            ],
+            [
+              76.65981,
+              10.08904
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_33",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 33,
+        "name": "Keerampara",
+        "village": "Keerampara",
+        "taluk": "Kothamangalam",
+        "district": "Ernakulam",
+        "color": "#a7f3d0",
+        "center": [
+          76.75,
+          10.145
+        ],
+        "vulnerability": "Keerampara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.72061,
+              10.0925
+            ],
+            [
+              76.77939,
+              10.0925
+            ],
+            [
+              76.78061,
+              10.1975
+            ],
+            [
+              76.71939,
+              10.2025
+            ],
+            [
+              76.72061,
+              10.0925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_34",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 34,
+        "name": "Varappetty",
+        "village": "Varappetty",
+        "taluk": "Kothamangalam",
+        "district": "Ernakulam",
+        "color": "#a7f3d0",
+        "center": [
+          76.63,
+          10.035
+        ],
+        "vulnerability": "Varappetty Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.59899,
+              9.97888
+            ],
+            [
+              76.66101,
+              9.97888
+            ],
+            [
+              76.65899,
+              10.09112
+            ],
+            [
+              76.60101,
+              10.08888
+            ],
+            [
+              76.59899,
+              9.97888
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_ernakulam_35",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 35,
+        "name": "Pothanicad",
+        "village": "Pothanicad",
+        "taluk": "Kothamangalam",
+        "district": "Ernakulam",
+        "color": "#a7f3d0",
+        "center": [
+          76.69,
+          10.035
+        ],
+        "vulnerability": "Pothanicad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6614,
+              9.97843
+            ],
+            [
+              76.7186,
+              9.97843
+            ],
+            [
+              76.7214,
+              10.09157
+            ],
+            [
+              76.6586,
+              10.08843
+            ],
+            [
+              76.6614,
+              9.97843
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_ernakulam_kothamangalam",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kothamangalam Taluk",
+        "taluk": "Kothamangalam",
+        "district": "Ernakulam",
+        "headquarters": "Kothamangalam Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#a7f3d0",
+        "center": [
+          76.628,
+          10.065
+        ],
+        "sdmaAuthority": "DDMA Ernakulam - Kothamangalam Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6,
+              9.98
+            ],
+            [
+              76.78,
+              9.98
+            ],
+            [
+              76.78,
+              10.2
+            ],
+            [
+              76.6,
+              10.2
+            ],
+            [
+              76.6,
+              9.98
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

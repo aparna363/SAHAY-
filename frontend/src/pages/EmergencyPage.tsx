@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, PhoneCall, CheckCircle2, Radio } from 'lucide-react';
+import { AlertCircle, PhoneCall, CheckCircle2, Radio, MapPin } from 'lucide-react';
 import { getDistricts, fetchPublicStats, type PublicPortalStats } from '../services/api';
+import { useSystemSettings } from '../context/SettingsContext';
 
 export const EmergencyPage: React.FC = () => {
+  const { settings } = useSystemSettings();
   const [submitted, setSubmitted] = useState(false);
   const [districtsList, setDistrictsList] = useState<string[]>([]);
   const [portalStats, setPortalStats] = useState<PublicPortalStats>({
@@ -206,6 +208,19 @@ export const EmergencyPage: React.FC = () => {
                   className="input-field text-sm"
                   placeholder="Describe medical conditions, water level height, specific access roads..."
                 />
+              </div>
+
+              {/* Location attachment status from System Settings */}
+              <div className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all ${
+                settings.shareLocationInSos
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border-amber-200'
+              }`}>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  <span>GPS Location Transmission:</span>
+                </div>
+                <span>{settings.shareLocationInSos ? '● Attached to Dispatch' : '○ Disabled in Settings'}</span>
               </div>
 
               <button

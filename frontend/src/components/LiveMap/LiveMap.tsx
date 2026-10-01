@@ -97,6 +97,26 @@ export const KERALA_DISTRICT_COORDS: Record<string, [number, number]> = {
   'Kasaragod': [12.4996, 74.9869]
 };
 
+// Official KSDMA DDMP Administrative Subdivision GeoJSON Maps
+export const districtMaps: Record<string, string> = {
+  Kottayam: "/maps/kottayam.geojson",
+  Pathanamthitta: "/maps/pathanamthitta.geojson",
+  Idukki: "/maps/idukki.geojson",
+  Thrissur: "/maps/thrissur.geojson",
+  Ernakulam: "/maps/ernakulam.geojson",
+  Alappuzha: "/maps/alappuzha.geojson",
+  Kollam: "/maps/kollam.geojson",
+  Thiruvananthapuram: "/maps/thiruvananthapuram.geojson",
+  Palakkad: "/maps/palakkad.geojson",
+  Malappuram: "/maps/malappuram.geojson",
+  Kozhikode: "/maps/kozhikode.geojson",
+  Wayanad: "/maps/wayanad.geojson",
+  Kannur: "/maps/kannur.geojson",
+  Kasaragod: "/maps/kasaragod.geojson"
+};
+
+export const DISTRICT_MAPS = districtMaps;
+
 export interface LiveMapProps {
   role?: 'citizen' | 'rescue_team' | 'collector' | 'admin';
   userDistrict?: string;
@@ -104,6 +124,7 @@ export interface LiveMapProps {
   onAssignTeam?: (incidentId: number | string, incidentCode: string) => void;
   onViewIncidentDetails?: (incidentId: number | string) => void;
   onStatusUpdateSuccess?: () => void;
+  onSwitchToAdminMap?: () => void;
   className?: string;
 }
 
@@ -114,6 +135,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   onAssignTeam,
   onViewIncidentDetails,
   onStatusUpdateSuccess,
+  onSwitchToAdminMap,
   className = ''
 }) => {
   const { coords, location } = useLocation();
@@ -123,6 +145,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
 
   // Layer groups
   const incidentsLayerRef = useRef<L.LayerGroup | null>(null);
+  const affectedAreasLayerRef = useRef<L.LayerGroup | null>(null);
   const rescueTeamsLayerRef = useRef<L.LayerGroup | null>(null);
   const sheltersLayerRef = useRef<L.LayerGroup | null>(null);
   const hospitalsLayerRef = useRef<L.LayerGroup | null>(null);
@@ -133,7 +156,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   const routeLayerRef = useRef<L.Polyline | null>(null);
   const baseTileLayerRef = useRef<L.TileLayer | null>(null);
 
-  // District scoping (Strictly dynamic, no hardcoded district)
+  // District scoping (Strictly dynamic, assigned to Collector's district)
   const [selectedDistrict, setSelectedDistrict] = useState<string>(() => {
     if (role === 'collector' || role === 'rescue_team') {
       return userDistrict || location?.district || initialDistrict || 'Kottayam';
@@ -141,6 +164,57 @@ export const LiveMap: React.FC<LiveMapProps> = ({
     if (role === 'admin') return initialDistrict || 'all';
     return userDistrict || location?.district || initialDistrict || 'All Kerala';
   });
+
+  // Keep selectedDistrict in sync when userDistrict changes (e.g. logged-in Collector's assigned district)
+  useEffect(() => {
+    if (userDistrict && userDistrict.trim()) {
+      setSelectedDistrict(userDistrict.trim());
+    }
+  }, [userDistrict]);
+
+  // Loaded KSDMA DDMP Administrative Subdivision GeoJSON Data
+  const [subdivisionGeoJson, setSubdivisionGeoJson] = useState<any | null>(null);
+
+  // Fetch corresponding official administrative subdivision map for the selected district
+  useEffect(() => {
+    if (!selectedDistrict || selectedDistrict === 'all' || selectedDistrict === 'All Kerala') {
+      setSubdivisionGeoJson(null);
+      return;
+    }
+
+    const matchedKey = Object.keys(districtMaps).find(
+      k => k.toLowerCase() === selectedDistrict.toLowerCase().trim()
+    );
+
+    if (!matchedKey) {
+      setSubdivisionGeoJson(null);
+      return;
+    }
+
+    const mapUrl = districtMaps[matchedKey];
+    let isCancelled = false;
+
+    fetch(mapUrl)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (!isCancelled) {
+          setSubdivisionGeoJson(data);
+        }
+      })
+      .catch(err => {
+        console.warn(`[LiveMap] Could not fetch administrative subdivision map from ${mapUrl}:`, err);
+        if (!isCancelled) {
+          setSubdivisionGeoJson(null);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedDistrict]);
 
   const [selectedSeverity, setSelectedSeverity] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
@@ -180,6 +254,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   // Layer Visibility
   const [layers, setLayers] = useState<LayerState>({
     incidents: true,
+    affectedAreas: true,
     rescueTeams: role !== 'citizen',
     shelters: true,
     hospitals: true,
@@ -427,6 +502,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
 
     // Initialize Layer Groups
     incidentsLayerRef.current = L.layerGroup().addTo(map);
+    affectedAreasLayerRef.current = L.layerGroup().addTo(map);
     rescueTeamsLayerRef.current = L.layerGroup().addTo(map);
     sheltersLayerRef.current = L.layerGroup().addTo(map);
     hospitalsLayerRef.current = L.layerGroup().addTo(map);
@@ -501,7 +577,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   };
 
   // ---------------------------------------------------------------------------
-  // 7. RENDER DISTRICT BOUNDARIES LAYER
+  // 7. RENDER DISTRICT DISASTER SURVEILLANCE PERIMETER
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!mapRef.current) return;
@@ -511,18 +587,50 @@ export const LiveMap: React.FC<LiveMapProps> = ({
       boundariesLayerRef.current = null;
     }
 
-    if (layers.districtBoundary && KERALA_DISTRICTS_GEOJSON) {
+    if (!layers.districtBoundary) return;
+
+    // Use district boundary (clean operational border)
+    if (subdivisionGeoJson && subdivisionGeoJson.features) {
+      const districtFeature = subdivisionGeoJson.features.find((f: any) => f.properties?.adminType === 'district') || subdivisionGeoJson.features[0];
+      const geoLayer = L.geoJSON(districtFeature, {
+        style: {
+          color: '#10b981', // Emerald 500
+          weight: 3,
+          fillColor: '#10b981',
+          fillOpacity: 0.04,
+          dashArray: '6, 4'
+        },
+        onEachFeature: (_feature: any, layer: L.Layer) => {
+          layer.bindTooltip(`📍 ${selectedDistrict} District Disaster Operations Perimeter`, {
+            sticky: true,
+            className: 'bg-slate-900 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-xl shadow-md border border-emerald-500/50'
+          });
+        }
+      }).addTo(mapRef.current);
+
+      boundariesLayerRef.current = geoLayer;
+
+      try {
+        const bounds = geoLayer.getBounds();
+        if (bounds.isValid()) {
+          mapRef.current.fitBounds(bounds, { padding: [30, 30], maxZoom: 12, animate: true });
+        }
+      } catch (e) {
+        // Fallback
+      }
+    } else if (KERALA_DISTRICTS_GEOJSON) {
+      // B) State-wide fallback
       const geoLayer = L.geoJSON(KERALA_DISTRICTS_GEOJSON as any, {
         style: (feature: any) => {
           const isTargetDistrict = selectedDistrict &&
             feature?.properties?.district?.toLowerCase() === selectedDistrict.toLowerCase();
 
           return {
-            color: isTargetDistrict ? '#10b981' : '#64748b',
+            color: isTargetDistrict ? '#10b981' : '#475569',
             weight: isTargetDistrict ? 2.5 : 1,
             fillColor: isTargetDistrict ? '#10b981' : '#334155',
-            fillOpacity: isTargetDistrict ? 0.12 : 0.03,
-            dashArray: isTargetDistrict ? undefined : '4, 4'
+            fillOpacity: isTargetDistrict ? 0.05 : 0.02,
+            dashArray: isTargetDistrict ? '6, 4' : '4, 4'
           };
         },
         onEachFeature: (feature: any, layer: L.Layer) => {
@@ -537,7 +645,49 @@ export const LiveMap: React.FC<LiveMapProps> = ({
 
       boundariesLayerRef.current = geoLayer;
     }
-  }, [layers.districtBoundary, selectedDistrict]);
+  }, [layers.districtBoundary, subdivisionGeoJson, selectedDistrict]);
+
+  // ---------------------------------------------------------------------------
+  // 8B. RENDER CURRENTLY AFFECTED & NORMAL/SAFE SECTORS LAYER
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (!affectedAreasLayerRef.current || !mapRef.current) return;
+    affectedAreasLayerRef.current.clearLayers();
+
+    if (!layers.affectedAreas) return;
+
+    const activeIncidents = incidents.filter(i => i.status !== 'RESOLVED' && i.status !== 'CLOSED');
+
+    activeIncidents.forEach(inc => {
+      const isCritical = inc.severity === 'CRITICAL';
+      const isHigh = inc.severity === 'HIGH';
+      const radiusMeters = isCritical ? 2500 : isHigh ? 1800 : 1000;
+      const strokeColor = isCritical ? '#e11d48' : isHigh ? '#ea580c' : '#d97706';
+      const fillColor = isCritical ? '#f43f5e' : isHigh ? '#fb923c' : '#fbbf24';
+
+      const circle = L.circle([inc.latitude, inc.longitude], {
+        radius: radiusMeters,
+        color: strokeColor,
+        weight: 2,
+        fillColor: fillColor,
+        fillOpacity: 0.20,
+        dashArray: '5, 5'
+      });
+
+      circle.bindTooltip(`
+        <div class="p-1.5 text-xs text-white">
+          <div class="font-black ${isCritical ? 'text-rose-400' : isHigh ? 'text-orange-400' : 'text-amber-400'} uppercase tracking-wider flex items-center gap-1">
+            <span>🔥 CURRENTLY AFFECTED ZONE</span>
+          </div>
+          <div class="font-bold text-white text-xs mt-0.5">${inc.incidentTypeName}</div>
+          <div class="text-[10px] text-slate-300">Severity: <strong>${inc.severity}</strong> &bull; Impact Radius: ${(radiusMeters / 1000).toFixed(1)} km</div>
+          <div class="text-[10px] text-slate-400">Status: ${inc.status.replace('_', ' ')}</div>
+        </div>
+      `, { sticky: true, className: 'bg-slate-900/95 text-white border border-rose-500/60 rounded-xl shadow-xl' });
+
+      circle.addTo(affectedAreasLayerRef.current!);
+    });
+  }, [incidents, layers.affectedAreas]);
 
   // ---------------------------------------------------------------------------
   // 8. RENDER INCIDENTS MARKERS
@@ -757,20 +907,28 @@ export const LiveMap: React.FC<LiveMapProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm sm:text-base font-black tracking-tight text-white flex items-center gap-1.5">
-                <span>{activeDistrictLabel} Live GIS Operations Map</span>
+                <span>{activeDistrictLabel} Live Disaster Operations Map</span>
               </h2>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold">
-                POSTGIS LIVE
+              <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30 text-[10px] font-mono font-bold animate-pulse">
+                LIVE DISASTER FEED
               </span>
             </div>
             <p className="text-[11px] text-slate-400 font-medium">
-              Spatial telemetric feed &bull; Refreshed {secondsAgo}s ago
+              Dynamic incident impact zones, hazard risks, relief camps &bull; Refreshed {secondsAgo}s ago
             </p>
           </div>
         </div>
 
-        {/* Live Counters */}
+        {/* Live Action Buttons & Counters */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
+          {onSwitchToAdminMap && (
+            <button
+              onClick={onSwitchToAdminMap}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 text-xs font-bold transition-all flex items-center gap-1.5 mr-1"
+            >
+              <span>🏛️ District Map (KSDMA)</span>
+            </button>
+          )}
           <div className="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-2">
             <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
             <span className="text-slate-400">Incidents:</span>

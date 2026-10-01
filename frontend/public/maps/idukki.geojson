@@ -1,0 +1,1457 @@
+{
+  "type": "FeatureCollection",
+  "name": "Idukki_Administrative_Subdivisions_KSDMA",
+  "district": "Idukki",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_idukki",
+      "properties": {
+        "adminType": "district",
+        "name": "Idukki District",
+        "district": "Idukki",
+        "headquarters": "Kuyilimala Collectorate, Painavu",
+        "talukCount": 5,
+        "villageCount": 25,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Idukki"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.715,
+              10.09
+            ],
+            [
+              76.6825,
+              10.23
+            ],
+            [
+              76.845,
+              10.3
+            ],
+            [
+              77.105,
+              10.3
+            ],
+            [
+              77.3,
+              10.125
+            ],
+            [
+              77.3,
+              9.81
+            ],
+            [
+              77.17,
+              9.6
+            ],
+            [
+              76.91,
+              9.6
+            ],
+            [
+              76.715,
+              9.705
+            ],
+            [
+              76.65,
+              9.95
+            ],
+            [
+              76.715,
+              10.09
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Munnar",
+        "village": "Munnar",
+        "taluk": "Devikulam",
+        "district": "Idukki",
+        "color": "#cbf3c8",
+        "center": [
+          77.04667,
+          10.215
+        ],
+        "vulnerability": "Munnar Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77,
+              10.1525
+            ],
+            [
+              77.09333,
+              10.1525
+            ],
+            [
+              77.09333,
+              10.2775
+            ],
+            [
+              77,
+              10.2825
+            ],
+            [
+              77,
+              10.1525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Marayoor",
+        "village": "Marayoor",
+        "taluk": "Devikulam",
+        "district": "Idukki",
+        "color": "#cbf3c8",
+        "center": [
+          77.14,
+          10.215
+        ],
+        "vulnerability": "Marayoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.09376,
+              10.14896
+            ],
+            [
+              77.18624,
+              10.14896
+            ],
+            [
+              77.18709,
+              10.28104
+            ],
+            [
+              77.09291,
+              10.27896
+            ],
+            [
+              77.09376,
+              10.14896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Vattavada",
+        "village": "Vattavada",
+        "taluk": "Devikulam",
+        "district": "Idukki",
+        "color": "#cbf3c8",
+        "center": [
+          77.23333,
+          10.215
+        ],
+        "vulnerability": "Vattavada Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.18583,
+              10.14837
+            ],
+            [
+              77.28084,
+              10.14837
+            ],
+            [
+              77.27916,
+              10.28163
+            ],
+            [
+              77.1875,
+              10.27837
+            ],
+            [
+              77.18583,
+              10.14837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Kanthalloor",
+        "village": "Kanthalloor",
+        "taluk": "Devikulam",
+        "district": "Idukki",
+        "color": "#cbf3c8",
+        "center": [
+          77.04667,
+          10.085
+        ],
+        "vulnerability": "Kanthalloor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.00124,
+              10.0224
+            ],
+            [
+              77.0921,
+              10.0224
+            ],
+            [
+              77.09457,
+              10.1476
+            ],
+            [
+              76.99876,
+              10.1524
+            ],
+            [
+              77.00124,
+              10.0224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Devikulam",
+        "village": "Devikulam",
+        "taluk": "Devikulam",
+        "district": "Idukki",
+        "color": "#cbf3c8",
+        "center": [
+          77.14,
+          10.085
+        ],
+        "vulnerability": "Devikulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.09172,
+              10.01964
+            ],
+            [
+              77.18828,
+              10.01964
+            ],
+            [
+              77.18506,
+              10.15036
+            ],
+            [
+              77.09494,
+              10.14964
+            ],
+            [
+              77.09172,
+              10.01964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_idukki_devikulam",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Devikulam Taluk",
+        "taluk": "Devikulam",
+        "district": "Idukki",
+        "headquarters": "Devikulam Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          77.062,
+          10.082
+        ],
+        "sdmaAuthority": "DDMA Idukki - Devikulam Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77,
+              10.02
+            ],
+            [
+              77.28,
+              10.02
+            ],
+            [
+              77.28,
+              10.28
+            ],
+            [
+              77,
+              10.28
+            ],
+            [
+              77,
+              10.02
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Nedumkandam",
+        "village": "Nedumkandam",
+        "taluk": "Udumbanchola",
+        "district": "Idukki",
+        "color": "#fbe4c8",
+        "center": [
+          77.085,
+          9.93
+        ],
+        "vulnerability": "Nedumkandam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.053,
+              9.88034
+            ],
+            [
+              77.117,
+              9.88034
+            ],
+            [
+              77.123,
+              9.97966
+            ],
+            [
+              77.047,
+              9.98034
+            ],
+            [
+              77.053,
+              9.88034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Kattappana",
+        "village": "Kattappana",
+        "taluk": "Udumbanchola",
+        "district": "Idukki",
+        "color": "#fbe4c8",
+        "center": [
+          77.155,
+          9.93
+        ],
+        "vulnerability": "Kattappana Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.11702,
+              9.87761
+            ],
+            [
+              77.19298,
+              9.87761
+            ],
+            [
+              77.18702,
+              9.98239
+            ],
+            [
+              77.12298,
+              9.97761
+            ],
+            [
+              77.11702,
+              9.87761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Santhanpara",
+        "village": "Santhanpara",
+        "taluk": "Udumbanchola",
+        "district": "Idukki",
+        "color": "#fbe4c8",
+        "center": [
+          77.225,
+          9.93
+        ],
+        "vulnerability": "Santhanpara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.19289,
+              9.88165
+            ],
+            [
+              77.25711,
+              9.88165
+            ],
+            [
+              77.26289,
+              9.97835
+            ],
+            [
+              77.18711,
+              9.98165
+            ],
+            [
+              77.19289,
+              9.88165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Udumbanchola",
+        "village": "Udumbanchola",
+        "taluk": "Udumbanchola",
+        "district": "Idukki",
+        "color": "#fbe4c8",
+        "center": [
+          77.085,
+          9.83
+        ],
+        "vulnerability": "Udumbanchola Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.04725,
+              9.78102
+            ],
+            [
+              77.12275,
+              9.78102
+            ],
+            [
+              77.11725,
+              9.87898
+            ],
+            [
+              77.05275,
+              9.88102
+            ],
+            [
+              77.04725,
+              9.78102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Vandanmedu",
+        "village": "Vandanmedu",
+        "taluk": "Udumbanchola",
+        "district": "Idukki",
+        "color": "#fbe4c8",
+        "center": [
+          77.155,
+          9.83
+        ],
+        "vulnerability": "Vandanmedu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.12255,
+              9.7775
+            ],
+            [
+              77.18745,
+              9.7775
+            ],
+            [
+              77.19255,
+              9.8825
+            ],
+            [
+              77.11745,
+              9.8775
+            ],
+            [
+              77.12255,
+              9.7775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_idukki_udumbanchola",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Udumbanchola Taluk",
+        "taluk": "Udumbanchola",
+        "district": "Idukki",
+        "headquarters": "Udumbanchola Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          77.168,
+          9.872
+        ],
+        "sdmaAuthority": "DDMA Idukki - Udumbanchola Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.05,
+              9.78
+            ],
+            [
+              77.26,
+              9.78
+            ],
+            [
+              77.26,
+              9.98
+            ],
+            [
+              77.05,
+              9.98
+            ],
+            [
+              77.05,
+              9.78
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Thodupuzha",
+        "village": "Thodupuzha",
+        "taluk": "Thodupuzha",
+        "district": "Idukki",
+        "color": "#bce4fa",
+        "center": [
+          76.68333,
+          9.95
+        ],
+        "vulnerability": "Thodupuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64992,
+              9.89759
+            ],
+            [
+              76.71675,
+              9.89759
+            ],
+            [
+              76.71659,
+              10.00241
+            ],
+            [
+              76.65008,
+              9.99759
+            ],
+            [
+              76.64992,
+              9.89759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Karikode",
+        "village": "Karikode",
+        "taluk": "Thodupuzha",
+        "district": "Idukki",
+        "color": "#bce4fa",
+        "center": [
+          76.75,
+          9.95
+        ],
+        "vulnerability": "Karikode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.71632,
+              9.90039
+            ],
+            [
+              76.78368,
+              9.90039
+            ],
+            [
+              76.78299,
+              9.99961
+            ],
+            [
+              76.71701,
+              10.00039
+            ],
+            [
+              76.71632,
+              9.90039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Muttom",
+        "village": "Muttom",
+        "taluk": "Thodupuzha",
+        "district": "Idukki",
+        "color": "#bce4fa",
+        "center": [
+          76.81667,
+          9.95
+        ],
+        "vulnerability": "Muttom Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.78409,
+              9.90209
+            ],
+            [
+              76.84924,
+              9.90209
+            ],
+            [
+              76.85076,
+              9.99791
+            ],
+            [
+              76.78257,
+              10.00209
+            ],
+            [
+              76.78409,
+              9.90209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Karimannoor",
+        "village": "Karimannoor",
+        "taluk": "Thodupuzha",
+        "district": "Idukki",
+        "color": "#bce4fa",
+        "center": [
+          76.68333,
+          9.85
+        ],
+        "vulnerability": "Karimannoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.64884,
+              9.79788
+            ],
+            [
+              76.71783,
+              9.79788
+            ],
+            [
+              76.7155,
+              9.90212
+            ],
+            [
+              76.65116,
+              9.89788
+            ],
+            [
+              76.64884,
+              9.79788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Vannappuram",
+        "village": "Vannappuram",
+        "taluk": "Thodupuzha",
+        "district": "Idukki",
+        "color": "#bce4fa",
+        "center": [
+          76.75,
+          9.85
+        ],
+        "vulnerability": "Vannappuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.71821,
+              9.79968
+            ],
+            [
+              76.78179,
+              9.79968
+            ],
+            [
+              76.78488,
+              9.90032
+            ],
+            [
+              76.71512,
+              9.89968
+            ],
+            [
+              76.71821,
+              9.79968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_idukki_thodupuzha",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thodupuzha Taluk",
+        "taluk": "Thodupuzha",
+        "district": "Idukki",
+        "headquarters": "Thodupuzha Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.715,
+          9.892
+        ],
+        "sdmaAuthority": "DDMA Idukki - Thodupuzha Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.65,
+              9.8
+            ],
+            [
+              76.85,
+              9.8
+            ],
+            [
+              76.85,
+              10
+            ],
+            [
+              76.65,
+              10
+            ],
+            [
+              76.65,
+              9.8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Peerumade",
+        "village": "Peerumade",
+        "taluk": "Peerumade",
+        "district": "Idukki",
+        "color": "#cf8282",
+        "center": [
+          76.9,
+          9.665
+        ],
+        "vulnerability": "Peerumade Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.847,
+              9.609
+            ],
+            [
+              76.953,
+              9.609
+            ],
+            [
+              76.947,
+              9.721
+            ],
+            [
+              76.853,
+              9.719
+            ],
+            [
+              76.847,
+              9.609
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Kumily",
+        "village": "Kumily",
+        "taluk": "Peerumade",
+        "district": "Idukki",
+        "color": "#cf8282",
+        "center": [
+          77,
+          9.665
+        ],
+        "vulnerability": "Kumily Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.95298,
+              9.6125
+            ],
+            [
+              77.04702,
+              9.6125
+            ],
+            [
+              77.05298,
+              9.7175
+            ],
+            [
+              76.94702,
+              9.7225
+            ],
+            [
+              76.95298,
+              9.6125
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Elappara",
+        "village": "Elappara",
+        "taluk": "Peerumade",
+        "district": "Idukki",
+        "color": "#cf8282",
+        "center": [
+          77.1,
+          9.665
+        ],
+        "vulnerability": "Elappara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.04709,
+              9.60892
+            ],
+            [
+              77.15291,
+              9.60892
+            ],
+            [
+              77.14709,
+              9.72108
+            ],
+            [
+              77.05291,
+              9.71892
+            ],
+            [
+              77.04709,
+              9.60892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Vagamon",
+        "village": "Vagamon",
+        "taluk": "Peerumade",
+        "district": "Idukki",
+        "color": "#cf8282",
+        "center": [
+          76.9,
+          9.555
+        ],
+        "vulnerability": "Vagamon Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85278,
+              9.4984
+            ],
+            [
+              76.94722,
+              9.4984
+            ],
+            [
+              76.95278,
+              9.6116
+            ],
+            [
+              76.84722,
+              9.6084
+            ],
+            [
+              76.85278,
+              9.4984
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Kokkayar",
+        "village": "Kokkayar",
+        "taluk": "Peerumade",
+        "district": "Idukki",
+        "color": "#cf8282",
+        "center": [
+          77,
+          9.555
+        ],
+        "vulnerability": "Kokkayar Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.94741,
+              9.50241
+            ],
+            [
+              77.05259,
+              9.50241
+            ],
+            [
+              77.04741,
+              9.60759
+            ],
+            [
+              76.95259,
+              9.61241
+            ],
+            [
+              76.94741,
+              9.50241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_idukki_peerumade",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Peerumade Taluk",
+        "taluk": "Peerumade",
+        "district": "Idukki",
+        "headquarters": "Peerumade Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.985,
+          9.585
+        ],
+        "sdmaAuthority": "DDMA Idukki - Peerumade Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85,
+              9.5
+            ],
+            [
+              77.15,
+              9.5
+            ],
+            [
+              77.15,
+              9.72
+            ],
+            [
+              76.85,
+              9.72
+            ],
+            [
+              76.85,
+              9.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Painavu",
+        "village": "Painavu",
+        "taluk": "Idukki",
+        "district": "Idukki",
+        "color": "#f7c3f0",
+        "center": [
+          76.885,
+          9.89
+        ],
+        "vulnerability": "Painavu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85016,
+              9.84213
+            ],
+            [
+              76.91984,
+              9.84213
+            ],
+            [
+              76.92016,
+              9.93787
+            ],
+            [
+              76.84984,
+              9.94213
+            ],
+            [
+              76.85016,
+              9.84213
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Vazhathope",
+        "village": "Vazhathope",
+        "taluk": "Idukki",
+        "district": "Idukki",
+        "color": "#f7c3f0",
+        "center": [
+          76.955,
+          9.89
+        ],
+        "vulnerability": "Vazhathope Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.92027,
+              9.8403
+            ],
+            [
+              76.98973,
+              9.8403
+            ],
+            [
+              76.99027,
+              9.9397
+            ],
+            [
+              76.91973,
+              9.9403
+            ],
+            [
+              76.92027,
+              9.8403
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Kanjikuzhy",
+        "village": "Kanjikuzhy",
+        "taluk": "Idukki",
+        "district": "Idukki",
+        "color": "#f7c3f0",
+        "center": [
+          77.025,
+          9.89
+        ],
+        "vulnerability": "Kanjikuzhy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.98932,
+              9.83762
+            ],
+            [
+              77.06068,
+              9.83762
+            ],
+            [
+              77.05932,
+              9.94238
+            ],
+            [
+              76.99068,
+              9.93762
+            ],
+            [
+              76.98932,
+              9.83762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Kamakshy",
+        "village": "Kamakshy",
+        "taluk": "Idukki",
+        "district": "Idukki",
+        "color": "#f7c3f0",
+        "center": [
+          76.885,
+          9.79
+        ],
+        "vulnerability": "Kamakshy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85109,
+              9.74168
+            ],
+            [
+              76.91891,
+              9.74168
+            ],
+            [
+              76.92109,
+              9.83832
+            ],
+            [
+              76.84891,
+              9.84168
+            ],
+            [
+              76.85109,
+              9.74168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_idukki_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Mariapuram",
+        "village": "Mariapuram",
+        "taluk": "Idukki",
+        "district": "Idukki",
+        "color": "#f7c3f0",
+        "center": [
+          76.955,
+          9.79
+        ],
+        "vulnerability": "Mariapuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.91853,
+              9.74098
+            ],
+            [
+              76.99147,
+              9.74098
+            ],
+            [
+              76.98853,
+              9.83902
+            ],
+            [
+              76.92147,
+              9.84098
+            ],
+            [
+              76.91853,
+              9.74098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_idukki_idukki",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Idukki Taluk",
+        "taluk": "Idukki",
+        "district": "Idukki",
+        "headquarters": "Idukki Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.975,
+          9.85
+        ],
+        "sdmaAuthority": "DDMA Idukki - Idukki Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.85,
+              9.74
+            ],
+            [
+              77.06,
+              9.74
+            ],
+            [
+              77.06,
+              9.94
+            ],
+            [
+              76.85,
+              9.94
+            ],
+            [
+              76.85,
+              9.74
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -25,6 +25,179 @@
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* Dark Mode Theme Variables & Deep Global Overrides */
+:root.dark,
+[data-theme="dark"] {
+  --primary-subtle: #064e3b;
+  --alert-red-bg: #450a0a;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --bg-card: rgba(15, 23, 42, 0.95);
+  --glass-bg: rgba(15, 23, 42, 0.88);
+}
+
+:root.dark body,
+[data-theme="dark"] body {
+  background-color: #0b1120 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Comprehensive Dark Mode Overrides for light utility classes */
+html.dark nav,
+html.dark .bg-white,
+html.dark header.bg-white,
+html.dark [class*="bg-white/95"],
+html.dark [class*="bg-white/90"],
+html.dark [class*="bg-white/80"] {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .bg-slate-50 {
+  background-color: #0b1120 !important;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-100,
+html.dark .border-slate-300 {
+  border-color: #334155 !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+/* ------------------------------------------------------------- */
+/* Accent Colors: Green (Default), Blue, Purple                  */
+/* ------------------------------------------------------------- */
+html[data-accent="blue"] {
+  --primary-brand: #2563eb !important;
+  --primary-medium: #1d4ed8 !important;
+  --primary-dark: #1e3a8a !important;
+  --primary-subtle: #eff6ff !important;
+}
+html[data-accent="blue"] .btn-primary,
+html[data-accent="blue"] .bg-\[\#059669\],
+html[data-accent="blue"] .bg-emerald-600 {
+  background-color: #2563eb !important;
+}
+html[data-accent="blue"] .hover\:bg-\[\#047857\]:hover,
+html[data-accent="blue"] .hover\:bg-emerald-700:hover {
+  background-color: #1d4ed8 !important;
+}
+html[data-accent="blue"] .text-\[\#059669\],
+html[data-accent="blue"] .text-emerald-600 {
+  color: #2563eb !important;
+}
+html[data-accent="blue"] .border-\[\#059669\],
+html[data-accent="blue"] .border-emerald-600 {
+  border-color: #2563eb !important;
+}
+html[data-accent="blue"] .bg-\[\#f0fdf4\],
+html[data-accent="blue"] .bg-emerald-50 {
+  background-color: #eff6ff !important;
+}
+
+html[data-accent="purple"] {
+  --primary-brand: #7c3aed !important;
+  --primary-medium: #6d28d9 !important;
+  --primary-dark: #4c1d95 !important;
+  --primary-subtle: #f5f3ff !important;
+}
+html[data-accent="purple"] .btn-primary,
+html[data-accent="purple"] .bg-\[\#059669\],
+html[data-accent="purple"] .bg-emerald-600 {
+  background-color: #7c3aed !important;
+}
+html[data-accent="purple"] .hover\:bg-\[\#047857\]:hover,
+html[data-accent="purple"] .hover\:bg-emerald-700:hover {
+  background-color: #6d28d9 !important;
+}
+html[data-accent="purple"] .text-\[\#059669\],
+html[data-accent="purple"] .text-emerald-600 {
+  color: #7c3aed !important;
+}
+html[data-accent="purple"] .border-\[\#059669\],
+html[data-accent="purple"] .border-emerald-600 {
+  border-color: #7c3aed !important;
+}
+html[data-accent="purple"] .bg-\[\#f0fdf4\],
+html[data-accent="purple"] .bg-emerald-50 {
+  background-color: #f5f3ff !important;
+}
+
+/* ------------------------------------------------------------- */
+/* Interface: Sidebar State                                      */
+/* ------------------------------------------------------------- */
+html[data-sidebar="collapsed"] aside,
+html[data-sidebar="collapsed"] .dashboard-sidebar {
+  width: 5rem !important;
+  transition: width 0.2s ease;
+}
+html[data-sidebar="compact"] aside,
+html[data-sidebar="compact"] .dashboard-sidebar {
+  width: 12rem !important;
+  transition: width 0.2s ease;
+}
+
+/* ------------------------------------------------------------- */
+/* Accessibility: Large Text                                     */
+/* ------------------------------------------------------------- */
+html[data-large-text="true"] {
+  font-size: 125% !important;
+}
+
+/* ------------------------------------------------------------- */
+/* Accessibility: High Contrast                                  */
+/* ------------------------------------------------------------- */
+html[data-high-contrast="true"] {
+  filter: contrast(135%) !important;
+}
+html[data-high-contrast="true"] * {
+  border-color: #0f172a !important;
+}
+html.dark[data-high-contrast="true"] * {
+  border-color: #f8fafc !important;
+}
+
+/* ------------------------------------------------------------- */
+/* Accessibility: Reduced Motion / Animations Disabled           */
+/* ------------------------------------------------------------- */
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after,
+html[data-animations="false"] *,
+html[data-animations="false"] *::before,
+html[data-animations="false"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html[data-animations="false"] .ticker-content,
+html[data-reduced-motion="true"] .ticker-content {
+  animation-play-state: paused !important;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

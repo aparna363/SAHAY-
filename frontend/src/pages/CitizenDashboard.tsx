@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   LayoutDashboard,
   CloudSun,
@@ -34,7 +34,8 @@ import {
   CheckCircle,
   AlertOctagon,
   Info,
-  HeartHandshake
+  HeartHandshake,
+  RefreshCw
 } from 'lucide-react';
 import type { Language } from '../translations';
 import type { FamilyMember } from '../services/api';
@@ -46,6 +47,7 @@ import {
   patchFamilyMemberStatus,
   deleteFamilyMemberRecord
 } from '../services/api';
+import { fetchMapShelters, type MapShelter } from '../services/mapService';
 import { useLocation } from '../context/LocationContext';
 import { WeatherTelemetryDashboard } from '../components/WeatherTelemetryDashboard';
 import { TopHeader } from '../components/TopHeader';
@@ -58,6 +60,9 @@ import { CitizenIncidentDetailsPage } from './CitizenIncidentDetailsPage';
 import { LiveDisasterMap } from '../components/LiveDisasterMap';
 import { ReliefModule } from '../components/relief/ReliefModule';
 import { AIDisasterCopilot } from '../components/ai/AIDisasterCopilot';
+import { SOSModal } from '../components/sos/SOSModal';
+import { CitizenSOSTracker } from '../components/sos/CitizenSOSTracker';
+import { fetchActiveCitizenSOS, type SOSRequest } from '../services/sosService';
 import logoSahay from '../assets/logo_sahay.png';
 
 interface CitizenDashboardProps {
@@ -95,9 +100,16 @@ export function CitizenDashboard({
     }
     return 'dashboard';
   });
-  const [selectedDistrict] = useState(currentUser?.district || 'Wayanad');
+  const [selectedDistrict, setSelectedDistrict] = useState(currentUser?.district || location?.district || 'Wayanad');
   const [selectedLang, setSelectedLang] = useState<Language>(currentLang);
   const [activeAlertBanner, setActiveAlertBanner] = useState(true);
+
+  // Synchronize district when GPS location detects user's district
+  useEffect(() => {
+    if (location?.district && location.district !== 'Unknown') {
+      setSelectedDistrict(location.district);
+    }
+  }, [location?.district]);
 
   const [initialAiQuery, setInitialAiQuery] = useState<string>('');
 
@@ -134,13 +146,44 @@ export function CitizenDashboard({
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   // Geolocation & SOS State
-  const [sosTriggered, setSosTriggered] = useState(false);
+  const [activeSOS, setActiveSOS] = useState<SOSRequest | null>(null);
+
+  useEffect(() => {
+    fetchActiveCitizenSOS()
+      .then((res) => {
+        if (res.activeSOS) {
+          setActiveSOS(res.activeSOS);
+        }
+      })
+      .catch((err) => {
+        console.warn('[CitizenDashboard] Could not fetch active SOS:', err);
+      });
+  }, []);
+
   const [userLocation] = useState<{ lat: number; lng: number } | null>({
     lat: 11.605,
     lng: 76.083
   });
   const [userIsSafe, setUserIsSafe] = useState(true);
   const [lastSafeTime, setLastSafeTime] = useState('Today, 02:45 PM');
+
+  // Target shelter destination for Live Disaster Map safe route navigation
+  const [targetShelterForRoute, setTargetShelterForRoute] = useState<{
+    lat: number;
+    lng: number;
+    name: string;
+  } | null>(null);
+
+  const handleNavigateToShelterRoute = (shelter: { latitude: number; longitude: number; name: string }) => {
+    setTargetShelterForRoute({
+      lat: Number(shelter.latitude),
+      lng: Number(shelter.longitude),
+      name: shelter.name
+    });
+    setActiveMenu('map');
+    window.location.hash = '/citizen/map';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Interactive Checklist State
   const [kitChecklist, setKitChecklist] = useState<{ [key: string]: boolean }>({
@@ -165,8 +208,52 @@ export function CitizenDashboard({
     severity: 'Medium'
   });
 
-  // Shelters Data (empty array until loaded from backend API)
-  const nearbyShelters: any[] = [];
+  // Kerala Districts Reference
+  const KERALA_DISTRICTS = [
+    'All Kerala',
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvananthapuram',
+    'Thrissur',
+    'Wayanad'
+  ];
+
+  // Shelters Data (dynamically loaded from PostgreSQL DB according to location & district)
+  const [nearbyShelters, setNearbyShelters] = useState<MapShelter[]>([]);
+  const [loadingShelters, setLoadingShelters] = useState<boolean>(false);
+  const [shelterDistrictFilter, setShelterDistrictFilter] = useState<string>('');
+
+  const loadNearbyShelters = useCallback(async () => {
+    setLoadingShelters(true);
+    try {
+      const activeDistrict = shelterDistrictFilter && shelterDistrictFilter !== 'All Kerala'
+        ? shelterDistrictFilter
+        : (shelterDistrictFilter === 'All Kerala' ? '' : (location?.district || selectedDistrict || 'Wayanad'));
+      
+      const lat = location?.latitude ?? userLocation?.lat ?? 11.605;
+      const lng = location?.longitude ?? userLocation?.lng ?? 76.083;
+
+      const data = await fetchMapShelters(activeDistrict, lat, lng);
+      setNearbyShelters(data || []);
+    } catch (err: any) {
+      console.warn('[CitizenDashboard] Could not fetch nearby shelters from DB:', err?.message);
+    } finally {
+      setLoadingShelters(false);
+    }
+  }, [shelterDistrictFilter, selectedDistrict, location?.district, location?.latitude, location?.longitude, userLocation?.lat, userLocation?.lng]);
+
+  useEffect(() => {
+    loadNearbyShelters();
+  }, [loadNearbyShelters]);
 
   // Disaster Alerts Data (empty array until loaded from backend API)
   const disasterAlerts: any[] = [];
@@ -385,16 +472,6 @@ export function CitizenDashboard({
     }
   };
 
-  // SOS Dispatch Trigger
-  const handleTriggerSOS = () => {
-    setSosTriggered(true);
-    setTimeout(() => {
-      alert(`🚨 EMERGENCY SOS DISPATCHED!\n\nYour GPS Location (${userLocation ? userLocation.lat.toFixed(4) : '11.6050'}, ${userLocation ? userLocation.lng.toFixed(4) : '76.0830'}) and emergency distress call have been broadcast to:\n- Kerala Police ERSS (112)\n- ${selectedDistrict} District Disaster Control Room (1077)\n- NDRF Local Rapid Response Unit`);
-      setSosModalOpen(false);
-      setSosTriggered(false);
-    }, 1200);
-  };
-
   // Add Incident Submit
   const handleAddIncidentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -484,6 +561,13 @@ export function CitizenDashboard({
       case 'dashboard':
         return (
           <div className="space-y-8 animate-fade-in">
+            {/* Live Citizen SOS Emergency Tracking Banner */}
+            <CitizenSOSTracker
+              initialSOS={activeSOS}
+              onSOSCancelled={() => setActiveSOS(null)}
+              onOpenSOSModal={() => setSosModalOpen(true)}
+            />
+
             {/* Welcome & Active Emergency Alert Banner */}
             <section className="space-y-4">
               {disasterAlerts.length > 0 && activeAlertBanner && (
@@ -651,15 +735,27 @@ export function CitizenDashboard({
 
               <div
                 onClick={() => setActiveMenu('shelters')}
-                className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs flex items-center gap-4 cursor-pointer hover:border-emerald-300 transition-all"
+                className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs flex items-center gap-4 cursor-pointer hover:border-emerald-300 hover:shadow-md transition-all group"
               >
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#0E8F66] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#0E8F66] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                   <Building2 className="w-6 h-6" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold text-slate-500">Nearby Shelters</p>
-                  <p className="text-2xl font-black text-slate-900">{nearbyShelters.length} Open</p>
-                  <span className="text-[11px] text-emerald-600 font-bold">{nearbyShelters.length > 0 ? 'Beds Available' : 'No Active Camps'}</span>
+                  <p className="text-2xl font-black text-slate-900">
+                    {loadingShelters ? (
+                      <span className="text-sm font-normal text-slate-400">Loading...</span>
+                    ) : (
+                      `${nearbyShelters.length} Open`
+                    )}
+                  </p>
+                  <span className="text-[11px] text-emerald-600 font-bold truncate block">
+                    {loadingShelters
+                      ? 'Checking camps...'
+                      : nearbyShelters.length > 0
+                      ? `${nearbyShelters.reduce((acc, s) => acc + (s.availableCapacity || 0), 0)} Available Beds`
+                      : 'No Active Camps'}
+                  </span>
                 </div>
               </div>
 
@@ -691,6 +787,43 @@ export function CitizenDashboard({
                 </div>
               </div>
             </section>
+
+            {/* Nearest Relief Shelter Quick Highlight Banner */}
+            {nearbyShelters.length > 0 && (
+              <div className="bg-gradient-to-r from-emerald-950 via-[#0B4D3B] to-emerald-900 text-white rounded-3xl p-5 md:p-6 shadow-md border border-emerald-800/40 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="space-y-1.5 z-10 max-w-xl">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                      <Home className="w-3 h-3" />
+                      Nearest Safe Camp &bull; {nearbyShelters[0].distanceKm != null ? `${nearbyShelters[0].distanceKm} km away` : 'Proximity Matched'}
+                    </span>
+                    <span className="text-emerald-200 text-xs font-bold bg-emerald-800/50 px-2 py-0.5 rounded-md border border-emerald-700/50">
+                      {nearbyShelters[0].availableCapacity} Open Beds
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-black text-white">{nearbyShelters[0].name}</h3>
+                  <p className="text-xs text-emerald-100/80 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>{nearbyShelters[0].address || nearbyShelters[0].district}</span>
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 z-10 w-full md:w-auto">
+                  <button
+                    onClick={() => handleNavigateToShelterRoute(nearbyShelters[0])}
+                    className="flex-1 md:flex-initial bg-white hover:bg-emerald-50 text-[#0B4D3B] font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                    <span>Safe Route on Map</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveMenu('shelters')}
+                    className="flex-1 md:flex-initial bg-emerald-800/80 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all border border-emerald-600/40 flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <span>All Shelters ({nearbyShelters.length}) &rarr;</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Overview Quick Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -768,6 +901,8 @@ export function CitizenDashboard({
           <div className="space-y-6 animate-fade-in">
             <LiveDisasterMap
               userDistrict={location?.district || selectedDistrict || 'Kottayam'}
+              targetDestination={targetShelterForRoute}
+              onClearTargetDestination={() => setTargetShelterForRoute(null)}
               onViewIncidentDetails={(id) => {
                 setSelectedReportId(String(id));
                 setActiveMenu('incident-detail');
@@ -782,86 +917,166 @@ export function CitizenDashboard({
       case 'shelters':
         return (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
               <div>
                 <h1 className="text-2xl font-black text-slate-900">Active Nearby Relief Shelters</h1>
-                <p className="text-xs text-slate-500">Government recognized relief camps with real-time bed capacity</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Official disaster relief camps with real-time bed capacity and direct emergency routing
+                </p>
               </div>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                {selectedDistrict} District &bull; 14 Open Camps
-              </span>
+
+              <div className="flex items-center gap-3 flex-wrap">
+                {/* District Filter Dropdown */}
+                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-2xl px-3 py-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#0E8F66]" />
+                  <select
+                    value={shelterDistrictFilter || selectedDistrict}
+                    onChange={(e) => setShelterDistrictFilter(e.target.value)}
+                    aria-label="Filter relief camps by district"
+                    className="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
+                  >
+                    {KERALA_DISTRICTS.map((d) => (
+                      <option key={d} value={d}>
+                        {d === 'All Kerala' ? '🌐 All Kerala (Nearest GPS)' : `${d} District`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Refresh Button */}
+                <button
+                  onClick={() => loadNearbyShelters()}
+                  disabled={loadingShelters}
+                  title="Reload latest shelter status"
+                  className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-2xl text-slate-600 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loadingShelters ? 'animate-spin text-[#0E8F66]' : ''}`} />
+                </button>
+
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-2 rounded-2xl border border-emerald-200 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  {nearbyShelters.length} Open Camps
+                </span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {nearbyShelters.length === 0 ? (
-                <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center space-y-3 col-span-full">
-                  <Home className="w-10 h-10 text-slate-400 mx-auto" />
-                  <h3 className="font-bold text-slate-800 text-base">No Relief Shelters Listed</h3>
-                  <p className="text-xs text-slate-500 max-w-md mx-auto">
-                    There are currently no relief camps active for {selectedDistrict} district. For immediate assistance, contact helpline 1077.
-                  </p>
-                </div>
-              ) : (
-                nearbyShelters.map((shelter) => (
-                <div key={shelter.id} className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase font-bold bg-emerald-100 text-[#0B4D3B] px-2.5 py-0.5 rounded-full">
-                        {shelter.status}
-                      </span>
-                      <span className="text-xs font-bold text-slate-500">{shelter.availableBeds} Beds Open</span>
+            {loadingShelters ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((n) => (
+                  <div key={n} className="bg-white rounded-3xl p-6 border border-slate-200/80 space-y-4 animate-pulse">
+                    <div className="flex justify-between items-center">
+                      <div className="h-5 w-16 bg-slate-200 rounded-full"></div>
+                      <div className="h-4 w-20 bg-slate-200 rounded"></div>
                     </div>
-
-                    <h3 className="font-bold text-base text-slate-900">{shelter.name}</h3>
-                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-[#0E8F66]" />
-                      <span>{shelter.location}</span>
+                    <div className="h-6 w-3/4 bg-slate-200 rounded"></div>
+                    <div className="h-4 w-1/2 bg-slate-200 rounded"></div>
+                    <div className="h-2 w-full bg-slate-100 rounded-full mt-4"></div>
+                    <div className="h-10 w-full bg-slate-100 rounded-xl mt-6"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {nearbyShelters.length === 0 ? (
+                  <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center space-y-3 col-span-full">
+                    <Home className="w-12 h-12 text-slate-300 mx-auto" />
+                    <h3 className="font-bold text-slate-800 text-lg">No Relief Shelters Found</h3>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      There are currently no active relief camps registered for {shelterDistrictFilter || selectedDistrict}. For immediate emergency evacuation assistance, contact the 24x7 control room helpline 1077.
                     </p>
-
-                    <div className="mt-3 space-y-1">
-                      <div className="flex justify-between text-[11px] font-semibold text-slate-600">
-                        <span>Capacity Used</span>
-                        <span>{shelter.capacity - shelter.availableBeds} / {shelter.capacity}</span>
-                      </div>
-                      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#0E8F66] rounded-full"
-                          style={{ width: `${((shelter.capacity - shelter.availableBeds) / shelter.capacity) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {shelter.facilities.map((fac: any, idx: number) => (
-                        <span key={idx} className="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">
-                          ✓ {fac}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
                     <button
-                      onClick={() => alert(`🧭 Navigating to ${shelter.name}...`)}
-                      className="flex-1 bg-[#0E8F66] hover:bg-[#0B4D3B] text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5"
+                      onClick={() => setShelterDistrictFilter('All Kerala')}
+                      className="mt-3 px-4 py-2 bg-emerald-50 text-[#0E8F66] border border-emerald-200 rounded-xl text-xs font-bold hover:bg-emerald-100 transition-colors cursor-pointer"
                     >
-                      <Navigation className="w-3.5 h-3.5" />
-                      <span>Navigate</span>
+                      Show All Kerala Shelters by Proximity
                     </button>
-                    <a
-                      href={`tel:${shelter.contact}`}
-                      className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors"
-                      title="Call Shelter Officer"
-                    >
-                      <Phone className="w-4 h-4" />
-                    </a>
                   </div>
-                </div>
-              ))
+                ) : (
+                  nearbyShelters.map((shelter) => {
+                    const availableBeds = shelter.availableCapacity ?? (shelter as any).availableBeds ?? 0;
+                    const totalCapacity = shelter.capacity || 100;
+                    const usedCapacity = Math.max(0, totalCapacity - availableBeds);
+                    const occupancyPercent = totalCapacity > 0 ? Math.min(100, Math.round((usedCapacity / totalCapacity) * 100)) : 0;
+                    const address = shelter.address || shelter.district || 'Kerala Relief Camp';
+                    const contact = shelter.contactNumber || (shelter as any).contact || '1077';
+                    const facilities = (shelter as any).facilities && Array.isArray((shelter as any).facilities)
+                      ? (shelter as any).facilities
+                      : ['Clean Water', 'Food & Ration', 'Medical Aid', 'Sanitation & Power'];
+                    const distanceStr = shelter.distanceKm != null ? `${shelter.distanceKm} km away` : null;
+
+                    return (
+                      <div key={shelter.id} className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={`text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full ${
+                              availableBeds > 0 ? 'bg-emerald-100 text-[#0B4D3B]' : 'bg-red-100 text-red-700'
+                            }`}>
+                              {shelter.status || (availableBeds > 0 ? 'OPEN' : 'FULL')}
+                            </span>
+                            <div className="flex items-center gap-1.5">
+                              {distanceStr && (
+                                <span className="text-[10px] font-black text-[#0E8F66] bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100/80">
+                                  🧭 {distanceStr}
+                                </span>
+                              )}
+                              <span className="text-xs font-bold text-slate-600">{availableBeds} Beds Open</span>
+                            </div>
+                          </div>
+
+                          <h3 className="font-bold text-base text-slate-900 leading-snug">{shelter.name}</h3>
+                          <p className="text-xs text-slate-500 mt-1 flex items-start gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-[#0E8F66] shrink-0 mt-0.5" />
+                            <span>{address}</span>
+                          </p>
+
+                          <div className="mt-3.5 space-y-1">
+                            <div className="flex justify-between text-[11px] font-semibold text-slate-600">
+                              <span>Occupancy</span>
+                              <span>{usedCapacity} / {totalCapacity} ({occupancyPercent}%)</span>
+                            </div>
+                            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all duration-500 ${
+                                  occupancyPercent > 85 ? 'bg-amber-500' : 'bg-[#0E8F66]'
+                                }`}
+                                style={{ width: `${occupancyPercent}%` }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 flex flex-wrap gap-1.5">
+                            {facilities.map((fac: string, idx: number) => (
+                              <span key={idx} className="bg-slate-100 text-slate-700 text-[10px] font-medium px-2 py-0.5 rounded-md">
+                                ✓ {fac}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
+                          <button
+                            onClick={() => handleNavigateToShelterRoute(shelter)}
+                            className="flex-1 bg-[#0E8F66] hover:bg-[#0B4D3B] text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <Navigation className="w-3.5 h-3.5" />
+                            <span>Safe Evacuation Route</span>
+                          </button>
+                          <a
+                            href={`tel:${contact}`}
+                            className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
+                            title={`Call Shelter Officer: ${contact}`}
+                          >
+                            <Phone className="w-4 h-4" />
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             )}
           </div>
-        </div>
-      );
+        );
 
       // -----------------------------------------------------------------------
       // 5. EMERGENCY SERVICES VIEW
@@ -978,10 +1193,10 @@ export function CitizenDashboard({
                           <td className="p-3.5">
                             <span
                               className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${report.status === 'Verified'
-                                  ? 'bg-emerald-100 text-[#0B4D3B]'
-                                  : report.status === 'Resolved'
-                                    ? 'bg-blue-100 text-blue-800'
-                                    : 'bg-amber-100 text-amber-800'
+                                ? 'bg-emerald-100 text-[#0B4D3B]'
+                                : report.status === 'Resolved'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : 'bg-amber-100 text-amber-800'
                                 }`}
                             >
                               {report.status}
@@ -1454,7 +1669,7 @@ export function CitizenDashboard({
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
-      
+
       {/* 1. Official Government Header (TopHeader) */}
       <TopHeader
         currentLang={selectedLang}
@@ -1539,19 +1754,19 @@ export function CitizenDashboard({
                     }
                   }}
                   className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 group relative ${isDanger
-                      ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200/60'
-                      : isActive
-                        ? 'bg-[#EAF8F3] text-[#0B4D3B] font-semibold border-l-4 border-[#0E8F66] shadow-sm'
-                        : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200/60'
+                    : isActive
+                      ? 'bg-[#EAF8F3] text-[#0B4D3B] font-semibold border-l-4 border-[#0E8F66] shadow-sm'
+                      : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
                     }`}
                   title={sidebarCollapsed ? item.label : undefined}
                 >
                   <Icon
                     className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110 ${isDanger
-                        ? 'text-red-600 animate-pulse'
-                        : isActive
-                          ? 'text-[#0E8F66]'
-                          : 'text-slate-400 group-hover:text-slate-600'
+                      ? 'text-red-600 animate-pulse'
+                      : isActive
+                        ? 'text-[#0E8F66]'
+                        : 'text-slate-400 group-hover:text-slate-600'
                       }`}
                   />
                   {!sidebarCollapsed && (
@@ -1646,15 +1861,26 @@ export function CitizenDashboard({
         {/* ========================================================================= */}
         <div className="flex-1 flex flex-col min-w-0 overflow-y-auto h-[calc(100vh-28px)] bg-[#F8FAFC]">
 
-          {/* TOP NAVIGATION BAR - Clean & Minimal with 🚨 Report Incident & Notification Bell */}
+          {/* TOP NAVIGATION BAR - Clean & Minimal with 🚨 Emergency SOS, Report Incident & Notification Bell */}
           <header className="bg-white border-b border-slate-200/80 sticky top-0 z-20 px-6 py-3 shadow-2xs flex items-center justify-between gap-4">
-            <button
-              onClick={() => setActiveMenu('report-incident')}
-              className="bg-[#043e2e] hover:bg-[#065f46] text-white font-black px-4 py-2 rounded-2xl text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 active:scale-95 border border-emerald-800"
-            >
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <span>🚨 Report Incident</span>
-            </button>
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => setSosModalOpen(true)}
+                className="bg-red-600 hover:bg-red-700 active:scale-95 text-white font-black px-4 py-2 rounded-2xl text-xs sm:text-sm shadow-lg shadow-red-600/30 transition-all flex items-center gap-2 border border-red-500 animate-pulse cursor-pointer"
+                title="Immediate Distress SOS"
+              >
+                <Radio className="w-4 h-4 text-white animate-ping" />
+                <span>🚨 EMERGENCY SOS</span>
+              </button>
+
+              <button
+                onClick={() => setActiveMenu('report-incident')}
+                className="bg-[#043e2e] hover:bg-[#065f46] text-white font-black px-4 py-2 rounded-2xl text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 active:scale-95 border border-emerald-800"
+              >
+                <AlertTriangle className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">Report Incident</span>
+              </button>
+            </div>
 
             <div className="flex items-center gap-3">
               <NotificationBell onSelectNotification={(refId) => {
@@ -1693,46 +1919,23 @@ export function CitizenDashboard({
       {/* MODALS */}
       {/* ========================================================================= */}
 
-      {/* 1. EMERGENCY SOS MODAL */}
-      {sosModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-slide-down border border-red-200">
-            <div className="text-center space-y-2">
-              <div className="w-16 h-16 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center animate-pulse">
-                <Radio className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-black text-slate-900">EMERGENCY DISTRESS SOS</h3>
-              <p className="text-xs text-slate-500">
-                Transmitting immediate emergency alert with your live GPS location to Kerala Police (112) & Wayanad Control Room.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-1.5">
-              <p className="font-bold text-slate-700">Dispatch Payload Information:</p>
-              <p className="text-slate-600">User: <strong>{currentUser.name}</strong> ({currentUser.phone})</p>
-              <p className="text-slate-600">Location: <strong>{selectedDistrict} Sector (11.605° N, 76.083° E)</strong></p>
-              <p className="text-slate-600">Battery Level: <strong>88%</strong> &bull; GPS Accuracy: <strong>High</strong></p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleTriggerSOS}
-                disabled={sosTriggered}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black text-sm py-3.5 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <Radio className="w-5 h-5 animate-pulse" />
-                <span>{sosTriggered ? 'DISPATCHING...' : 'CONFIRM SOS DISPATCH'}</span>
-              </button>
-              <button
-                onClick={() => setSosModalOpen(false)}
-                className="px-4 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 1. PRODUCTION EMERGENCY SOS MODAL */}
+      <SOSModal
+        isOpen={sosModalOpen}
+        onClose={() => setSosModalOpen(false)}
+        currentUser={currentUser}
+        defaultDistrict={selectedDistrict}
+        onSuccess={(sos) => {
+          setActiveSOS(sos);
+          setSosModalOpen(false);
+          setActiveMenu('dashboard');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onOpenTracker={() => {
+          setActiveMenu('dashboard');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
 
       {/* 2. REPORT INCIDENT MODAL */}
       {reportModalOpen && (
@@ -1785,8 +1988,8 @@ export function CitizenDashboard({
                       key={sev}
                       onClick={() => setNewIncident({ ...newIncident, severity: sev })}
                       className={`p-2 rounded-xl font-bold border transition-all ${newIncident.severity === sev
-                          ? 'bg-[#0E8F66] text-white border-[#0E8F66]'
-                          : 'bg-slate-50 text-slate-600 border-slate-200'
+                        ? 'bg-[#0E8F66] text-white border-[#0E8F66]'
+                        : 'bg-slate-50 text-slate-600 border-slate-200'
                         }`}
                     >
                       {sev}

@@ -1,0 +1,1181 @@
+{
+  "type": "FeatureCollection",
+  "name": "Kozhikode_Administrative_Subdivisions_KSDMA",
+  "district": "Kozhikode",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_kozhikode",
+      "properties": {
+        "adminType": "district",
+        "name": "Kozhikode District",
+        "district": "Kozhikode",
+        "headquarters": "Kozhikode Collectorate",
+        "talukCount": 4,
+        "villageCount": 20,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Kozhikode"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.7,
+              11.555
+            ],
+            [
+              75.67500000000001,
+              11.685
+            ],
+            [
+              75.80000000000001,
+              11.75
+            ],
+            [
+              76,
+              11.75
+            ],
+            [
+              76.15,
+              11.5875
+            ],
+            [
+              76.15,
+              11.295
+            ],
+            [
+              76.05000000000001,
+              11.1
+            ],
+            [
+              75.85000000000001,
+              11.1
+            ],
+            [
+              75.7,
+              11.1975
+            ],
+            [
+              75.65,
+              11.425
+            ],
+            [
+              75.7,
+              11.555
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Kozhikode Beach",
+        "village": "Kozhikode Beach",
+        "taluk": "Kozhikode",
+        "district": "Kozhikode",
+        "color": "#f7c3f0",
+        "center": [
+          75.74667,
+          11.32
+        ],
+        "vulnerability": "Kozhikode Beach Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.72,
+              11.2825
+            ],
+            [
+              75.77333,
+              11.2825
+            ],
+            [
+              75.77333,
+              11.3575
+            ],
+            [
+              75.72,
+              11.3625
+            ],
+            [
+              75.72,
+              11.2825
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Beypore",
+        "village": "Beypore",
+        "taluk": "Kozhikode",
+        "district": "Kozhikode",
+        "color": "#f7c3f0",
+        "center": [
+          75.8,
+          11.32
+        ],
+        "vulnerability": "Beypore Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.77376,
+              11.27896
+            ],
+            [
+              75.82624,
+              11.27896
+            ],
+            [
+              75.82709,
+              11.36104
+            ],
+            [
+              75.77291,
+              11.35896
+            ],
+            [
+              75.77376,
+              11.27896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Feroke",
+        "village": "Feroke",
+        "taluk": "Kozhikode",
+        "district": "Kozhikode",
+        "color": "#f7c3f0",
+        "center": [
+          75.85333,
+          11.32
+        ],
+        "vulnerability": "Feroke Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.82583,
+              11.27837
+            ],
+            [
+              75.88084,
+              11.27837
+            ],
+            [
+              75.87916,
+              11.36163
+            ],
+            [
+              75.8275,
+              11.35837
+            ],
+            [
+              75.82583,
+              11.27837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Elathur",
+        "village": "Elathur",
+        "taluk": "Kozhikode",
+        "district": "Kozhikode",
+        "color": "#f7c3f0",
+        "center": [
+          75.74667,
+          11.24
+        ],
+        "vulnerability": "Elathur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.72124,
+              11.2024
+            ],
+            [
+              75.7721,
+              11.2024
+            ],
+            [
+              75.77457,
+              11.2776
+            ],
+            [
+              75.71876,
+              11.2824
+            ],
+            [
+              75.72124,
+              11.2024
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Kunnamangalam",
+        "village": "Kunnamangalam",
+        "taluk": "Kozhikode",
+        "district": "Kozhikode",
+        "color": "#f7c3f0",
+        "center": [
+          75.8,
+          11.24
+        ],
+        "vulnerability": "Kunnamangalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.77172,
+              11.19964
+            ],
+            [
+              75.82828,
+              11.19964
+            ],
+            [
+              75.82506,
+              11.28036
+            ],
+            [
+              75.77494,
+              11.27964
+            ],
+            [
+              75.77172,
+              11.19964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kozhikode_kozhikode",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kozhikode Taluk",
+        "taluk": "Kozhikode",
+        "district": "Kozhikode",
+        "headquarters": "Kozhikode Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          75.7804,
+          11.2588
+        ],
+        "sdmaAuthority": "DDMA Kozhikode - Kozhikode Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.72,
+              11.2
+            ],
+            [
+              75.88,
+              11.2
+            ],
+            [
+              75.88,
+              11.36
+            ],
+            [
+              75.72,
+              11.36
+            ],
+            [
+              75.72,
+              11.2
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Koyilandy",
+        "village": "Koyilandy",
+        "taluk": "Koyilandy",
+        "district": "Kozhikode",
+        "color": "#cbf3c8",
+        "center": [
+          75.675,
+          11.5
+        ],
+        "vulnerability": "Koyilandy Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.653,
+              11.45034
+            ],
+            [
+              75.697,
+              11.45034
+            ],
+            [
+              75.703,
+              11.54966
+            ],
+            [
+              75.647,
+              11.55034
+            ],
+            [
+              75.653,
+              11.45034
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Balussery",
+        "village": "Balussery",
+        "taluk": "Koyilandy",
+        "district": "Kozhikode",
+        "color": "#cbf3c8",
+        "center": [
+          75.725,
+          11.5
+        ],
+        "vulnerability": "Balussery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.69702,
+              11.44761
+            ],
+            [
+              75.75298,
+              11.44761
+            ],
+            [
+              75.74702,
+              11.55239
+            ],
+            [
+              75.70298,
+              11.54761
+            ],
+            [
+              75.69702,
+              11.44761
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Ulliyeri",
+        "village": "Ulliyeri",
+        "taluk": "Koyilandy",
+        "district": "Kozhikode",
+        "color": "#cbf3c8",
+        "center": [
+          75.775,
+          11.5
+        ],
+        "vulnerability": "Ulliyeri Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.75289,
+              11.45165
+            ],
+            [
+              75.79711,
+              11.45165
+            ],
+            [
+              75.80289,
+              11.54835
+            ],
+            [
+              75.74711,
+              11.55165
+            ],
+            [
+              75.75289,
+              11.45165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Atholi",
+        "village": "Atholi",
+        "taluk": "Koyilandy",
+        "district": "Kozhikode",
+        "color": "#cbf3c8",
+        "center": [
+          75.675,
+          11.4
+        ],
+        "vulnerability": "Atholi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.64725,
+              11.35102
+            ],
+            [
+              75.70275,
+              11.35102
+            ],
+            [
+              75.69725,
+              11.44898
+            ],
+            [
+              75.65275,
+              11.45102
+            ],
+            [
+              75.64725,
+              11.35102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Panangad",
+        "village": "Panangad",
+        "taluk": "Koyilandy",
+        "district": "Kozhikode",
+        "color": "#cbf3c8",
+        "center": [
+          75.725,
+          11.4
+        ],
+        "vulnerability": "Panangad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.70255,
+              11.3475
+            ],
+            [
+              75.74745,
+              11.3475
+            ],
+            [
+              75.75255,
+              11.4525
+            ],
+            [
+              75.69745,
+              11.4475
+            ],
+            [
+              75.70255,
+              11.3475
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kozhikode_koyilandy",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Koyilandy Taluk",
+        "taluk": "Koyilandy",
+        "district": "Kozhikode",
+        "headquarters": "Koyilandy Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          75.698,
+          11.435
+        ],
+        "sdmaAuthority": "DDMA Kozhikode - Koyilandy Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.65,
+              11.35
+            ],
+            [
+              75.8,
+              11.35
+            ],
+            [
+              75.8,
+              11.55
+            ],
+            [
+              75.65,
+              11.55
+            ],
+            [
+              75.65,
+              11.35
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Vatakara",
+        "village": "Vatakara",
+        "taluk": "Vatakara",
+        "district": "Kozhikode",
+        "color": "#bce4fa",
+        "center": [
+          75.57,
+          11.67
+        ],
+        "vulnerability": "Vatakara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.53992,
+              11.61759
+            ],
+            [
+              75.60008,
+              11.61759
+            ],
+            [
+              75.59992,
+              11.72241
+            ],
+            [
+              75.54008,
+              11.71759
+            ],
+            [
+              75.53992,
+              11.61759
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Chorode",
+        "village": "Chorode",
+        "taluk": "Vatakara",
+        "district": "Kozhikode",
+        "color": "#bce4fa",
+        "center": [
+          75.63,
+          11.67
+        ],
+        "vulnerability": "Chorode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.59966,
+              11.62039
+            ],
+            [
+              75.66034,
+              11.62039
+            ],
+            [
+              75.65966,
+              11.71961
+            ],
+            [
+              75.60034,
+              11.72039
+            ],
+            [
+              75.59966,
+              11.62039
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Onchiam",
+        "village": "Onchiam",
+        "taluk": "Vatakara",
+        "district": "Kozhikode",
+        "color": "#bce4fa",
+        "center": [
+          75.69,
+          11.67
+        ],
+        "vulnerability": "Onchiam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.66076,
+              11.62209
+            ],
+            [
+              75.71924,
+              11.62209
+            ],
+            [
+              75.72076,
+              11.71791
+            ],
+            [
+              75.65924,
+              11.72209
+            ],
+            [
+              75.66076,
+              11.62209
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Nadapuram",
+        "village": "Nadapuram",
+        "taluk": "Vatakara",
+        "district": "Kozhikode",
+        "color": "#bce4fa",
+        "center": [
+          75.57,
+          11.57
+        ],
+        "vulnerability": "Nadapuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.53884,
+              11.51788
+            ],
+            [
+              75.60116,
+              11.51788
+            ],
+            [
+              75.59884,
+              11.62212
+            ],
+            [
+              75.54116,
+              11.61788
+            ],
+            [
+              75.53884,
+              11.51788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Villiappally",
+        "village": "Villiappally",
+        "taluk": "Vatakara",
+        "district": "Kozhikode",
+        "color": "#bce4fa",
+        "center": [
+          75.63,
+          11.57
+        ],
+        "vulnerability": "Villiappally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.60154,
+              11.51968
+            ],
+            [
+              75.65846,
+              11.51968
+            ],
+            [
+              75.66154,
+              11.62032
+            ],
+            [
+              75.59846,
+              11.61968
+            ],
+            [
+              75.60154,
+              11.51968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kozhikode_vatakara",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Vatakara Taluk",
+        "taluk": "Vatakara",
+        "district": "Kozhikode",
+        "headquarters": "Vatakara Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          75.592,
+          11.605
+        ],
+        "sdmaAuthority": "DDMA Kozhikode - Vatakara Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.54,
+              11.52
+            ],
+            [
+              75.72,
+              11.52
+            ],
+            [
+              75.72,
+              11.72
+            ],
+            [
+              75.54,
+              11.72
+            ],
+            [
+              75.54,
+              11.52
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Thamarassery",
+        "village": "Thamarassery",
+        "taluk": "Thamarassery",
+        "district": "Kozhikode",
+        "color": "#cf8282",
+        "center": [
+          75.895,
+          11.515
+        ],
+        "vulnerability": "Thamarassery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.847,
+              11.449
+            ],
+            [
+              75.943,
+              11.449
+            ],
+            [
+              75.937,
+              11.581
+            ],
+            [
+              75.853,
+              11.579
+            ],
+            [
+              75.847,
+              11.449
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Koduvally",
+        "village": "Koduvally",
+        "taluk": "Thamarassery",
+        "district": "Kozhikode",
+        "color": "#cf8282",
+        "center": [
+          75.985,
+          11.515
+        ],
+        "vulnerability": "Koduvally Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.94298,
+              11.4525
+            ],
+            [
+              76.02702,
+              11.4525
+            ],
+            [
+              76.03298,
+              11.5775
+            ],
+            [
+              75.93702,
+              11.5825
+            ],
+            [
+              75.94298,
+              11.4525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Thiruvambady",
+        "village": "Thiruvambady",
+        "taluk": "Thamarassery",
+        "district": "Kozhikode",
+        "color": "#cf8282",
+        "center": [
+          76.075,
+          11.515
+        ],
+        "vulnerability": "Thiruvambady Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.02709,
+              11.44892
+            ],
+            [
+              76.12291,
+              11.44892
+            ],
+            [
+              76.11709,
+              11.58108
+            ],
+            [
+              76.03291,
+              11.57892
+            ],
+            [
+              76.02709,
+              11.44892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Kodenchery",
+        "village": "Kodenchery",
+        "taluk": "Thamarassery",
+        "district": "Kozhikode",
+        "color": "#cf8282",
+        "center": [
+          75.895,
+          11.385
+        ],
+        "vulnerability": "Kodenchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.85278,
+              11.3184
+            ],
+            [
+              75.93722,
+              11.3184
+            ],
+            [
+              75.94278,
+              11.4516
+            ],
+            [
+              75.84722,
+              11.4484
+            ],
+            [
+              75.85278,
+              11.3184
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_kozhikode_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Kattippara",
+        "village": "Kattippara",
+        "taluk": "Thamarassery",
+        "district": "Kozhikode",
+        "color": "#cf8282",
+        "center": [
+          75.985,
+          11.385
+        ],
+        "vulnerability": "Kattippara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.93741,
+              11.32241
+            ],
+            [
+              76.03259,
+              11.32241
+            ],
+            [
+              76.02741,
+              11.44759
+            ],
+            [
+              75.94259,
+              11.45241
+            ],
+            [
+              75.93741,
+              11.32241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_kozhikode_thamarassery",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Thamarassery Taluk",
+        "taluk": "Thamarassery",
+        "district": "Kozhikode",
+        "headquarters": "Thamarassery Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          75.935,
+          11.418
+        ],
+        "sdmaAuthority": "DDMA Kozhikode - Thamarassery Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.85,
+              11.32
+            ],
+            [
+              76.12,
+              11.32
+            ],
+            [
+              76.12,
+              11.58
+            ],
+            [
+              75.85,
+              11.58
+            ],
+            [
+              75.85,
+              11.32
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

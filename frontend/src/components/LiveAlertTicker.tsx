@@ -3,6 +3,7 @@ import { AlertTriangle, MapPin } from 'lucide-react';
 import { translations } from '../translations';
 import type { Language } from '../translations';
 import { useLocation } from '../context/LocationContext';
+import { useSystemSettings } from '../context/SettingsContext';
 
 interface LiveAlertTickerProps {
   currentLang: Language;
@@ -20,6 +21,7 @@ interface TickerItem {
 export const LiveAlertTicker: React.FC<LiveAlertTickerProps> = ({ currentLang, onAlertClick }) => {
   const t = translations[currentLang];
   const { location, weatherData, loading, requestLocation, openPromptModal } = useLocation();
+  const { settings, playAlertSound } = useSystemSettings();
 
   const placeName = location?.placeName || location?.district || '';
   const district = location?.district || '';
@@ -121,18 +123,57 @@ export const LiveAlertTicker: React.FC<LiveAlertTickerProps> = ({ currentLang, o
     }
   ];
 
-  // Exclude duplicate district if user's location is already Idukki
-  const filteredRegional = district.toLowerCase() === 'idukki'
-    ? regionalAlerts.slice(1)
-    : regionalAlerts;
+  // Filter based on Notification Settings
+  let alertsList: TickerItem[] = [];
 
-  const alerts: TickerItem[] = [currentLocationAlert, ...filteredRegional];
+  // Emergency Alerts
+  if (settings.emergencyAlerts) {
+    alertsList.push(currentLocationAlert);
+    if (district.toLowerCase() !== 'idukki') {
+      alertsList.push(regionalAlerts[0]); // Idukki High Range Red Alert
+    }
+  }
+
+  // Weather Alerts
+  if (settings.weatherAlerts) {
+    alertsList.push(regionalAlerts[1]); // River basin
+    alertsList.push(regionalAlerts[2]); // Coastal wave
+  }
+
+  // Relief Updates
+  if (settings.reliefUpdates) {
+    alertsList.push({
+      type: currentLang === 'ml' ? 'ദുരിതാശ്വാസ ക്യാമ്പ്' : currentLang === 'hi' ? 'राहत शिविर' : 'RELIEF DISPATCH',
+      color: 'bg-emerald-600',
+      text: currentLang === 'ml'
+        ? 'സംസ്ഥാനത്തുടനീളം 450+ ദുരിതാശ്വാസ ക്യാമ്പുകൾ സജ്ജമാണ്. ഭക്ഷണവും ശുദ്ധജലവും ഉറപ്പാക്കി.'
+        : currentLang === 'hi'
+        ? 'राज्य भर में 450+ राहत शिविर सक्रिय। भोजन एवं चिकित्सा व्यवस्था उपलब्ध।'
+        : '450+ State Relief Shelters operational with active medical teams & ration supply lines.',
+      isLocation: false
+    });
+  }
+
+  // Fallback if all notifications are turned off
+  if (alertsList.length === 0) {
+    alertsList.push({
+      type: 'ALERTS PAUSED',
+      color: 'bg-slate-700',
+      text: 'Notification categories are currently paused in System Settings.',
+      isLocation: false
+    });
+  }
+
+  const alerts = alertsList;
 
   return (
     <div className="w-full bg-[#03291e] border-b border-emerald-950 flex items-center shadow-inner z-40 relative overflow-hidden">
       {/* Live Alerts Red Badge */}
       <div 
-        onClick={onAlertClick}
+        onClick={() => {
+          if (settings.notificationSound) playAlertSound();
+          onAlertClick();
+        }}
         className="bg-red-600 text-white font-extrabold text-xs tracking-wider uppercase px-4 py-2.5 flex items-center gap-2 cursor-pointer hover:bg-red-700 transition-colors shadow-md z-10 flex-shrink-0"
       >
         <AlertTriangle className="w-4 h-4 animate-bounce" />

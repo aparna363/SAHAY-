@@ -1,0 +1,1733 @@
+{
+  "type": "FeatureCollection",
+  "name": "Alappuzha_Administrative_Subdivisions_KSDMA",
+  "district": "Alappuzha",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_alappuzha",
+      "properties": {
+        "adminType": "district",
+        "name": "Alappuzha District",
+        "district": "Alappuzha",
+        "headquarters": "Alappuzha Collectorate",
+        "talukCount": 6,
+        "villageCount": 30,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Alappuzha"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.287,
+              9.555
+            ],
+            [
+              76.2685,
+              9.685
+            ],
+            [
+              76.361,
+              9.75
+            ],
+            [
+              76.509,
+              9.75
+            ],
+            [
+              76.62,
+              9.5875
+            ],
+            [
+              76.62,
+              9.295
+            ],
+            [
+              76.546,
+              9.1
+            ],
+            [
+              76.398,
+              9.1
+            ],
+            [
+              76.287,
+              9.1975
+            ],
+            [
+              76.25,
+              9.425
+            ],
+            [
+              76.287,
+              9.555
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Alappuzha",
+        "village": "Alappuzha",
+        "taluk": "Ambalappuzha",
+        "district": "Alappuzha",
+        "color": "#bce4fa",
+        "center": [
+          76.32,
+          9.5125
+        ],
+        "vulnerability": "Alappuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.3,
+              9.4775
+            ],
+            [
+              76.34,
+              9.4775
+            ],
+            [
+              76.34,
+              9.5475
+            ],
+            [
+              76.3,
+              9.5525
+            ],
+            [
+              76.3,
+              9.4775
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Ambalappuzha",
+        "village": "Ambalappuzha",
+        "taluk": "Ambalappuzha",
+        "district": "Alappuzha",
+        "color": "#bce4fa",
+        "center": [
+          76.36,
+          9.5125
+        ],
+        "vulnerability": "Ambalappuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.34042,
+              9.47396
+            ],
+            [
+              76.37958,
+              9.47396
+            ],
+            [
+              76.38042,
+              9.55104
+            ],
+            [
+              76.33958,
+              9.54896
+            ],
+            [
+              76.34042,
+              9.47396
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Aryad",
+        "village": "Aryad",
+        "taluk": "Ambalappuzha",
+        "district": "Alappuzha",
+        "color": "#bce4fa",
+        "center": [
+          76.4,
+          9.5125
+        ],
+        "vulnerability": "Aryad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.37916,
+              9.47337
+            ],
+            [
+              76.42084,
+              9.47337
+            ],
+            [
+              76.41916,
+              9.55163
+            ],
+            [
+              76.38084,
+              9.54837
+            ],
+            [
+              76.37916,
+              9.47337
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Punnapra",
+        "village": "Punnapra",
+        "taluk": "Ambalappuzha",
+        "district": "Alappuzha",
+        "color": "#bce4fa",
+        "center": [
+          76.32,
+          9.4375
+        ],
+        "vulnerability": "Punnapra Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.30124,
+              9.4024
+            ],
+            [
+              76.33876,
+              9.4024
+            ],
+            [
+              76.34124,
+              9.4726
+            ],
+            [
+              76.29876,
+              9.4774
+            ],
+            [
+              76.30124,
+              9.4024
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Purakkad",
+        "village": "Purakkad",
+        "taluk": "Ambalappuzha",
+        "district": "Alappuzha",
+        "color": "#bce4fa",
+        "center": [
+          76.36,
+          9.4375
+        ],
+        "vulnerability": "Purakkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.33839,
+              9.39964
+            ],
+            [
+              76.38161,
+              9.39964
+            ],
+            [
+              76.37839,
+              9.47536
+            ],
+            [
+              76.34161,
+              9.47464
+            ],
+            [
+              76.33839,
+              9.39964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_alappuzha_ambalappuzha",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Ambalappuzha Taluk",
+        "taluk": "Ambalappuzha",
+        "district": "Alappuzha",
+        "headquarters": "Ambalappuzha Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.345,
+          9.485
+        ],
+        "sdmaAuthority": "DDMA Alappuzha - Ambalappuzha Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.3,
+              9.4
+            ],
+            [
+              76.42,
+              9.4
+            ],
+            [
+              76.42,
+              9.55
+            ],
+            [
+              76.3,
+              9.55
+            ],
+            [
+              76.3,
+              9.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Cherthala",
+        "village": "Cherthala",
+        "taluk": "Cherthala",
+        "district": "Alappuzha",
+        "color": "#cbf3c8",
+        "center": [
+          76.28,
+          9.7125
+        ],
+        "vulnerability": "Cherthala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.263,
+              9.67534
+            ],
+            [
+              76.297,
+              9.67534
+            ],
+            [
+              76.303,
+              9.74966
+            ],
+            [
+              76.257,
+              9.75034
+            ],
+            [
+              76.263,
+              9.67534
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Aroor",
+        "village": "Aroor",
+        "taluk": "Cherthala",
+        "district": "Alappuzha",
+        "color": "#cbf3c8",
+        "center": [
+          76.32,
+          9.7125
+        ],
+        "vulnerability": "Aroor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.29702,
+              9.67261
+            ],
+            [
+              76.34298,
+              9.67261
+            ],
+            [
+              76.33702,
+              9.75239
+            ],
+            [
+              76.30298,
+              9.74761
+            ],
+            [
+              76.29702,
+              9.67261
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Thuravoor",
+        "village": "Thuravoor",
+        "taluk": "Cherthala",
+        "district": "Alappuzha",
+        "color": "#cbf3c8",
+        "center": [
+          76.36,
+          9.7125
+        ],
+        "vulnerability": "Thuravoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.34289,
+              9.67665
+            ],
+            [
+              76.37711,
+              9.67665
+            ],
+            [
+              76.38289,
+              9.74835
+            ],
+            [
+              76.33711,
+              9.75165
+            ],
+            [
+              76.34289,
+              9.67665
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Mararikulam",
+        "village": "Mararikulam",
+        "taluk": "Cherthala",
+        "district": "Alappuzha",
+        "color": "#cbf3c8",
+        "center": [
+          76.28,
+          9.6375
+        ],
+        "vulnerability": "Mararikulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.25725,
+              9.60102
+            ],
+            [
+              76.30275,
+              9.60102
+            ],
+            [
+              76.29725,
+              9.67398
+            ],
+            [
+              76.26275,
+              9.67602
+            ],
+            [
+              76.25725,
+              9.60102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Muhamma",
+        "village": "Muhamma",
+        "taluk": "Cherthala",
+        "district": "Alappuzha",
+        "color": "#cbf3c8",
+        "center": [
+          76.32,
+          9.6375
+        ],
+        "vulnerability": "Muhamma Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.30255,
+              9.5975
+            ],
+            [
+              76.33745,
+              9.5975
+            ],
+            [
+              76.34255,
+              9.6775
+            ],
+            [
+              76.29745,
+              9.6725
+            ],
+            [
+              76.30255,
+              9.5975
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_alappuzha_cherthala",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Cherthala Taluk",
+        "taluk": "Cherthala",
+        "district": "Alappuzha",
+        "headquarters": "Cherthala Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.328,
+          9.685
+        ],
+        "sdmaAuthority": "DDMA Alappuzha - Cherthala Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.26,
+              9.6
+            ],
+            [
+              76.38,
+              9.6
+            ],
+            [
+              76.38,
+              9.75
+            ],
+            [
+              76.26,
+              9.75
+            ],
+            [
+              76.26,
+              9.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Moncompu",
+        "village": "Moncompu",
+        "taluk": "Kuttanad",
+        "district": "Alappuzha",
+        "color": "#f7c3f0",
+        "center": [
+          76.40333,
+          9.4625
+        ],
+        "vulnerability": "Moncompu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.37992,
+              9.42259
+            ],
+            [
+              76.42675,
+              9.42259
+            ],
+            [
+              76.42659,
+              9.50241
+            ],
+            [
+              76.38008,
+              9.49759
+            ],
+            [
+              76.37992,
+              9.42259
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Champakulam",
+        "village": "Champakulam",
+        "taluk": "Kuttanad",
+        "district": "Alappuzha",
+        "color": "#f7c3f0",
+        "center": [
+          76.45,
+          9.4625
+        ],
+        "vulnerability": "Champakulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.42632,
+              9.42539
+            ],
+            [
+              76.47368,
+              9.42539
+            ],
+            [
+              76.47299,
+              9.49961
+            ],
+            [
+              76.42701,
+              9.50039
+            ],
+            [
+              76.42632,
+              9.42539
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Nedumudi",
+        "village": "Nedumudi",
+        "taluk": "Kuttanad",
+        "district": "Alappuzha",
+        "color": "#f7c3f0",
+        "center": [
+          76.49667,
+          9.4625
+        ],
+        "vulnerability": "Nedumudi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.47409,
+              9.42709
+            ],
+            [
+              76.51924,
+              9.42709
+            ],
+            [
+              76.52076,
+              9.49791
+            ],
+            [
+              76.47257,
+              9.50209
+            ],
+            [
+              76.47409,
+              9.42709
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Kainakary",
+        "village": "Kainakary",
+        "taluk": "Kuttanad",
+        "district": "Alappuzha",
+        "color": "#f7c3f0",
+        "center": [
+          76.40333,
+          9.3875
+        ],
+        "vulnerability": "Kainakary Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.37884,
+              9.34788
+            ],
+            [
+              76.42783,
+              9.34788
+            ],
+            [
+              76.4255,
+              9.42712
+            ],
+            [
+              76.38116,
+              9.42288
+            ],
+            [
+              76.37884,
+              9.34788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Pulincunnoo",
+        "village": "Pulincunnoo",
+        "taluk": "Kuttanad",
+        "district": "Alappuzha",
+        "color": "#f7c3f0",
+        "center": [
+          76.45,
+          9.3875
+        ],
+        "vulnerability": "Pulincunnoo Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.42821,
+              9.34968
+            ],
+            [
+              76.47179,
+              9.34968
+            ],
+            [
+              76.47488,
+              9.42532
+            ],
+            [
+              76.42512,
+              9.42468
+            ],
+            [
+              76.42821,
+              9.34968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_alappuzha_kuttanad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kuttanad Taluk",
+        "taluk": "Kuttanad",
+        "district": "Alappuzha",
+        "headquarters": "Kuttanad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.438,
+          9.435
+        ],
+        "sdmaAuthority": "DDMA Alappuzha - Kuttanad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.38,
+              9.35
+            ],
+            [
+              76.52,
+              9.35
+            ],
+            [
+              76.52,
+              9.5
+            ],
+            [
+              76.38,
+              9.5
+            ],
+            [
+              76.38,
+              9.35
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Haripad",
+        "village": "Haripad",
+        "taluk": "Karthikappally",
+        "district": "Alappuzha",
+        "color": "#fbe4c8",
+        "center": [
+          76.42333,
+          9.2775
+        ],
+        "vulnerability": "Haripad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.397,
+              9.234
+            ],
+            [
+              76.44966,
+              9.234
+            ],
+            [
+              76.44367,
+              9.321
+            ],
+            [
+              76.403,
+              9.319
+            ],
+            [
+              76.397,
+              9.234
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Kayamkulam",
+        "village": "Kayamkulam",
+        "taluk": "Karthikappally",
+        "district": "Alappuzha",
+        "color": "#fbe4c8",
+        "center": [
+          76.47,
+          9.2775
+        ],
+        "vulnerability": "Kayamkulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.44965,
+              9.2375
+            ],
+            [
+              76.49035,
+              9.2375
+            ],
+            [
+              76.49632,
+              9.3175
+            ],
+            [
+              76.44368,
+              9.3225
+            ],
+            [
+              76.44965,
+              9.2375
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Cheppad",
+        "village": "Cheppad",
+        "taluk": "Karthikappally",
+        "district": "Alappuzha",
+        "color": "#fbe4c8",
+        "center": [
+          76.51667,
+          9.2775
+        ],
+        "vulnerability": "Cheppad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.49042,
+              9.23392
+            ],
+            [
+              76.54291,
+              9.23392
+            ],
+            [
+              76.53709,
+              9.32108
+            ],
+            [
+              76.49624,
+              9.31892
+            ],
+            [
+              76.49042,
+              9.23392
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Chingoli",
+        "village": "Chingoli",
+        "taluk": "Karthikappally",
+        "district": "Alappuzha",
+        "color": "#fbe4c8",
+        "center": [
+          76.42333,
+          9.1925
+        ],
+        "vulnerability": "Chingoli Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.40278,
+              9.1484
+            ],
+            [
+              76.44389,
+              9.1484
+            ],
+            [
+              76.44945,
+              9.2366
+            ],
+            [
+              76.39722,
+              9.2334
+            ],
+            [
+              76.40278,
+              9.1484
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Arattupuzha",
+        "village": "Arattupuzha",
+        "taluk": "Karthikappally",
+        "district": "Alappuzha",
+        "color": "#fbe4c8",
+        "center": [
+          76.47,
+          9.1925
+        ],
+        "vulnerability": "Arattupuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.44407,
+              9.15241
+            ],
+            [
+              76.49593,
+              9.15241
+            ],
+            [
+              76.49074,
+              9.23259
+            ],
+            [
+              76.44926,
+              9.23741
+            ],
+            [
+              76.44407,
+              9.15241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_alappuzha_karthikappally",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Karthikappally Taluk",
+        "taluk": "Karthikappally",
+        "district": "Alappuzha",
+        "headquarters": "Karthikappally Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          76.468,
+          9.245
+        ],
+        "sdmaAuthority": "DDMA Alappuzha - Karthikappally Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.4,
+              9.15
+            ],
+            [
+              76.54,
+              9.15
+            ],
+            [
+              76.54,
+              9.32
+            ],
+            [
+              76.4,
+              9.32
+            ],
+            [
+              76.4,
+              9.15
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Chengannur",
+        "village": "Chengannur",
+        "taluk": "Chengannur",
+        "district": "Alappuzha",
+        "color": "#cf8282",
+        "center": [
+          76.56667,
+          9.3475
+        ],
+        "vulnerability": "Chengannur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.55016,
+              9.31713
+            ],
+            [
+              76.58317,
+              9.31713
+            ],
+            [
+              76.58349,
+              9.37787
+            ],
+            [
+              76.54984,
+              9.38213
+            ],
+            [
+              76.55016,
+              9.31713
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Mulakuzha",
+        "village": "Mulakuzha",
+        "taluk": "Chengannur",
+        "district": "Alappuzha",
+        "color": "#cf8282",
+        "center": [
+          76.6,
+          9.3475
+        ],
+        "vulnerability": "Mulakuzha Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.5836,
+              9.3153
+            ],
+            [
+              76.6164,
+              9.3153
+            ],
+            [
+              76.61693,
+              9.3797
+            ],
+            [
+              76.58307,
+              9.3803
+            ],
+            [
+              76.5836,
+              9.3153
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Cheriyanad",
+        "village": "Cheriyanad",
+        "taluk": "Chengannur",
+        "district": "Alappuzha",
+        "color": "#cf8282",
+        "center": [
+          76.63333,
+          9.3475
+        ],
+        "vulnerability": "Cheriyanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.61598,
+              9.31262
+            ],
+            [
+              76.65068,
+              9.31262
+            ],
+            [
+              76.64932,
+              9.38238
+            ],
+            [
+              76.61735,
+              9.37762
+            ],
+            [
+              76.61598,
+              9.31262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Ala",
+        "village": "Ala",
+        "taluk": "Chengannur",
+        "district": "Alappuzha",
+        "color": "#cf8282",
+        "center": [
+          76.56667,
+          9.2825
+        ],
+        "vulnerability": "Ala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.55109,
+              9.25168
+            ],
+            [
+              76.58224,
+              9.25168
+            ],
+            [
+              76.58442,
+              9.31332
+            ],
+            [
+              76.54891,
+              9.31668
+            ],
+            [
+              76.55109,
+              9.25168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Pandanad",
+        "village": "Pandanad",
+        "taluk": "Chengannur",
+        "district": "Alappuzha",
+        "color": "#cf8282",
+        "center": [
+          76.6,
+          9.2825
+        ],
+        "vulnerability": "Pandanad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.58186,
+              9.25098
+            ],
+            [
+              76.61814,
+              9.25098
+            ],
+            [
+              76.61519,
+              9.31402
+            ],
+            [
+              76.58481,
+              9.31598
+            ],
+            [
+              76.58186,
+              9.25098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_alappuzha_chengannur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Chengannur Taluk",
+        "taluk": "Chengannur",
+        "district": "Alappuzha",
+        "headquarters": "Chengannur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          76.615,
+          9.318
+        ],
+        "sdmaAuthority": "DDMA Alappuzha - Chengannur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.55,
+              9.25
+            ],
+            [
+              76.65,
+              9.25
+            ],
+            [
+              76.65,
+              9.38
+            ],
+            [
+              76.55,
+              9.38
+            ],
+            [
+              76.55,
+              9.25
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Mavelikkara",
+        "village": "Mavelikkara",
+        "taluk": "Mavelikkara",
+        "district": "Alappuzha",
+        "color": "#fef08a",
+        "center": [
+          76.49667,
+          9.2975
+        ],
+        "vulnerability": "Mavelikkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.48299,
+              9.26658
+            ],
+            [
+              76.51034,
+              9.26658
+            ],
+            [
+              76.51633,
+              9.32842
+            ],
+            [
+              76.47701,
+              9.33158
+            ],
+            [
+              76.48299,
+              9.26658
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Thekkekara",
+        "village": "Thekkekara",
+        "taluk": "Mavelikkara",
+        "district": "Alappuzha",
+        "color": "#fef08a",
+        "center": [
+          76.53,
+          9.2975
+        ],
+        "vulnerability": "Thekkekara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.51034,
+              9.26258
+            ],
+            [
+              76.54966,
+              9.26258
+            ],
+            [
+              76.54368,
+              9.33242
+            ],
+            [
+              76.51632,
+              9.32758
+            ],
+            [
+              76.51034,
+              9.26258
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Thazhakara",
+        "village": "Thazhakara",
+        "taluk": "Mavelikkara",
+        "district": "Alappuzha",
+        "color": "#fef08a",
+        "center": [
+          76.56333,
+          9.2975
+        ],
+        "vulnerability": "Thazhakara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.5496,
+              9.26543
+            ],
+            [
+              76.57707,
+              9.26543
+            ],
+            [
+              76.58293,
+              9.32957
+            ],
+            [
+              76.54374,
+              9.33043
+            ],
+            [
+              76.5496,
+              9.26543
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Chennithala",
+        "village": "Chennithala",
+        "taluk": "Mavelikkara",
+        "district": "Alappuzha",
+        "color": "#fef08a",
+        "center": [
+          76.49667,
+          9.2325
+        ],
+        "vulnerability": "Chennithala Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.47719,
+              9.20206
+            ],
+            [
+              76.51614,
+              9.20206
+            ],
+            [
+              76.51052,
+              9.26294
+            ],
+            [
+              76.48281,
+              9.26706
+            ],
+            [
+              76.47719,
+              9.20206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_alappuzha_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Chettikulangara",
+        "village": "Chettikulangara",
+        "taluk": "Mavelikkara",
+        "district": "Alappuzha",
+        "color": "#fef08a",
+        "center": [
+          76.53,
+          9.2325
+        ],
+        "vulnerability": "Chettikulangara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.51597,
+              9.19786
+            ],
+            [
+              76.54403,
+              9.19786
+            ],
+            [
+              76.5493,
+              9.26714
+            ],
+            [
+              76.5107,
+              9.26286
+            ],
+            [
+              76.51597,
+              9.19786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_alappuzha_mavelikkara",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Mavelikkara Taluk",
+        "taluk": "Mavelikkara",
+        "district": "Alappuzha",
+        "headquarters": "Mavelikkara Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          76.545,
+          9.268
+        ],
+        "sdmaAuthority": "DDMA Alappuzha - Mavelikkara Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.48,
+              9.2
+            ],
+            [
+              76.58,
+              9.2
+            ],
+            [
+              76.58,
+              9.33
+            ],
+            [
+              76.48,
+              9.33
+            ],
+            [
+              76.48,
+              9.2
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

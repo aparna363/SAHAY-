@@ -692,12 +692,20 @@ router.get('/shelters', optionalAuth, async (req, res) => {
     let query = 'SELECT id, name, district, address, latitude, longitude, capacity, available_capacity, contact_number FROM shelters';
     const params = [];
 
-    if (district && district !== 'all' && district !== 'Statewide' && district !== 'All Kerala') {
-      params.push(`%${district.toLowerCase()}%`);
-      query += ` WHERE LOWER(district) LIKE $${params.length}`;
+    let cleanDist = district ? String(district).replace(/\s*district\b/i, '').replace(/,\s*kerala\b/i, '').trim() : '';
+
+    if (cleanDist && cleanDist.toLowerCase() !== 'all' && cleanDist.toLowerCase() !== 'statewide' && cleanDist.toLowerCase() !== 'all kerala') {
+      params.push(`%${cleanDist.toLowerCase()}%`);
+      params.push(cleanDist.toLowerCase());
+      query += ` WHERE (LOWER(district) LIKE $1 OR LOWER(address) LIKE $1 OR $2 LIKE '%' || LOWER(district) || '%')`;
     }
 
-    const result = await pool.query(query, params);
+    let result = await pool.query(query, params);
+
+    // Fallback: if no shelters found for specified district, fetch all shelters so proximity sort can provide closest camps
+    if (result.rows.length === 0 && cleanDist) {
+      result = await pool.query('SELECT id, name, district, address, latitude, longitude, capacity, available_capacity, contact_number FROM shelters');
+    }
 
     const shelters = result.rows.map(s => {
       const sLat = parseFloat(s.latitude);

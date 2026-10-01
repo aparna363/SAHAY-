@@ -44,6 +44,8 @@ import { renderSafeRouteOnMap } from './layers/SafeRouteLayer';
 import { createIncidentMarkerIcon, generateIncidentPopupHtml } from '../LiveMap/markers/IncidentMarker';
 import { createShelterMarkerIcon, generateShelterPopupHtml } from '../LiveMap/markers/ShelterMarker';
 import { createRescueTeamMarkerIcon, generateRescueTeamPopupHtml } from '../LiveMap/markers/RescueTeamMarker';
+import { createSOSMarkerIcon, generateSOSPopupHtml } from '../LiveMap/markers/SOSMarker';
+import { fetchMapSOSMarkers, type SOSRequest } from '../../services/sosService';
 
 // Fix Leaflet marker icon asset paths
 try {
@@ -63,11 +65,20 @@ interface LiveDisasterMapProps {
   userDistrict?: string;
   onViewIncidentDetails?: (id: number | string) => void;
   className?: string;
+  targetDestination?: {
+    lat: number;
+    lng: number;
+    name: string;
+  } | null;
+  onClearTargetDestination?: () => void;
 }
 
 export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
   userDistrict,
-  className = ''
+  onViewIncidentDetails: _onViewIncidentDetails,
+  className = '',
+  targetDestination,
+  onClearTargetDestination
 }) => {
   const { coords, location, weatherData, refreshLocation } = useLocation();
 
@@ -83,6 +94,7 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
   const rescueTeamsLayerRef = useRef<L.LayerGroup | null>(null);
   const iotSensorsLayerRef = useRef<L.LayerGroup | null>(null);
   const safeRouteLayerRef = useRef<L.LayerGroup | null>(null);
+  const sosLayerRef = useRef<L.LayerGroup | null>(null);
   const userMarkerRef = useRef<L.Marker | null>(null);
   const userAccuracyCircleRef = useRef<L.Circle | null>(null);
 
@@ -106,6 +118,7 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
 
   // Live Telemetry Data States
   const [incidents, setIncidents] = useState<MapIncident[]>([]);
+  const [sosRequests, setSosRequests] = useState<SOSRequest[]>([]);
   const [shelters, setShelters] = useState<MapShelter[]>([]);
   const [rescueTeams, setRescueTeams] = useState<MapRescueTeam[]>([]);
   const [hazardZones, setHazardZones] = useState<MapHazardZone[]>([]);
@@ -139,14 +152,15 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
       const targetDistParam = mapMode === 'local' ? citizenDistrict : undefined;
 
       // Parallel data fetching for performance
-      const [incList, shelterList, teamsList, zonesList, roadList, sensorList, statusRes] = await Promise.all([
+      const [incList, shelterList, teamsList, zonesList, roadList, sensorList, statusRes, sosList] = await Promise.all([
         fetchRoleMapIncidents({ district: targetDistParam, lat: effectiveLat, lng: effectiveLng }),
         fetchMapShelters(targetDistParam, effectiveLat, effectiveLng),
         fetchMapRescueTeams(targetDistParam),
         fetchMapHazardZones(),
         fetchRoadHazards({ district: targetDistParam, lat: effectiveLat, lng: effectiveLng }),
         fetchIoTSensors({ district: targetDistParam, lat: effectiveLat, lng: effectiveLng }),
-        fetchCitizenSafetyStatus(effectiveLat, effectiveLng, citizenDistrict)
+        fetchCitizenSafetyStatus(effectiveLat, effectiveLng, citizenDistrict),
+        fetchMapSOSMarkers(targetDistParam, false)
       ]);
 
       setIncidents(incList);
@@ -156,6 +170,7 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
       setRoadHazards(roadList);
       setIoTSensors(sensorList);
       if (statusRes) setSafetyStatus(statusRes);
+      setSosRequests(sosList || []);
     } catch (err) {
       console.error('[LiveDisasterMap] Telemetry load error:', err);
     }
@@ -237,6 +252,7 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
     rescueTeamsLayerRef.current = L.layerGroup().addTo(map);
     iotSensorsLayerRef.current = L.layerGroup().addTo(map);
     incidentsLayerRef.current = L.layerGroup().addTo(map);
+    sosLayerRef.current = L.layerGroup().addTo(map);
 
     mapRef.current = map;
 
@@ -392,6 +408,24 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
     });
   }, [layers.liveIncidents, incidents, shelters]);
 
+  // Render Active SOS Emergency Requests Layer (Requirement 8)
+  useEffect(() => {
+    if (!sosLayerRef.current) return;
+    sosLayerRef.current.clearLayers();
+
+    sosRequests.forEach((sos) => {
+      if (isNaN(sos.latitude) || isNaN(sos.longitude)) return;
+      const icon = createSOSMarkerIcon(sos);
+      const marker = L.marker([sos.latitude, sos.longitude], {
+        icon,
+        zIndexOffset: 2000 // Highest priority on map
+      });
+      const popupHtml = generateSOSPopupHtml(sos);
+      marker.bindPopup(popupHtml, { maxWidth: 320 });
+      marker.addTo(sosLayerRef.current!);
+    });
+  }, [sosRequests]);
+
   // Render Evacuation Centers (Shelters) Layer
   useEffect(() => {
     if (!sheltersLayerRef.current) return;
@@ -464,6 +498,19 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
       delete (window as any).__sahayMap_getDirections;
     };
   }, [calculateRouteToDestination]);
+
+  // Trigger safe route calculation when targetDestination is provided (e.g. from Citizen Dashboard shelter navigation)
+  useEffect(() => {
+    if (targetDestination && targetDestination.lat && targetDestination.lng) {
+      setMapMode('local');
+      setLayers(prev => ({ ...prev, safeRoutes: true }));
+      calculateRouteToDestination(
+        targetDestination.lat,
+        targetDestination.lng,
+        targetDestination.name
+      );
+    }
+  }, [targetDestination, calculateRouteToDestination]);
 
   // Render Active Safe Route & Normal Route on Map
   useEffect(() => {
@@ -560,6 +607,7 @@ export const LiveDisasterMap: React.FC<LiveDisasterMapProps> = ({
     setActiveDestinationCoords(null);
     setIsRouteInvalidated(false);
     if (safeRouteLayerRef.current) safeRouteLayerRef.current.clearLayers();
+    if (onClearTargetDestination) onClearTargetDestination();
   };
 
   // Action: Recenter Map to Citizen GPS

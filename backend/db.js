@@ -815,6 +815,14 @@ const initDb = async () => {
           await client.query(reliefSql);
           console.log('✓ Relief & Compensation Schema and Norms loaded');
         }
+
+        // Load SOS Emergency Response Schema
+        const sosSchemaPath = require('path').join(__dirname, 'schema_sos.sql');
+        if (fs.existsSync(sosSchemaPath)) {
+          const sosSql = fs.readFileSync(sosSchemaPath, 'utf8');
+          await client.query(sosSql);
+          console.log('✓ SOS Emergency Response Schema loaded');
+        }
       } catch (postgisErr) {
         console.warn('PostGIS Sync Note:', postgisErr.message);
       }

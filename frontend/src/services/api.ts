@@ -2280,3 +2280,580 @@ export async function simulateReliefDisbursement(claimId: string | number): Prom
   return data;
 }
 
+// -------------------------------------------------------------
+// Collector Relief & Compensation Module APIs
+// -------------------------------------------------------------
+
+export interface CollectorReliefSummary {
+  totalApplications: number;
+  newApplications: number;
+  pendingVerification: number;
+  fieldVerified: number;
+  pendingReview: number;
+  reverificationRequired: number;
+  stateReview: number;
+  approved: number;
+  rejected: number;
+  paymentPending: number;
+  disbursed: number;
+  totalRequested: number;
+  totalVerified: number;
+  totalApproved: number;
+  totalDisbursed: number;
+  pendingDisbursement: number;
+}
+
+export interface CollectorCategoryStat {
+  category: string;
+  claimsCount: number;
+  requestedAmount: number;
+  approvedAmount: number;
+  disbursedAmount: number;
+}
+
+export interface CollectorDisasterStat {
+  disasterType: string;
+  claimsCount: number;
+  totalRequested: number;
+  totalApproved: number;
+}
+
+export interface CollectorReliefClaimItem {
+  id: number;
+  claim_id: string;
+  citizen_id: number;
+  applicant_name: string;
+  applicant_phone: string;
+  disaster_type: string;
+  disaster_date: string;
+  assistance_category: string;
+  damage_type: string;
+  damage_severity: string;
+  estimated_loss: number;
+  verified_loss: number;
+  requested_amount: number;
+  approved_amount: number;
+  district: string;
+  taluk: string;
+  village: string;
+  status: string;
+  priority: string;
+  payment_status: string;
+  transaction_reference?: string;
+  disbursed_at?: string;
+  submitted_at: string;
+  updated_at: string;
+  created_at: string;
+  assigned_officer_id?: number;
+  verification_officer_name?: string;
+  verification_officer_phone?: string;
+  is_field_verified?: boolean;
+  citizen_evidence_count?: number;
+  officer_evidence_count?: number;
+  days_pending?: number;
+}
+
+export interface CollectorReliefDetailClaim extends CollectorReliefClaimItem {
+  applicant_email?: string;
+  applicant_panchayat?: string;
+  relationship_to_affected?: string;
+  affected_family_members?: number;
+  vulnerable_person_category?: string[];
+  damage_description?: string;
+  current_condition?: string;
+  house_ownership?: string;
+  house_type?: string;
+  house_rooms?: number;
+  house_damage_level?: string;
+  affected_area?: number;
+  habitability_status?: string;
+  is_displaced?: boolean;
+  current_accommodation?: string;
+  crop_type?: string;
+  agricultural_land_type?: string;
+  total_crop_area?: number;
+  affected_crop_area?: number;
+  crop_stage?: string;
+  crop_loss_percentage?: number;
+  livestock_type?: string;
+  livestock_lost?: number;
+  livestock_injured?: number;
+  deceased_person_name?: string;
+  legal_heir_relationship?: string;
+  latitude: number;
+  longitude: number;
+  locality?: string;
+  bank_account_holder?: string;
+  bank_name?: string;
+  masked_account_number?: string;
+  ifsc_code?: string;
+  rejection_reason?: string;
+  collector_remarks?: string;
+  reverification_reason?: string;
+  reverification_instructions?: string;
+  reverification_evidence_required?: string;
+  is_state_review_required?: boolean;
+  forwarded_to_state_at?: string;
+  payment_processing_at?: string;
+  declaration_accepted?: boolean;
+  penalty_warning_accepted?: boolean;
+  incident_code?: string;
+  incident_description?: string;
+  incident_severity?: string;
+  assigned_officer_name?: string;
+  assigned_officer_phone?: string;
+  assigned_officer_designation?: string;
+  citizenEvidence?: any[];
+  officerEvidence?: any[];
+  verificationReport?: any;
+  gpsVerification?: {
+    reportedLatitude: number;
+    reportedLongitude: number;
+    reportedLocationName: string;
+    officerLatitude: number;
+    officerLongitude: number;
+    distanceMeters: number;
+    gpsAccuracyMeters: number;
+    isLocationVerified: boolean;
+    statusText: string;
+  } | null;
+  aiAssessment?: {
+    id: number;
+    predicted_damage: string;
+    confidence_score: number;
+    model_version: string;
+    result: any;
+    created_at: string;
+  } | null;
+  statusHistory?: any[];
+  approvalHistory?: any[];
+  disbursement?: any;
+  applicableRules?: any[];
+  applicableNorms?: any[];
+}
+
+export async function fetchCollectorReliefSummary(district?: string): Promise<{
+  district: string;
+  summary: CollectorReliefSummary;
+  categoryBreakdown: CollectorCategoryStat[];
+  disasterBreakdown: CollectorDisasterStat[];
+}> {
+  const query = district ? `?district=${encodeURIComponent(district)}` : '';
+  const res = await fetchWithFallback(`/collector/relief/summary${query}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch collector relief summary');
+  return data;
+}
+
+export async function fetchCollectorReliefClaims(params?: {
+  tab?: string;
+  status?: string;
+  category?: string;
+  disaster?: string;
+  taluk?: string;
+  village?: string;
+  search?: string;
+  officerId?: number;
+  district?: string;
+  page?: number;
+  limit?: number;
+}): Promise<{
+  district: string;
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  claims: CollectorReliefClaimItem[];
+}> {
+  const q = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') {
+        q.append(k, String(v));
+      }
+    });
+  }
+  const res = await fetchWithFallback(`/collector/relief/claims?${q.toString()}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch collector claims');
+  return data;
+}
+
+export async function fetchCollectorReliefClaimDetail(claimId: string | number): Promise<CollectorReliefDetailClaim> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch relief claim details');
+  return data.claim;
+}
+
+export async function assignCollectorReliefOfficer(
+  claimId: string | number,
+  officerId: number,
+  instructions?: string
+): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/assign-officer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ officerId, instructions })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to assign verification officer');
+  return data;
+}
+
+export async function collectorApproveClaim(
+  claimId: string | number,
+  payload: { approvedAmount: number; remarks?: string }
+): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/approve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to approve relief claim');
+  return data;
+}
+
+export async function collectorRejectClaim(
+  claimId: string | number,
+  payload: { reason: string; remarks: string }
+): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/reject`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to reject relief claim');
+  return data;
+}
+
+export async function collectorRequestReverification(
+  claimId: string | number,
+  payload: { reason: string; evidenceRequired?: string; instructions?: string; priority?: string }
+): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/reverification`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to request re-verification');
+  return data;
+}
+
+export async function collectorForwardToState(
+  claimId: string | number,
+  payload: { remarks?: string }
+): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/forward-state`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to forward claim to state review');
+  return data;
+}
+
+export async function collectorProcessPayment(claimId: string | number): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/process-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to queue payment processing');
+  return data;
+}
+
+export async function collectorDisbursePayment(claimId: string | number): Promise<any> {
+  const res = await fetchWithFallback(`/collector/relief/claims/${encodeURIComponent(claimId)}/disburse`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to disburse relief funds');
+  return data;
+}
+
+export async function fetchCollectorReliefOfficers(district?: string): Promise<any[]> {
+  const query = district ? `?district=${encodeURIComponent(district)}` : '';
+  const res = await fetchWithFallback(`/collector/relief/officers${query}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch officers');
+  return data.officers || [];
+}
+
+export async function fetchCollectorReliefRules(): Promise<{ rules: any[]; norms: any[] }> {
+  const res = await fetchWithFallback('/collector/relief/rules', { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch rules');
+  return data;
+}
+
+export async function fetchCollectorReliefMap(district?: string): Promise<{ claims: any[]; count: number }> {
+  const query = district ? `?district=${encodeURIComponent(district)}` : '';
+  const res = await fetchWithFallback(`/collector/relief/map${query}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch relief map data');
+  return data;
+}
+
+export async function fetchCollectorReliefReports(params?: any): Promise<{
+  district: string;
+  totalRecords: number;
+  generatedAt: string;
+  records: any[];
+}> {
+  const q = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') q.append(k, String(v));
+    });
+  }
+  const res = await fetchWithFallback(`/collector/relief/reports?${q.toString()}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to generate relief report');
+  return data;
+}
+
+// ==========================================
+// FIELD VISIT OFFICER RELIEF MODULE APIS
+// ==========================================
+
+export interface FieldOfficerReliefSummary {
+  assignedApplications: number;
+  pendingVisits: number;
+  todaysVisits: number;
+  completedVisits: number;
+  verifiedApplications: number;
+  requiringCorrection: number;
+}
+
+export interface FieldOfficerClaim {
+  id: number;
+  claim_id: string;
+  citizen_id: number;
+  applicant_name: string;
+  applicant_phone?: string;
+  disaster_type: string;
+  disaster_date: string;
+  assistance_category: string;
+  damage_type?: string;
+  damage_category: string;
+  damage_severity: string;
+  estimated_loss: number;
+  verified_loss: number;
+  requested_amount?: number;
+  district: string;
+  taluk: string;
+  village: string;
+  locality?: string;
+  latitude: number;
+  longitude: number;
+  status: string;
+  priority: string;
+  scheduled_visit_date?: string;
+  correction_instructions?: string;
+  field_remarks?: string;
+  location_verified?: boolean;
+  submitted_at?: string;
+  created_at: string;
+  assigned_officer_id?: number;
+  verification_record?: any;
+  officer_photos_count?: number;
+  citizen_evidence_count?: number;
+}
+
+export async function fetchFieldOfficerSummary(): Promise<{
+  summary: FieldOfficerReliefSummary;
+  officer: any;
+  damageCategories: { category: string; count: string }[];
+}> {
+  const res = await fetchWithFallback('/field-officer/relief/summary', { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch field officer relief summary');
+  return data;
+}
+
+export async function fetchFieldOfficerClaims(params?: {
+  tab?: string;
+  search?: string;
+  priority?: string;
+  category?: string;
+  disaster?: string;
+  taluk?: string;
+  page?: number;
+  limit?: number;
+}): Promise<{
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  claims: FieldOfficerClaim[];
+}> {
+  const q = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') q.append(k, String(v));
+    });
+  }
+  const res = await fetchWithFallback(`/field-officer/relief/claims?${q.toString()}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch assigned relief applications');
+  return data;
+}
+
+export async function fetchFieldOfficerClaimDetail(claimId: string | number): Promise<any> {
+  const res = await fetchWithFallback(`/field-officer/relief/claims/${encodeURIComponent(claimId)}`, { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch relief claim details');
+  return data.claim;
+}
+
+export async function scheduleFieldOfficerVisit(
+  claimId: string | number,
+  payload: { visitDate: string; visitTime?: string; notes?: string }
+): Promise<any> {
+  const res = await fetchWithFallback(`/field-officer/relief/claims/${encodeURIComponent(claimId)}/schedule-visit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to schedule field visit');
+  return data;
+}
+
+export async function completeFieldOfficerVisit(
+  claimId: string | number,
+  payload: { inspectionNotes?: string; officerLatitude?: number; officerLongitude?: number }
+): Promise<any> {
+  const res = await fetchWithFallback(`/field-officer/relief/claims/${encodeURIComponent(claimId)}/complete-visit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to complete field visit');
+  return data;
+}
+
+export async function uploadFieldOfficerPhotos(
+  claimId: string | number,
+  files: File[],
+  meta?: { latitude?: number; longitude?: number; damageCategory?: string; description?: string }
+): Promise<any> {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append('photos', file);
+  });
+  if (meta?.latitude) formData.append('latitude', String(meta.latitude));
+  if (meta?.longitude) formData.append('longitude', String(meta.longitude));
+  if (meta?.damageCategory) formData.append('damageCategory', meta.damageCategory);
+  if (meta?.description) formData.append('description', meta.description);
+
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const res = await fetch(`http://localhost:5000/api/field-officer/relief/claims/${encodeURIComponent(claimId)}/photos`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to upload field photos');
+  return data;
+}
+
+export interface SdrfNorm {
+  id: number;
+  norm_code: string;
+  fund_source?: string;
+  assistance_category: string;
+  damage_category: string;
+  norm_title: string;
+  property_type: string;
+  geographic_zone: string;
+  min_damage_percentage: number;
+  max_damage_percentage: number;
+  rate_per_unit: number;
+  unit: string;
+  max_units?: number | null;
+  maximum_ceiling?: number | null;
+  maximum_amount?: number;
+  rule_version: string;
+  statutory_reference?: string;
+  eligibility_conditions?: string;
+  calculation_formula?: string;
+  norm_description?: string;
+  is_active: boolean;
+}
+
+export async function fetchSdrfNorms(): Promise<SdrfNorm[]> {
+  const res = await fetchWithFallback('/field-officer/relief/sdrf-norms', { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch SDRF relief norms');
+  return data.norms || [];
+}
+
+export async function submitFieldOfficerReport(
+  claimId: string | number,
+  payload: {
+    outcome: 'VERIFIED' | 'REQUIRES_CORRECTION';
+    damageCategory: string;
+    damageObserved: string;
+    estimatedLoss: number;
+    recommendedAssistance?: number;
+    officerRemarks?: string;
+    officerLatitude?: number;
+    officerLongitude?: number;
+    gpsAccuracyMeters?: number;
+    locationVerified?: boolean;
+    applicantVerified?: boolean;
+    applicantAcknowledged?: boolean;
+    applicantAcknowledgementNotes?: string;
+    applicantNameConfirmed?: string;
+    correctionInstructions?: string;
+    // SDRF Assessment & Audit fields
+    sdrfNormId?: number;
+    sdrfNormCode?: string;
+    sdrfRuleVersion?: string;
+    propertyType?: string;
+    geographicZone?: string;
+    damagePercentage?: number;
+    affectedQuantity?: number;
+    affectedUnit?: string;
+    prescribedRate?: number;
+    calculationBasis?: string;
+    statutoryReference?: string;
+  }
+): Promise<any> {
+  const res = await fetchWithFallback(`/field-officer/relief/claims/${encodeURIComponent(claimId)}/submit-report`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to submit verification report');
+  return data;
+}
+
+export async function fetchFieldOfficerVisits(): Promise<{
+  upcomingVisits: any[];
+  completedVisits: any[];
+}> {
+  const res = await fetchWithFallback('/field-officer/relief/my-visits', { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch field visits');
+  return data;
+}
+
+export async function fetchFieldOfficerMapData(): Promise<{ locations: any[] }> {
+  const res = await fetchWithFallback('/field-officer/relief/map-data', { method: 'GET' });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch field map data');
+  return data;
+}
+
+
+

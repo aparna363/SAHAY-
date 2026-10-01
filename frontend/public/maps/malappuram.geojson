@@ -1,0 +1,2009 @@
+{
+  "type": "FeatureCollection",
+  "name": "Malappuram_Administrative_Subdivisions_KSDMA",
+  "district": "Malappuram",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "district_malappuram",
+      "properties": {
+        "adminType": "district",
+        "name": "Malappuram District",
+        "district": "Malappuram",
+        "headquarters": "Malappuram Civil Station",
+        "talukCount": 7,
+        "villageCount": 35,
+        "sdmaAuthority": "KSDMA - District Disaster Management Authority, Malappuram"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.875,
+              11.209999999999999
+            ],
+            [
+              75.83749999999999,
+              11.37
+            ],
+            [
+              76.02499999999999,
+              11.45
+            ],
+            [
+              76.325,
+              11.45
+            ],
+            [
+              76.55,
+              11.25
+            ],
+            [
+              76.55,
+              10.89
+            ],
+            [
+              76.39999999999999,
+              10.65
+            ],
+            [
+              76.1,
+              10.65
+            ],
+            [
+              75.875,
+              10.77
+            ],
+            [
+              75.8,
+              11.05
+            ],
+            [
+              75.875,
+              11.209999999999999
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_1",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 1,
+        "name": "Malappuram Town",
+        "village": "Malappuram Town",
+        "taluk": "Eranad",
+        "district": "Malappuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.04667,
+          11.12
+        ],
+        "vulnerability": "Malappuram Town Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.02,
+              11.0825
+            ],
+            [
+              76.07333,
+              11.0825
+            ],
+            [
+              76.07333,
+              11.1575
+            ],
+            [
+              76.02,
+              11.1625
+            ],
+            [
+              76.02,
+              11.0825
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_2",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 2,
+        "name": "Manjeri",
+        "village": "Manjeri",
+        "taluk": "Eranad",
+        "district": "Malappuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.1,
+          11.12
+        ],
+        "vulnerability": "Manjeri Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.07376,
+              11.07896
+            ],
+            [
+              76.12624,
+              11.07896
+            ],
+            [
+              76.12709,
+              11.16104
+            ],
+            [
+              76.07291,
+              11.15896
+            ],
+            [
+              76.07376,
+              11.07896
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_3",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 3,
+        "name": "Areekode",
+        "village": "Areekode",
+        "taluk": "Eranad",
+        "district": "Malappuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.15333,
+          11.12
+        ],
+        "vulnerability": "Areekode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.12583,
+              11.07837
+            ],
+            [
+              76.18084,
+              11.07837
+            ],
+            [
+              76.17916,
+              11.16163
+            ],
+            [
+              76.1275,
+              11.15837
+            ],
+            [
+              76.12583,
+              11.07837
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_4",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 4,
+        "name": "Kavanoor",
+        "village": "Kavanoor",
+        "taluk": "Eranad",
+        "district": "Malappuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.04667,
+          11.04
+        ],
+        "vulnerability": "Kavanoor Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.02124,
+              11.0024
+            ],
+            [
+              76.0721,
+              11.0024
+            ],
+            [
+              76.07457,
+              11.0776
+            ],
+            [
+              76.01876,
+              11.0824
+            ],
+            [
+              76.02124,
+              11.0024
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_5",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 5,
+        "name": "Pandikkad",
+        "village": "Pandikkad",
+        "taluk": "Eranad",
+        "district": "Malappuram",
+        "color": "#f7c3f0",
+        "center": [
+          76.1,
+          11.04
+        ],
+        "vulnerability": "Pandikkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.07172,
+              10.99964
+            ],
+            [
+              76.12828,
+              10.99964
+            ],
+            [
+              76.12506,
+              11.08036
+            ],
+            [
+              76.07494,
+              11.07964
+            ],
+            [
+              76.07172,
+              10.99964
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_eranad",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Eranad Taluk",
+        "taluk": "Eranad",
+        "district": "Malappuram",
+        "headquarters": "Eranad Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#f7c3f0",
+        "center": [
+          76.0711,
+          11.051
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Eranad Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.02,
+              11
+            ],
+            [
+              76.18,
+              11
+            ],
+            [
+              76.18,
+              11.16
+            ],
+            [
+              76.02,
+              11.16
+            ],
+            [
+              76.02,
+              11
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_6",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 6,
+        "name": "Nilambur",
+        "village": "Nilambur",
+        "taluk": "Nilambur",
+        "district": "Malappuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.20833,
+          11.3525
+        ],
+        "vulnerability": "Nilambur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.153,
+              11.28534
+            ],
+            [
+              76.26367,
+              11.28534
+            ],
+            [
+              76.26967,
+              11.41966
+            ],
+            [
+              76.147,
+              11.42034
+            ],
+            [
+              76.153,
+              11.28534
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_7",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 7,
+        "name": "Chungathara",
+        "village": "Chungathara",
+        "taluk": "Nilambur",
+        "district": "Malappuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.325,
+          11.3525
+        ],
+        "vulnerability": "Chungathara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.26369,
+              11.28261
+            ],
+            [
+              76.38631,
+              11.28261
+            ],
+            [
+              76.38036,
+              11.42239
+            ],
+            [
+              76.26964,
+              11.41761
+            ],
+            [
+              76.26369,
+              11.28261
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_8",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 8,
+        "name": "Edakkara",
+        "village": "Edakkara",
+        "taluk": "Nilambur",
+        "district": "Malappuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.44167,
+          11.3525
+        ],
+        "vulnerability": "Edakkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.38622,
+              11.28665
+            ],
+            [
+              76.49711,
+              11.28665
+            ],
+            [
+              76.50289,
+              11.41835
+            ],
+            [
+              76.38044,
+              11.42165
+            ],
+            [
+              76.38622,
+              11.28665
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_9",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 9,
+        "name": "Karulai",
+        "village": "Karulai",
+        "taluk": "Nilambur",
+        "district": "Malappuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.20833,
+          11.2175
+        ],
+        "vulnerability": "Karulai Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.14725,
+              11.15102
+            ],
+            [
+              76.26942,
+              11.15102
+            ],
+            [
+              76.26392,
+              11.28398
+            ],
+            [
+              76.15275,
+              11.28602
+            ],
+            [
+              76.14725,
+              11.15102
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_10",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 10,
+        "name": "Vazhikkadavu",
+        "village": "Vazhikkadavu",
+        "taluk": "Nilambur",
+        "district": "Malappuram",
+        "color": "#cbf3c8",
+        "center": [
+          76.325,
+          11.2175
+        ],
+        "vulnerability": "Vazhikkadavu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.26922,
+              11.1475
+            ],
+            [
+              76.38078,
+              11.1475
+            ],
+            [
+              76.38589,
+              11.2875
+            ],
+            [
+              76.26411,
+              11.2825
+            ],
+            [
+              76.26922,
+              11.1475
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_nilambur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Nilambur Taluk",
+        "taluk": "Nilambur",
+        "district": "Malappuram",
+        "headquarters": "Nilambur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cbf3c8",
+        "center": [
+          76.228,
+          11.278
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Nilambur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15,
+              11.15
+            ],
+            [
+              76.5,
+              11.15
+            ],
+            [
+              76.5,
+              11.42
+            ],
+            [
+              76.15,
+              11.42
+            ],
+            [
+              76.15,
+              11.15
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_11",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 11,
+        "name": "Perinthalmanna",
+        "village": "Perinthalmanna",
+        "taluk": "Perinthalmanna",
+        "district": "Malappuram",
+        "color": "#bce4fa",
+        "center": [
+          76.18667,
+          11.0125
+        ],
+        "vulnerability": "Perinthalmanna Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15992,
+              10.97259
+            ],
+            [
+              76.21341,
+              10.97259
+            ],
+            [
+              76.21325,
+              11.05241
+            ],
+            [
+              76.16008,
+              11.04759
+            ],
+            [
+              76.15992,
+              10.97259
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_12",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 12,
+        "name": "Mankada",
+        "village": "Mankada",
+        "taluk": "Perinthalmanna",
+        "district": "Malappuram",
+        "color": "#bce4fa",
+        "center": [
+          76.24,
+          11.0125
+        ],
+        "vulnerability": "Mankada Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.21299,
+              10.97539
+            ],
+            [
+              76.26701,
+              10.97539
+            ],
+            [
+              76.26632,
+              11.04961
+            ],
+            [
+              76.21368,
+              11.05039
+            ],
+            [
+              76.21299,
+              10.97539
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_13",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 13,
+        "name": "Melattur",
+        "village": "Melattur",
+        "taluk": "Perinthalmanna",
+        "district": "Malappuram",
+        "color": "#bce4fa",
+        "center": [
+          76.29333,
+          11.0125
+        ],
+        "vulnerability": "Melattur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.26743,
+              10.97709
+            ],
+            [
+              76.31924,
+              10.97709
+            ],
+            [
+              76.32076,
+              11.04791
+            ],
+            [
+              76.26591,
+              11.05209
+            ],
+            [
+              76.26743,
+              10.97709
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_14",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 14,
+        "name": "Angadipuram",
+        "village": "Angadipuram",
+        "taluk": "Perinthalmanna",
+        "district": "Malappuram",
+        "color": "#bce4fa",
+        "center": [
+          76.18667,
+          10.9375
+        ],
+        "vulnerability": "Angadipuram Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.15884,
+              10.89788
+            ],
+            [
+              76.2145,
+              10.89788
+            ],
+            [
+              76.21217,
+              10.97712
+            ],
+            [
+              76.16116,
+              10.97288
+            ],
+            [
+              76.15884,
+              10.89788
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_15",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 15,
+        "name": "Aliparamba",
+        "village": "Aliparamba",
+        "taluk": "Perinthalmanna",
+        "district": "Malappuram",
+        "color": "#bce4fa",
+        "center": [
+          76.24,
+          10.9375
+        ],
+        "vulnerability": "Aliparamba Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.21488,
+              10.89968
+            ],
+            [
+              76.26512,
+              10.89968
+            ],
+            [
+              76.26821,
+              10.97532
+            ],
+            [
+              76.21179,
+              10.97468
+            ],
+            [
+              76.21488,
+              10.89968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_perinthalmanna",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Perinthalmanna Taluk",
+        "taluk": "Perinthalmanna",
+        "district": "Malappuram",
+        "headquarters": "Perinthalmanna Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#bce4fa",
+        "center": [
+          76.225,
+          10.975
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Perinthalmanna Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.16,
+              10.9
+            ],
+            [
+              76.32,
+              10.9
+            ],
+            [
+              76.32,
+              11.05
+            ],
+            [
+              76.16,
+              11.05
+            ],
+            [
+              76.16,
+              10.9
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_16",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 16,
+        "name": "Tirur",
+        "village": "Tirur",
+        "taluk": "Tirur",
+        "district": "Malappuram",
+        "color": "#cf8282",
+        "center": [
+          75.875,
+          10.945
+        ],
+        "vulnerability": "Tirur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.847,
+              10.909
+            ],
+            [
+              75.903,
+              10.909
+            ],
+            [
+              75.897,
+              10.981
+            ],
+            [
+              75.853,
+              10.979
+            ],
+            [
+              75.847,
+              10.909
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_17",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 17,
+        "name": "Tanur",
+        "village": "Tanur",
+        "taluk": "Tirur",
+        "district": "Malappuram",
+        "color": "#cf8282",
+        "center": [
+          75.925,
+          10.945
+        ],
+        "vulnerability": "Tanur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.90298,
+              10.9125
+            ],
+            [
+              75.94702,
+              10.9125
+            ],
+            [
+              75.95298,
+              10.9775
+            ],
+            [
+              75.89702,
+              10.9825
+            ],
+            [
+              75.90298,
+              10.9125
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_18",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 18,
+        "name": "Valanchery",
+        "village": "Valanchery",
+        "taluk": "Tirur",
+        "district": "Malappuram",
+        "color": "#cf8282",
+        "center": [
+          75.975,
+          10.945
+        ],
+        "vulnerability": "Valanchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.94709,
+              10.90892
+            ],
+            [
+              76.00291,
+              10.90892
+            ],
+            [
+              75.99709,
+              10.98108
+            ],
+            [
+              75.95291,
+              10.97892
+            ],
+            [
+              75.94709,
+              10.90892
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_19",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 19,
+        "name": "Thavanur",
+        "village": "Thavanur",
+        "taluk": "Tirur",
+        "district": "Malappuram",
+        "color": "#cf8282",
+        "center": [
+          75.875,
+          10.875
+        ],
+        "vulnerability": "Thavanur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.85278,
+              10.8384
+            ],
+            [
+              75.89722,
+              10.8384
+            ],
+            [
+              75.90278,
+              10.9116
+            ],
+            [
+              75.84722,
+              10.9084
+            ],
+            [
+              75.85278,
+              10.8384
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_20",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 20,
+        "name": "Kottakkal",
+        "village": "Kottakkal",
+        "taluk": "Tirur",
+        "district": "Malappuram",
+        "color": "#cf8282",
+        "center": [
+          75.925,
+          10.875
+        ],
+        "vulnerability": "Kottakkal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.89741,
+              10.84241
+            ],
+            [
+              75.95259,
+              10.84241
+            ],
+            [
+              75.94741,
+              10.90759
+            ],
+            [
+              75.90259,
+              10.91241
+            ],
+            [
+              75.89741,
+              10.84241
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_tirur",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Tirur Taluk",
+        "taluk": "Tirur",
+        "district": "Malappuram",
+        "headquarters": "Tirur Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#cf8282",
+        "center": [
+          75.922,
+          10.915
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Tirur Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.85,
+              10.84
+            ],
+            [
+              76,
+              10.84
+            ],
+            [
+              76,
+              10.98
+            ],
+            [
+              75.85,
+              10.98
+            ],
+            [
+              75.85,
+              10.84
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_21",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 21,
+        "name": "Tirurangadi",
+        "village": "Tirurangadi",
+        "taluk": "Tirurangadi",
+        "district": "Malappuram",
+        "color": "#fbe4c8",
+        "center": [
+          75.88667,
+          11.085
+        ],
+        "vulnerability": "Tirurangadi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.86016,
+              11.05213
+            ],
+            [
+              75.91317,
+              11.05213
+            ],
+            [
+              75.91349,
+              11.11787
+            ],
+            [
+              75.85984,
+              11.12213
+            ],
+            [
+              75.86016,
+              11.05213
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_22",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 22,
+        "name": "Parappanangadi",
+        "village": "Parappanangadi",
+        "taluk": "Tirurangadi",
+        "district": "Malappuram",
+        "color": "#fbe4c8",
+        "center": [
+          75.94,
+          11.085
+        ],
+        "vulnerability": "Parappanangadi Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.9136,
+              11.0503
+            ],
+            [
+              75.9664,
+              11.0503
+            ],
+            [
+              75.96693,
+              11.1197
+            ],
+            [
+              75.91307,
+              11.1203
+            ],
+            [
+              75.9136,
+              11.0503
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_23",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 23,
+        "name": "Vengara",
+        "village": "Vengara",
+        "taluk": "Tirurangadi",
+        "district": "Malappuram",
+        "color": "#fbe4c8",
+        "center": [
+          75.99333,
+          11.085
+        ],
+        "vulnerability": "Vengara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.96598,
+              11.04762
+            ],
+            [
+              76.02068,
+              11.04762
+            ],
+            [
+              76.01932,
+              11.12238
+            ],
+            [
+              75.96735,
+              11.11762
+            ],
+            [
+              75.96598,
+              11.04762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_24",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 24,
+        "name": "Thenhipalam",
+        "village": "Thenhipalam",
+        "taluk": "Tirurangadi",
+        "district": "Malappuram",
+        "color": "#fbe4c8",
+        "center": [
+          75.88667,
+          11.015
+        ],
+        "vulnerability": "Thenhipalam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.86109,
+              10.98168
+            ],
+            [
+              75.91224,
+              10.98168
+            ],
+            [
+              75.91442,
+              11.04832
+            ],
+            [
+              75.85891,
+              11.05168
+            ],
+            [
+              75.86109,
+              10.98168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_25",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 25,
+        "name": "Edarikode",
+        "village": "Edarikode",
+        "taluk": "Tirurangadi",
+        "district": "Malappuram",
+        "color": "#fbe4c8",
+        "center": [
+          75.94,
+          11.015
+        ],
+        "vulnerability": "Edarikode Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.91186,
+              10.98098
+            ],
+            [
+              75.96814,
+              10.98098
+            ],
+            [
+              75.96519,
+              11.04902
+            ],
+            [
+              75.91481,
+              11.05098
+            ],
+            [
+              75.91186,
+              10.98098
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_tirurangadi",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Tirurangadi Taluk",
+        "taluk": "Tirurangadi",
+        "district": "Malappuram",
+        "headquarters": "Tirurangadi Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fbe4c8",
+        "center": [
+          75.932,
+          11.035
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Tirurangadi Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.86,
+              10.98
+            ],
+            [
+              76.02,
+              10.98
+            ],
+            [
+              76.02,
+              11.12
+            ],
+            [
+              75.86,
+              11.12
+            ],
+            [
+              75.86,
+              10.98
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_26",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 26,
+        "name": "Ponnani",
+        "village": "Ponnani",
+        "taluk": "Ponnani",
+        "district": "Malappuram",
+        "color": "#fef08a",
+        "center": [
+          75.90667,
+          10.805
+        ],
+        "vulnerability": "Ponnani Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.88299,
+              10.77158
+            ],
+            [
+              75.93034,
+              10.77158
+            ],
+            [
+              75.93633,
+              10.83842
+            ],
+            [
+              75.87701,
+              10.84158
+            ],
+            [
+              75.88299,
+              10.77158
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_27",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 27,
+        "name": "Edappal",
+        "village": "Edappal",
+        "taluk": "Ponnani",
+        "district": "Malappuram",
+        "color": "#fef08a",
+        "center": [
+          75.96,
+          10.805
+        ],
+        "vulnerability": "Edappal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.93034,
+              10.76758
+            ],
+            [
+              75.98966,
+              10.76758
+            ],
+            [
+              75.98368,
+              10.84242
+            ],
+            [
+              75.93632,
+              10.83758
+            ],
+            [
+              75.93034,
+              10.76758
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_28",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 28,
+        "name": "Marakkara",
+        "village": "Marakkara",
+        "taluk": "Ponnani",
+        "district": "Malappuram",
+        "color": "#fef08a",
+        "center": [
+          76.01333,
+          10.805
+        ],
+        "vulnerability": "Marakkara Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.9896,
+              10.77043
+            ],
+            [
+              76.03707,
+              10.77043
+            ],
+            [
+              76.04293,
+              10.83957
+            ],
+            [
+              75.98374,
+              10.84043
+            ],
+            [
+              75.9896,
+              10.77043
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_29",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 29,
+        "name": "Kalpakanchery",
+        "village": "Kalpakanchery",
+        "taluk": "Ponnani",
+        "district": "Malappuram",
+        "color": "#fef08a",
+        "center": [
+          75.90667,
+          10.735
+        ],
+        "vulnerability": "Kalpakanchery Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.87719,
+              10.70206
+            ],
+            [
+              75.93614,
+              10.70206
+            ],
+            [
+              75.93052,
+              10.76794
+            ],
+            [
+              75.88281,
+              10.77206
+            ],
+            [
+              75.87719,
+              10.70206
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_30",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 30,
+        "name": "Vattamkulam",
+        "village": "Vattamkulam",
+        "taluk": "Ponnani",
+        "district": "Malappuram",
+        "color": "#fef08a",
+        "center": [
+          75.96,
+          10.735
+        ],
+        "vulnerability": "Vattamkulam Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.93597,
+              10.69786
+            ],
+            [
+              75.98403,
+              10.69786
+            ],
+            [
+              75.9893,
+              10.77214
+            ],
+            [
+              75.9307,
+              10.76786
+            ],
+            [
+              75.93597,
+              10.69786
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_ponnani",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Ponnani Taluk",
+        "taluk": "Ponnani",
+        "district": "Malappuram",
+        "headquarters": "Ponnani Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#fef08a",
+        "center": [
+          75.925,
+          10.772
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Ponnani Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.88,
+              10.7
+            ],
+            [
+              76.04,
+              10.7
+            ],
+            [
+              76.04,
+              10.84
+            ],
+            [
+              75.88,
+              10.84
+            ],
+            [
+              75.88,
+              10.7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_31",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 31,
+        "name": "Kondotty",
+        "village": "Kondotty",
+        "taluk": "Kondotty",
+        "district": "Malappuram",
+        "color": "#a7f3d0",
+        "center": [
+          75.92667,
+          11.19
+        ],
+        "vulnerability": "Kondotty Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.89976,
+              11.1583
+            ],
+            [
+              75.95357,
+              11.1583
+            ],
+            [
+              75.95309,
+              11.2217
+            ],
+            [
+              75.90024,
+              11.2183
+            ],
+            [
+              75.89976,
+              11.1583
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_32",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 32,
+        "name": "Pallikkal",
+        "village": "Pallikkal",
+        "taluk": "Kondotty",
+        "district": "Malappuram",
+        "color": "#a7f3d0",
+        "center": [
+          75.98,
+          11.19
+        ],
+        "vulnerability": "Pallikkal Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.95315,
+              11.15904
+            ],
+            [
+              76.00685,
+              11.15904
+            ],
+            [
+              76.00648,
+              11.22096
+            ],
+            [
+              75.95352,
+              11.21904
+            ],
+            [
+              75.95315,
+              11.15904
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_33",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 33,
+        "name": "Vazhakkad",
+        "village": "Vazhakkad",
+        "taluk": "Kondotty",
+        "district": "Malappuram",
+        "color": "#a7f3d0",
+        "center": [
+          76.03333,
+          11.19
+        ],
+        "vulnerability": "Vazhakkad Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.00727,
+              11.1625
+            ],
+            [
+              76.05939,
+              11.1625
+            ],
+            [
+              76.06061,
+              11.2175
+            ],
+            [
+              76.00606,
+              11.2225
+            ],
+            [
+              76.00727,
+              11.1625
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_34",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 34,
+        "name": "Muthuvallur",
+        "village": "Muthuvallur",
+        "taluk": "Kondotty",
+        "district": "Malappuram",
+        "color": "#a7f3d0",
+        "center": [
+          75.92667,
+          11.13
+        ],
+        "vulnerability": "Muthuvallur Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.89899,
+              11.09888
+            ],
+            [
+              75.95435,
+              11.09888
+            ],
+            [
+              75.95232,
+              11.16112
+            ],
+            [
+              75.90101,
+              11.15888
+            ],
+            [
+              75.89899,
+              11.09888
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "village_malappuram_35",
+      "properties": {
+        "adminType": "village",
+        "villageNumber": 35,
+        "name": "Nediyiruppu",
+        "village": "Nediyiruppu",
+        "taluk": "Kondotty",
+        "district": "Malappuram",
+        "color": "#a7f3d0",
+        "center": [
+          75.98,
+          11.13
+        ],
+        "vulnerability": "Nediyiruppu Revenue Village Baseline Sector",
+        "sdmaZone": "KSDMA DDMP Sector"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.95474,
+              11.09843
+            ],
+            [
+              76.00526,
+              11.09843
+            ],
+            [
+              76.00807,
+              11.16157
+            ],
+            [
+              75.95193,
+              11.15843
+            ],
+            [
+              75.95474,
+              11.09843
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "taluk_malappuram_kondotty",
+      "properties": {
+        "adminType": "taluk",
+        "name": "Kondotty Taluk",
+        "taluk": "Kondotty",
+        "district": "Malappuram",
+        "headquarters": "Kondotty Mini Civil Station",
+        "areaKm2": 350,
+        "population": 420000,
+        "color": "#a7f3d0",
+        "center": [
+          75.965,
+          11.145
+        ],
+        "sdmaAuthority": "DDMA Malappuram - Kondotty Incident Command Post"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.9,
+              11.1
+            ],
+            [
+              76.06,
+              11.1
+            ],
+            [
+              76.06,
+              11.22
+            ],
+            [
+              75.9,
+              11.22
+            ],
+            [
+              75.9,
+              11.1
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

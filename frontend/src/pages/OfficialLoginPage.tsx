@@ -987,6 +987,48 @@ export const OfficialLoginPage: React.FC<OfficialLoginPageProps> = ({
                       </button>
                     </div>
 
+                    {/* Quick Demo Credentials */}
+                    <div className="pt-1 space-y-1.5">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+                        Quick Demo Credentials:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPhoneOrEmail('fieldofficer.kottayam@kerala.gov.in');
+                            setLoginPassword('Admin@123');
+                            setLoginTouched({ phoneOrEmail: true, loginPassword: true });
+                            setLoginErrors({});
+                          }}
+                          className="p-2 rounded-xl bg-emerald-950/70 border border-emerald-600/40 text-emerald-300 hover:bg-emerald-900/70 text-[11px] font-bold text-left transition-all flex items-center justify-between"
+                        >
+                          <div>
+                            <div>Field Officer (Kottayam)</div>
+                            <div className="text-[9px] font-mono text-emerald-400/80">Sujith Menon</div>
+                          </div>
+                          <span className="text-[9px] bg-emerald-800 text-white px-1.5 py-0.5 rounded">Fill</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPhoneOrEmail('fieldofficer.pta@kerala.gov.in');
+                            setLoginPassword('Admin@123');
+                            setLoginTouched({ phoneOrEmail: true, loginPassword: true });
+                            setLoginErrors({});
+                          }}
+                          className="p-2 rounded-xl bg-teal-950/70 border border-teal-600/40 text-teal-300 hover:bg-teal-900/70 text-[11px] font-bold text-left transition-all flex items-center justify-between"
+                        >
+                          <div>
+                            <div>Field Officer (Pathanamthitta)</div>
+                            <div className="text-[9px] font-mono text-teal-400/80">Rajesh G. Nair</div>
+                          </div>
+                          <span className="text-[9px] bg-teal-800 text-white px-1.5 py-0.5 rounded">Fill</span>
+                        </button>
+                      </div>
+                    </div>
+
                     {/* Informational Box */}
                     <div className="p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-[11px] text-slate-400 space-y-1">
                       <div className="font-bold text-slate-300 flex items-center gap-1.5">
