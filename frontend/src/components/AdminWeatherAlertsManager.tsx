@@ -33,13 +33,16 @@ export const AdminWeatherAlertsManager: React.FC = () => {
   const fetchAllAdminData = async () => {
     setLoading(true);
     const token = getAuthToken();
-    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
     try {
       const [sourcesRes, mappingsRes, healthRes, auditRes] = await Promise.all([
-        fetch('/api/weather-alerts/admin/sources', { headers: authHeaders }),
-        fetch('/api/weather-alerts/admin/mappings', { headers: authHeaders }),
-        fetch('/api/weather-alerts/admin/system-health', { headers: authHeaders }),
-        fetch('/api/weather-alerts/admin/audit-logs', { headers: authHeaders })
+        fetch('/api/weather-alerts/admin/sources', { headers }),
+        fetch('/api/weather-alerts/admin/mappings', { headers }),
+        fetch('/api/weather-alerts/admin/system-health', { headers }),
+        fetch('/api/weather-alerts/admin/audit-logs', { headers })
       ]);
 
       const [sourcesJson, mappingsJson, healthJson, auditJson]: any[] = await Promise.all([

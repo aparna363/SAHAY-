@@ -2,13 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   MapPin,
   Navigation,
-  Layers,
-  Calendar,
-  AlertCircle,
-  Eye,
-  ClipboardCheck,
-  RotateCw,
-  Filter
+  RotateCw
 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -29,7 +23,7 @@ export const FieldOfficerMapView: React.FC<FieldOfficerMapViewProps> = ({
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
   // Officer GPS state
-  const [officerGPS, setOfficerGPS] = useState<{ lat: number; lng: number } | null>(null);
+  const [, setOfficerGPS] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -289,6 +283,12 @@ export const FieldOfficerMapView: React.FC<FieldOfficerMapViewProps> = ({
           </button>
         </div>
       </div>
+
+      {error && (
+        <div className="p-3 bg-rose-50 border-b border-rose-200 text-rose-700 text-xs font-semibold">
+          {error}
+        </div>
+      )}
 
       {/* Map Container */}
       <div className="relative h-[480px] w-full">

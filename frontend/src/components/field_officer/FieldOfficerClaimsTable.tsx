@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Search,
-  Filter,
   Eye,
   Calendar,
   ClipboardCheck,
@@ -11,10 +10,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   RotateCw,
-  Phone,
-  ArrowUpDown,
-  Building,
-  Home
+  Phone
 } from 'lucide-react';
 import type { FieldOfficerClaim } from '../../services/api';
 

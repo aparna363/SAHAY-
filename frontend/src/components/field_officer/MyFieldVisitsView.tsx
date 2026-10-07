@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar,
-  Clock,
   MapPin,
   CheckCircle2,
   AlertCircle,
-  Camera,
-  ArrowRight,
   ClipboardCheck,
-  User,
   Phone,
   RotateCw,
   CalendarDays

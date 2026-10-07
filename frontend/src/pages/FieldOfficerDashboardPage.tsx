@@ -3,17 +3,11 @@ import {
   ClipboardList,
   CalendarDays,
   MapPin,
-  Shield,
   UserCheck,
-  CheckCircle2,
-  AlertTriangle,
   RotateCw,
   LogOut,
   ArrowRight,
-  Info,
-  Clock,
-  Layers,
-  Sparkles
+  Info
 } from 'lucide-react';
 import {
   fetchFieldOfficerSummary,
@@ -36,8 +30,7 @@ interface FieldOfficerDashboardPageProps {
 
 export const FieldOfficerDashboardPage: React.FC<FieldOfficerDashboardPageProps> = ({
   user,
-  onSignOut,
-  onNavigateToTab
+  onSignOut
 }) => {
   // Navigation & Sub-views
   const [activeSection, setActiveSection] = useState<'applications' | 'my_visits' | 'map'>('applications');
@@ -224,6 +217,12 @@ export const FieldOfficerDashboardPage: React.FC<FieldOfficerDashboardPageProps>
 
       {/* 2. Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {error && (
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+            {error}
+          </div>
+        )}
+
         {/* Role Restriction & Compliance Notice */}
         <div className="p-4 rounded-3xl bg-blue-50/80 border border-blue-200/90 text-blue-900 shadow-xs flex items-start gap-3 text-xs leading-relaxed">
           <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
