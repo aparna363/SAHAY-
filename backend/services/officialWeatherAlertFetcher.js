@@ -1,37 +1,37 @@
-/**
- * Official Weather Alert Fetcher & Background Polling Engine
- *
- * Requirements:
- * 1. Data Source: Official/Government meteorological data (e.g. IMD / KSDMA CAP RSS feed).
- * 2. Fallback: OpenWeatherMap One Call API 3.0 alerts field if official source unavailable.
- *    Clearly flag source_type as OFFICIAL vs SECONDARY.
- * 3. Never invent alert levels from raw weather metrics.
- *    Severity is mapped only through severityMapper.
- * 4. Audit Logging: Server-side record of every fetch attempt.
- * 5. Reliability:
- *    - Cache last successfully fetched alert with timestamp.
- *    - On fetch failure, use cached alert.
- *    - If no cache exists, return UNVERIFIED.
- * 6. Notifications:
- *    - Citizens: RED / ORANGE
- *    - Rescue Teams: YELLOW / ORANGE / RED
- */
-
 const pool = require('../db');
-
 const {
   mapSeverityLevel,
-  getHighestSeverityLevel
-} = require('../utils/severityMapper');
+  getHighestSeverityLevel,
+} = require('./severityMapper');
+const { sendDistrictRoleNotification } = require('./notificationService');
 
-const {
-  sendDistrictRoleNotification
-} = require('./notificationService');
+// ============================================================
+// SAHAY - Official Weather Alert Fetcher
+// ============================================================
+// Primary source:
+//   KSDMA / IMD RSS feed
+//
+// Secondary source:
+//   OpenWeather Current Weather API
+//
+// Final fallback:
+//   Cached official alerts / manual advisories
+//
+// IMPORTANT:
+//   OPENWEATHER_API_KEY must be configured in Render Environment
+//   Variables. Do NOT hard-code the API key here.
+// ============================================================
 
 
-/* ============================================================
-   KERALA DISTRICTS
-============================================================ */
+// ============================================================
+// CONFIGURATION
+// ============================================================
+
+const OFFICIAL_FETCH_TIMEOUT = 15000;
+const SECONDARY_FETCH_TIMEOUT = 10000;
+
+const OFFICIAL_CACHE_DURATION = 3 * 60 * 1000;
+const WEATHER_POLL_INTERVAL = 20 * 60 * 1000;
 
 const KERALA_DISTRICTS = [
   'Thiruvananthapuram',
@@ -47,1628 +47,1611 @@ const KERALA_DISTRICTS = [
   'Kozhikode',
   'Wayanad',
   'Kannur',
-  'Kasaragod'
+  'Kasaragod',
 ];
 
 
-/* ============================================================
-   DISTRICT COORDINATES
-============================================================ */
+// ============================================================
+// DISTRICT COORDINATES
+// ============================================================
 
 const DISTRICT_COORDS = {
-
   thiruvananthapuram: {
     lat: 8.5241,
-    lon: 76.9366
+    lon: 76.9366,
   },
 
   kollam: {
     lat: 8.8932,
-    lon: 76.6141
+    lon: 76.6141,
   },
 
   pathanamthitta: {
     lat: 9.2648,
-    lon: 76.7870
+    lon: 76.7870,
   },
 
   alappuzha: {
     lat: 9.4981,
-    lon: 76.3388
+    lon: 76.3388,
   },
 
   kottayam: {
     lat: 9.5916,
-    lon: 76.5222
+    lon: 76.5222,
   },
 
   idukki: {
-    lat: 9.8497,
-    lon: 76.9804
+    lat: 9.8494,
+    lon: 76.9720,
   },
 
   ernakulam: {
     lat: 9.9816,
-    lon: 76.2999
+    lon: 76.2999,
   },
 
   thrissur: {
     lat: 10.5276,
-    lon: 76.2144
+    lon: 76.2144,
   },
 
   palakkad: {
     lat: 10.7867,
-    lon: 76.6548
+    lon: 76.6548,
   },
 
   malappuram: {
-    lat: 11.0720,
-    lon: 76.0740
+    lat: 11.0510,
+    lon: 76.0711,
   },
 
   kozhikode: {
     lat: 11.2588,
-    lon: 75.7804
+    lon: 75.7804,
   },
 
   wayanad: {
     lat: 11.6854,
-    lon: 76.1320
+    lon: 76.1320,
   },
 
   kannur: {
     lat: 11.8745,
-    lon: 75.3704
+    lon: 75.3704,
   },
 
   kasaragod: {
     lat: 12.5102,
-    lon: 74.9852
-  }
-
+    lon: 74.9852,
+  },
 };
 
 
-/* ============================================================
-   OFFICIAL FEED CACHE
-============================================================ */
+// ============================================================
+// IN-MEMORY OFFICIAL FEED CACHE
+// ============================================================
 
-const officialFeedCache = {
-
-  url: null,
-
-  text: null,
-
-  error: null,
-
-  timestamp: 0,
-
-  hasLoggedFailure: false
-
-};
+const officialFeedCache = new Map();
 
 
-/* ============================================================
-   CONSTANTS
-============================================================ */
+// ============================================================
+// HELPERS
+// ============================================================
 
-const OFFICIAL_FETCH_TIMEOUT = 15000;
-
-const SECONDARY_FETCH_TIMEOUT = 10000;
-
-const OFFICIAL_CACHE_DURATION = 3 * 60 * 1000;
-
-
-/* ============================================================
-   DISTRICT NORMALIZATION
-============================================================ */
-
-function cleanDistrict(raw) {
-
-  if (!raw) {
-    return 'Ernakulam';
-  }
-
-  return String(raw)
+function normalizeDistrictName(value) {
+  return String(value || '')
     .trim()
-    .replace(/\s+district$/i, '');
-
+    .toLowerCase()
+    .replace(/\s+/g, ' ');
 }
 
 
-/* ============================================================
-   FETCH WITH TIMEOUT
-============================================================ */
-
-async function fetchWithTimeout(
-  url,
-  options = {},
-  timeoutMs = 15000
-) {
-
-  const controller = new AbortController();
-
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, timeoutMs);
-
-  try {
-
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal
-    });
-
-    return response;
-
-  } catch (err) {
-
-    if (err.name === 'AbortError') {
-
-      throw new Error(
-        `Request timed out after ${timeoutMs / 1000} seconds`
-      );
-
-    }
-
-    throw err;
-
-  } finally {
-
-    clearTimeout(timeoutId);
-
-  }
-
-}
-
-
-/* ============================================================
-   ACTIVE WEATHER SOURCES
-============================================================ */
-
-async function getActiveSources() {
-
-  try {
-
-    const res = await pool.query(
-      `
-      SELECT *
-      FROM weather_alert_sources
-      WHERE is_active = TRUE
-      ORDER BY priority ASC
-      `
-    );
-
-    return res.rows;
-
-  } catch (err) {
-
-    console.error(
-      '[WeatherAlertFetcher] Error fetching active sources:',
-      err.message
-    );
-
-    return [];
-
-  }
-
-}
-
-
-/* ============================================================
-   SOURCE SEVERITY MAPPINGS
-============================================================ */
-
-async function getSourceSeverityMappings(sourceId) {
-
-  try {
-
-    const res = await pool.query(
-      `
-      SELECT *
-      FROM weather_severity_mappings
-      WHERE source_id = $1
-        AND is_active = TRUE
-      `,
-      [sourceId]
-    );
-
-    return res.rows;
-
-  } catch (err) {
-
-    console.error(
-      '[WeatherAlertFetcher] Error loading severity mappings:',
-      err.message
-    );
-
-    return [];
-
-  }
-
-}
-
-
-/* ============================================================
-   XML DECODING
-============================================================ */
-
-function decodeXml(value) {
-
-  if (!value) {
-    return '';
-  }
-
-  return String(value)
-    .replace(/<!\[CDATA\[/gi, '')
-    .replace(/\]\]>/gi, '')
+function escapeHtml(value) {
+  return String(value || '')
     .replace(/&amp;/gi, '&')
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
-    .trim();
-
+    .replace(/&#x27;/gi, "'");
 }
 
 
-/* ============================================================
-   RSS/XML TAG EXTRACTION
-============================================================ */
+function stripHtml(value) {
+  return String(value || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
-function extractXmlTag(xml, tagName) {
 
+function decodeXml(value) {
+  return stripHtml(escapeHtml(value))
+    .replace(/<!\[CDATA\[/gi, '')
+    .replace(/\]\]>/gi, '')
+    .trim();
+}
+
+
+function getTagValue(block, tagName) {
   const regex = new RegExp(
     `<${tagName}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tagName}>`,
     'i'
   );
 
-  const match = xml.match(regex);
+  const match = block.match(regex);
 
-  return match
-    ? decodeXml(match[1])
-    : '';
-
+  return match ? decodeXml(match[1]) : '';
 }
 
 
-/* ============================================================
-   RSS FEED PARSER
-============================================================ */
+function getAttributeValue(block, tagName, attributeName) {
+  const regex = new RegExp(
+    `<${tagName}[^>]*\\s${attributeName}=["']([^"']+)["'][^>]*>`,
+    'i'
+  );
 
-function parseRSSFeedText(xmlText, districtName) {
+  const match = block.match(regex);
 
-  const items = [];
+  return match ? match[1] : '';
+}
 
-  if (!xmlText || typeof xmlText !== 'string') {
-    return items;
+
+function safeDate(value) {
+  if (!value) {
+    return new Date();
   }
 
+  const parsed = new Date(value);
 
-  /*
-   * Standard RSS:
-   * <item>...</item>
-   */
-  const itemMatches =
-    xmlText.match(/<item(?:\s[^>]*)?>[\s\S]*?<\/item>/gi) || [];
+  if (Number.isNaN(parsed.getTime())) {
+    return new Date();
+  }
+
+  return parsed;
+}
 
 
-  for (const itemXml of itemMatches) {
+// ============================================================
+// FETCH WITH TIMEOUT
+// ============================================================
 
+async function fetchWithTimeout(
+  url,
+  options = {},
+  timeoutMs = 10000
+) {
+  const controller = new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+
+    return response;
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error(
+        `Request timed out after ${timeoutMs}ms`
+      );
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+
+// ============================================================
+// GET ACTIVE WEATHER SOURCES
+// ============================================================
+
+async function getActiveSources() {
+  const result = await pool.query(`
+    SELECT *
+    FROM weather_alert_sources
+    WHERE is_active = TRUE
+    ORDER BY priority ASC
+  `);
+
+  return result.rows;
+}
+
+
+// ============================================================
+// GET SOURCE SEVERITY MAPPINGS
+// ============================================================
+
+async function getSourceSeverityMappings(sourceId) {
+  try {
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM weather_alert_severity_mappings
+      WHERE source_id = $1
+      `,
+      [sourceId]
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.warn(
+      `[WeatherAlertFetcher] Unable to load severity mappings for source ${sourceId}:`,
+      error.message
+    );
+
+    return [];
+  }
+}
+
+
+// ============================================================
+// FIND SEVERITY FROM SOURCE MAPPING
+// ============================================================
+
+function findMappedSeverity(
+  sourceValue,
+  mappings
+) {
+  if (!sourceValue || !Array.isArray(mappings)) {
+    return null;
+  }
+
+  const normalized = String(sourceValue)
+    .trim()
+    .toLowerCase();
+
+  const mapping = mappings.find((item) => {
+    const sourceLevel = String(
+      item.source_level ||
+      item.source_severity ||
+      item.level ||
+      ''
+    )
+      .trim()
+      .toLowerCase();
+
+    return sourceLevel === normalized;
+  });
+
+  if (!mapping) {
+    return null;
+  }
+
+  return (
+    mapping.severity_level ||
+    mapping.mapped_severity ||
+    mapping.target_severity ||
+    null
+  );
+}
+
+
+// ============================================================
+// DETECT HAZARD TYPE
+// ============================================================
+
+function detectHazardType(text) {
+  const value = String(text || '').toLowerCase();
+
+  if (
+    value.includes('landslide') ||
+    value.includes('land slip') ||
+    value.includes('mudslide')
+  ) {
+    return 'LANDSLIDE';
+  }
+
+  if (
+    value.includes('flood') ||
+    value.includes('flash flood') ||
+    value.includes('waterlogging')
+  ) {
+    return 'FLOOD';
+  }
+
+  if (
+    value.includes('cyclone') ||
+    value.includes('storm')
+  ) {
+    return 'CYCLONE';
+  }
+
+  if (
+    value.includes('thunderstorm') ||
+    value.includes('lightning')
+  ) {
+    return 'THUNDERSTORM';
+  }
+
+  if (
+    value.includes('heavy rain') ||
+    value.includes('very heavy rain') ||
+    value.includes('extremely heavy rain') ||
+    value.includes('rainfall') ||
+    value.includes('rain')
+  ) {
+    return 'HEAVY_RAIN';
+  }
+
+  if (
+    value.includes('coastal') ||
+    value.includes('high wave') ||
+    value.includes('rough sea')
+  ) {
+    return 'COASTAL_HAZARD';
+  }
+
+  return 'WEATHER';
+}
+
+
+// ============================================================
+// DETECT SEVERITY FROM TEXT
+// ============================================================
+
+function detectSeverityFromText(text) {
+  const value = String(text || '').toLowerCase();
+
+  if (
+    value.includes('red alert') ||
+    value.includes('red warning') ||
+    value.includes('extremely heavy') ||
+    value.includes('severe') ||
+    value.includes('very severe') ||
+    value.includes('extreme')
+  ) {
+    return 'RED';
+  }
+
+  if (
+    value.includes('orange alert') ||
+    value.includes('orange warning') ||
+    value.includes('very heavy') ||
+    value.includes('heavy to very heavy')
+  ) {
+    return 'ORANGE';
+  }
+
+  if (
+    value.includes('yellow alert') ||
+    value.includes('yellow warning') ||
+    value.includes('heavy rain') ||
+    value.includes('moderate risk')
+  ) {
+    return 'YELLOW';
+  }
+
+  return 'GREEN';
+}
+
+
+// ============================================================
+// CHECK WHETHER ALERT BELONGS TO DISTRICT
+// ============================================================
+
+function alertMatchesDistrict(
+  text,
+  districtName
+) {
+  const normalizedText = String(text || '').toLowerCase();
+
+  const district = normalizeDistrictName(
+    districtName
+  );
+
+  if (
+    normalizedText.includes(district)
+  ) {
+    return true;
+  }
+
+  // Kerala-wide alerts are relevant to all districts.
+  if (
+    normalizedText.includes('kerala') ||
+    normalizedText.includes('entire state') ||
+    normalizedText.includes('statewide')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+
+// ============================================================
+// PARSE RSS / XML FEED
+// ============================================================
+
+function parseRSSFeedText(
+  xmlText,
+  districtName
+) {
+  const alerts = [];
+
+  if (!xmlText) {
+    return alerts;
+  }
+
+  const itemMatches = xmlText.match(
+    /<item\b[\s\S]*?<\/item>/gi
+  ) || [];
+
+  for (const item of itemMatches) {
     const title =
-      extractXmlTag(itemXml, 'title');
+      getTagValue(item, 'title') ||
+      getTagValue(item, 'name');
 
     const description =
-      extractXmlTag(itemXml, 'description');
+      getTagValue(item, 'description') ||
+      getTagValue(item, 'summary') ||
+      getTagValue(item, 'content');
 
     const category =
-      extractXmlTag(itemXml, 'category');
+      getTagValue(item, 'category') ||
+      getTagValue(item, 'event');
 
     const link =
-      extractXmlTag(itemXml, 'link') ||
-      'https://mausam.imd.gov.in';
+      getTagValue(item, 'link') ||
+      getAttributeValue(item, 'link', 'href');
 
     const pubDate =
-      extractXmlTag(itemXml, 'pubDate');
+      getTagValue(item, 'pubDate') ||
+      getTagValue(item, 'published') ||
+      getTagValue(item, 'updated');
 
+    const combinedText = [
+      title,
+      description,
+      category,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-    const rawCategory =
-      category ||
-      title.match(/red|orange|yellow|green/i)?.[0] ||
-      'Advisory';
-
-
-    const titleLower =
-      title.toLowerCase();
-
-    const descriptionLower =
-      description.toLowerCase();
-
-    const districtLower =
-      districtName.toLowerCase();
-
-
-    /*
-     * Only use alerts that:
-     * - mention the district
-     * - OR mention Kerala
-     */
-    const districtMatch =
-      titleLower.includes(districtLower) ||
-      descriptionLower.includes(districtLower) ||
-      titleLower.includes('kerala') ||
-      descriptionLower.includes('kerala');
-
-
-    if (!title || !districtMatch) {
+    if (
+      !alertMatchesDistrict(
+        combinedText,
+        districtName
+      )
+    ) {
       continue;
     }
 
+    const severity =
+      detectSeverityFromText(
+        combinedText
+      );
 
-    let hazardType =
-      'Meteorological Warning';
+    const hazardType =
+      detectHazardType(
+        combinedText
+      );
 
-
-    if (
-      titleLower.includes('rain') ||
-      descriptionLower.includes('rain')
-    ) {
-
-      hazardType = 'Heavy Rainfall';
-
-    } else if (
-      titleLower.includes('flood') ||
-      descriptionLower.includes('flood')
-    ) {
-
-      hazardType = 'Flood Alert';
-
-    } else if (
-      titleLower.includes('landslide') ||
-      descriptionLower.includes('landslide')
-    ) {
-
-      hazardType = 'Landslide Warning';
-
-    } else if (
-      titleLower.includes('cyclone') ||
-      descriptionLower.includes('cyclone')
-    ) {
-
-      hazardType = 'Cyclone Warning';
-
-    }
-
-
-    let issuedAt;
-
-    if (pubDate) {
-
-      const parsedDate =
-        new Date(pubDate);
-
-      issuedAt =
-        Number.isNaN(parsedDate.getTime())
-          ? new Date().toISOString()
-          : parsedDate.toISOString();
-
-    } else {
-
-      issuedAt =
-        new Date().toISOString();
-
-    }
-
-
-    items.push({
-
-      alert_id:
-        `IMD-${districtName}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-
-      hazard_type:
-        hazardType,
-
-      raw_severity:
-        rawCategory,
-
-      title,
-
+    alerts.push({
+      district: districtName,
+      title:
+        title ||
+        `${hazardType} Alert`,
       description:
         description ||
-        `Official weather alert issued for ${districtName}.`,
-
-      safety_instructions:
-        descriptionLower.includes('safety')
-          ? description
-          : 'Stay indoors during heavy downpours. Keep emergency contacts ready.',
-
-      affected_zones:
-        [districtName],
-
-      source_reference_url:
-        link,
-
-      issued_at:
-        issuedAt,
-
-      expires_at:
-        new Date(
-          Date.now() + 24 * 60 * 60 * 1000
-        ).toISOString(),
-
-      raw_payload:
-        {
-          xml: itemXml
-        }
-
+        title ||
+        'Official weather advisory',
+      severity,
+      hazard_type: hazardType,
+      source: 'IMD/KSDMA',
+      source_url: link || null,
+      issued_at: safeDate(pubDate),
+      is_official: true,
     });
-
   }
 
-
-  return items;
-
+  return alerts;
 }
 
 
-/* ============================================================
-   OPENWEATHERMAP FALLBACK
-============================================================ */
+// ============================================================
+// FETCH OFFICIAL SOURCE
+// ============================================================
+
+async function fetchOfficialSource(
+  source,
+  districtName
+) {
+  const cacheKey = String(
+    source.id
+  );
+
+  const cached =
+    officialFeedCache.get(cacheKey);
+
+  if (
+    cached &&
+    Date.now() - cached.timestamp <
+      OFFICIAL_CACHE_DURATION
+  ) {
+    return parseRSSFeedText(
+      cached.text,
+      districtName
+    );
+  }
+
+  console.log(
+    `[WeatherAlertFetcher] Fetching official feed: ${source.name}`
+  );
+
+  const response =
+    await fetchWithTimeout(
+      source.api_endpoint,
+      {
+        method: 'GET',
+        headers: {
+          'User-Agent':
+            'SAHAY-Disaster-Management-System/1.0',
+          Accept:
+            'application/rss+xml, application/xml, text/xml, */*',
+          'Cache-Control':
+            'no-cache',
+        },
+      },
+      OFFICIAL_FETCH_TIMEOUT
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      `HTTP ${response.status} from ${source.name}`
+    );
+  }
+
+  const text =
+    await response.text();
+
+  if (!text || text.trim().length === 0) {
+    throw new Error(
+      'Official feed returned an empty response'
+    );
+  }
+
+  officialFeedCache.set(
+    cacheKey,
+    {
+      timestamp: Date.now(),
+      text,
+    }
+  );
+
+  return parseRSSFeedText(
+    text,
+    districtName
+  );
+}
+
+
+// ============================================================
+// OPENWEATHER SEVERITY
+// ============================================================
+
+function getOpenWeatherSeverity(
+  weather,
+  rain,
+  windSpeed
+) {
+  const main =
+    String(
+      weather?.main || ''
+    ).toLowerCase();
+
+  const description =
+    String(
+      weather?.description || ''
+    ).toLowerCase();
+
+  const combined = `${main} ${description}`;
+
+  // Thunderstorms
+  if (
+    combined.includes('thunderstorm')
+  ) {
+    return 'ORANGE';
+  }
+
+  // Very strong wind
+  if (
+    typeof windSpeed === 'number' &&
+    windSpeed >= 17
+  ) {
+    return 'ORANGE';
+  }
+
+  // Heavy / extreme rain
+  if (
+    combined.includes('heavy rain') ||
+    combined.includes('extreme rain')
+  ) {
+    return 'ORANGE';
+  }
+
+  // Rain
+  if (
+    combined.includes('rain') ||
+    combined.includes('drizzle')
+  ) {
+    return 'YELLOW';
+  }
+
+  // Moderate rain amount
+  if (
+    typeof rain === 'number' &&
+    rain >= 10
+  ) {
+    return 'YELLOW';
+  }
+
+  return 'GREEN';
+}
+
+
+// ============================================================
+// FETCH OPENWEATHER CURRENT WEATHER
+// ============================================================
 
 async function fetchOpenWeatherAlerts(
   source,
-  district
+  districtName
 ) {
-
   const coords =
-    DISTRICT_COORDS[district.toLowerCase()] ||
-    {
-      lat: 9.9816,
-      lon: 76.2999
-    };
+    DISTRICT_COORDS[
+      normalizeDistrictName(districtName)
+    ];
 
+  if (!coords) {
+    throw new Error(
+      `No coordinates configured for ${districtName}`
+    );
+  }
 
   const apiKey =
     source.api_key ||
     process.env.OPENWEATHER_API_KEY ||
     '';
 
-
   if (!apiKey) {
-
     throw new Error(
       'OPENWEATHER_API_KEY is not configured'
     );
-
   }
 
-
-  /*
-   * OpenWeatherMap One Call API 3.0
-   */
   const url =
     `${source.api_endpoint}` +
-    `?lat=${coords.lat}` +
-    `&lon=${coords.lon}` +
-    `&appid=${apiKey}`;
-
+    `?lat=${encodeURIComponent(coords.lat)}` +
+    `&lon=${encodeURIComponent(coords.lon)}` +
+    `&appid=${encodeURIComponent(apiKey)}` +
+    `&units=metric`;
 
   const response =
     await fetchWithTimeout(
-
       url,
-
       {
+        method: 'GET',
         headers: {
+          Accept: 'application/json',
           'User-Agent':
             'SAHAY-Disaster-Management-System/1.0',
-
-          'Accept':
-            'application/json'
-        }
+        },
       },
-
       SECONDARY_FETCH_TIMEOUT
-
     );
 
-
   if (!response.ok) {
-
     throw new Error(
       `HTTP ${response.status} from ${source.name}`
     );
-
   }
-
 
   const data =
     await response.json();
 
-
-  if (!Array.isArray(data.alerts)) {
-
-    return [];
-
+  if (
+    !data ||
+    !Array.isArray(data.weather) ||
+    !data.weather.length
+  ) {
+    throw new Error(
+      'OpenWeather returned no weather data'
+    );
   }
 
+  const weather =
+    data.weather[0];
 
-  return data.alerts.map((alert, index) => ({
+  const rainfall =
+    data.rain?.['1h'] ??
+    data.rain?.['3h'] ??
+    0;
 
-    alert_id:
-      `OWM-${district}-${alert.start || Date.now()}-${index}`,
+  const windSpeed =
+    Number(data.wind?.speed || 0);
 
-    hazard_type:
-      alert.event || 'Weather Warning',
+  const severity =
+    getOpenWeatherSeverity(
+      weather,
+      Number(rainfall),
+      windSpeed
+    );
 
-    raw_severity:
-      alert.severity ||
-      alert.event ||
-      'Moderate',
+  const hazardType =
+    detectHazardType(
+      `${weather.main} ${weather.description}`
+    );
 
-    title:
-      alert.event ||
-      'Weather Warning',
+  const title =
+    `Weather condition: ${
+      weather.description || weather.main
+    }`;
 
-    description:
-      alert.description ||
-      `Secondary weather alert issued for ${district}.`,
+  const descriptionParts = [];
 
-    safety_instructions:
-      'Follow local authority guidelines.',
+  if (
+    data.main?.temp !== undefined
+  ) {
+    descriptionParts.push(
+      `Temperature: ${data.main.temp}°C`
+    );
+  }
 
-    affected_zones:
-      [district],
+  if (
+    data.main?.humidity !== undefined
+  ) {
+    descriptionParts.push(
+      `Humidity: ${data.main.humidity}%`
+    );
+  }
 
-    source_reference_url:
-      'https://openweathermap.org',
+  if (
+    windSpeed !== undefined
+  ) {
+    descriptionParts.push(
+      `Wind: ${windSpeed} m/s`
+    );
+  }
 
-    issued_at:
-      alert.start
-        ? new Date(alert.start * 1000).toISOString()
-        : new Date().toISOString(),
+  if (
+    Number(rainfall) > 0
+  ) {
+    descriptionParts.push(
+      `Rainfall: ${rainfall} mm`
+    );
+  }
 
-    expires_at:
-      alert.end
-        ? new Date(alert.end * 1000).toISOString()
-        : new Date(
-            Date.now() +
-            12 * 60 * 60 * 1000
-          ).toISOString(),
-
-    raw_payload:
-      alert
-
-  }));
-
+  return [
+    {
+      district: districtName,
+      title,
+      description:
+        descriptionParts.join(' | ') ||
+        'Current weather observation from OpenWeather',
+      severity,
+      hazard_type: hazardType,
+      source: 'OpenWeather',
+      source_url:
+        'https://openweathermap.org/',
+      issued_at: new Date(),
+      is_official: false,
+      weather_data: {
+        temperature:
+          data.main?.temp ?? null,
+        feels_like:
+          data.main?.feels_like ?? null,
+        humidity:
+          data.main?.humidity ?? null,
+        pressure:
+          data.main?.pressure ?? null,
+        wind_speed:
+          windSpeed,
+        rainfall:
+          Number(rainfall),
+        weather:
+          weather.description ||
+          weather.main ||
+          null,
+      },
+    },
+  ];
 }
 
 
-/* ============================================================
-   FETCH ALERTS FOR DISTRICT
-============================================================ */
+// ============================================================
+// FETCH ALERTS FOR ONE DISTRICT
+// ============================================================
 
 async function fetchAlertsForDistrict(
-  districtName,
-  force = false
+  districtName
 ) {
-
-  const district =
-    cleanDistrict(districtName);
-
-
   const sources =
     await getActiveSources();
 
+  const officialSources =
+    sources.filter(
+      (source) =>
+        String(source.source_type)
+          .toUpperCase() === 'OFFICIAL'
+    );
 
-  let fetchedAlerts = [];
+  const secondarySources =
+    sources.filter(
+      (source) =>
+        String(source.source_type)
+          .toUpperCase() === 'SECONDARY'
+    );
 
-  let successSource = null;
+  // ----------------------------------------------------------
+  // PRIMARY: OFFICIAL SOURCES
+  // ----------------------------------------------------------
 
-  let isFallback = false;
-
-  let fetchErrorMessage = null;
-
-
-  /* ==========================================================
-     TRY SOURCES IN PRIORITY ORDER
-  ========================================================== */
-
-  for (const source of sources) {
-
+  for (const source of officialSources) {
     try {
-
-
-      /* ======================================================
-         OFFICIAL SOURCE
-      ====================================================== */
-
-      if (source.source_type === 'OFFICIAL') {
-
-        const now =
-          Date.now();
-
-        let text = null;
-
-
-        const cacheIsValid =
-          !force &&
-          officialFeedCache.url === source.api_endpoint &&
-          officialFeedCache.text &&
-          (now - officialFeedCache.timestamp <
-            OFFICIAL_CACHE_DURATION);
-
-
-        if (cacheIsValid) {
-
-          console.log(
-            `[WeatherAlertFetcher] Using cached official feed for ${source.name}`
-          );
-
-          text =
-            officialFeedCache.text;
-
-        } else {
-
-          console.log(
-            `[WeatherAlertFetcher] Fetching official feed: ${source.name}`
-          );
-
-
-          const response =
-            await fetchWithTimeout(
-
-              source.api_endpoint,
-
-              {
-                headers: {
-
-                  'User-Agent':
-                    'SAHAY-Disaster-Management-System/1.0',
-
-                  'Accept':
-                    'application/rss+xml, application/xml, text/xml, */*',
-
-                  'Cache-Control':
-                    'no-cache'
-
-                }
-
-              },
-
-              OFFICIAL_FETCH_TIMEOUT
-
-            );
-
-
-          if (!response.ok) {
-
-            const errMsg =
-              `HTTP ${response.status} from ${source.name}`;
-
-            officialFeedCache.url =
-              source.api_endpoint;
-
-            officialFeedCache.text =
-              null;
-
-            officialFeedCache.error =
-              errMsg;
-
-            officialFeedCache.timestamp =
-              now;
-
-            throw new Error(errMsg);
-
-          }
-
-
-          text =
-            await response.text();
-
-
-          if (!text || !text.trim()) {
-
-            throw new Error(
-              `Empty response received from ${source.name}`
-            );
-
-          }
-
-
-          /*
-           * Save successful feed to memory cache
-           */
-          officialFeedCache.url =
-            source.api_endpoint;
-
-          officialFeedCache.text =
-            text;
-
-          officialFeedCache.error =
-            null;
-
-          officialFeedCache.timestamp =
-            now;
-
-          officialFeedCache.hasLoggedFailure =
-            false;
-
-
-          console.log(
-            `[WeatherAlertFetcher] Official feed received successfully from ${source.name}`
-          );
-
-        }
-
-
-        if (text) {
-
-          const parsed =
-            parseRSSFeedText(
-              text,
-              district
-            );
-
-
-          fetchedAlerts =
-            parsed;
-
-          successSource =
-            source;
-
-          break;
-
-        }
-
-      }
-
-
-      /* ======================================================
-         SECONDARY SOURCE
-      ====================================================== */
-
-      else if (
-        source.source_type === 'SECONDARY'
-      ) {
-
-        console.log(
-          `[WeatherAlertFetcher] Trying secondary source '${source.name}' for ${district}`
+      const alerts =
+        await fetchOfficialSource(
+          source,
+          districtName
         );
-
-
-        fetchedAlerts =
-          await fetchOpenWeatherAlerts(
-            source,
-            district
-          );
-
-
-        successSource =
-          source;
-
-        isFallback =
-          true;
-
-        break;
-
-      }
-
-    } catch (err) {
-
-      fetchErrorMessage =
-        err.message;
-
 
       if (
-        source.source_type === 'OFFICIAL'
+        alerts.length > 0
       ) {
-
-        if (
-          !officialFeedCache.hasLoggedFailure
-        ) {
-
-          console.warn(
-            `[WeatherAlertFetcher] Source '${source.name}' feed unreachable: ${err.message}. Trying fallback source.`
-          );
-
-          officialFeedCache.hasLoggedFailure =
-            true;
-
-        }
-
-      } else {
-
-        console.warn(
-          `[WeatherAlertFetcher] Source '${source.name}' fetch failed for ${district}: ${err.message}`
-        );
-
+        return {
+          alerts,
+          sourceType: 'OFFICIAL',
+          sourceName: source.name,
+        };
       }
 
-    }
-
-  }
-
-
-  /* ==========================================================
-     SEVERITY MAPPING
-  ========================================================== */
-
-  const customMappings =
-    successSource
-      ? await getSourceSeverityMappings(
-          successSource.id
-        )
-      : [];
-
-
-  const mappedAlerts =
-    fetchedAlerts.map(alert => ({
-
-      ...alert,
-
-      mapped_severity:
-        mapSeverityLevel(
-          alert.raw_severity,
-          customMappings
-        )
-
-    }));
-
-
-  const highestSeverity =
-    getHighestSeverityLevel(
-      mappedAlerts
-    );
-
-
-  /* ==========================================================
-     PREVIOUS SEVERITY
-  ========================================================== */
-
-  let previousSeverity =
-    'GREEN';
-
-
-  try {
-
-    const cacheRes =
-      await pool.query(
-
-        `
-        SELECT highest_severity
-        FROM weather_alert_zone_cache
-        WHERE LOWER(district) = LOWER($1)
-        `,
-
-        [district]
-
+      console.log(
+        `[WeatherAlertFetcher] Official source '${source.name}' returned no matching alerts for ${districtName}.`
       );
-
-
-    if (
-      cacheRes.rows.length > 0
-    ) {
-
-      previousSeverity =
-        cacheRes.rows[0].highest_severity ||
-        'GREEN';
-
+    } catch (error) {
+      console.warn(
+        `[WeatherAlertFetcher] Source '${source.name}' feed unreachable: ${error.message}. Trying fallback source.`
+      );
     }
-
-  } catch (err) {
-
-    console.warn(
-      `[WeatherAlertFetcher] Unable to read previous severity for ${district}: ${err.message}`
-    );
-
   }
 
+  // ----------------------------------------------------------
+  // SECONDARY: OPENWEATHER
+  // ----------------------------------------------------------
 
-  /* ==========================================================
-     SUCCESS / FALLBACK SOURCE
-  ========================================================== */
-
-  if (successSource) {
-
-
-    /* ========================================================
-       FETCH LOG
-    ======================================================== */
-
+  for (const source of secondarySources) {
     try {
-
-      await pool.query(
-
-        `
-        INSERT INTO weather_alert_fetch_logs
-        (
-          district,
-          source_id,
-          source_name,
-          status,
-          http_code,
-          raw_response,
-          mapped_level,
-          alerts_count
-        )
-        VALUES
-        (
-          $1,
-          $2,
-          $3,
-          $4,
-          $5,
-          $6,
-          $7,
-          $8
-        )
-        `,
-
-        [
-          district,
-
-          successSource.id,
-
-          successSource.name,
-
-          isFallback
-            ? 'FALLBACK'
-            : 'SUCCESS',
-
-          200,
-
-          JSON.stringify(
-            mappedAlerts.map(
-              alert => alert.raw_payload
-            )
-          ),
-
-          highestSeverity,
-
-          mappedAlerts.length
-        ]
-
+      console.log(
+        `[WeatherAlertFetcher] Trying secondary source '${source.name}' for ${districtName}`
       );
 
-    } catch (err) {
+      const alerts =
+        await fetchOpenWeatherAlerts(
+          source,
+          districtName
+        );
 
-      console.error(
-        `[WeatherAlertFetcher] Fetch audit log failed for ${district}:`,
-        err.message
+      if (
+        alerts.length > 0
+      ) {
+        return {
+          alerts,
+          sourceType: 'SECONDARY',
+          sourceName: source.name,
+        };
+      }
+    } catch (error) {
+      console.warn(
+        `[WeatherAlertFetcher] Source '${source.name}' fetch failed for ${districtName}: ${error.message}`
       );
-
     }
+  }
+
+  // ----------------------------------------------------------
+  // NOTHING AVAILABLE
+  // ----------------------------------------------------------
+
+  return {
+    alerts: [],
+    sourceType: 'NONE',
+    sourceName: null,
+  };
+}
 
 
-    /* ========================================================
-       DEACTIVATE OLD ALERTS
-    ======================================================== */
+// ============================================================
+// GET CURRENT CACHED ALERTS
+// ============================================================
 
-    await pool.query(
-
-      `
-      UPDATE official_weather_alerts
-      SET is_active = FALSE
-      WHERE LOWER(district) = LOWER($1)
-      `,
-
-      [district]
-
-    );
-
-
-    /* ========================================================
-       INSERT NEW ALERTS
-    ======================================================== */
-
-    for (
-      const alert of mappedAlerts
-    ) {
-
+async function getCachedAlerts(
+  districtName
+) {
+  try {
+    const result =
       await pool.query(
-
-        `
-        INSERT INTO official_weather_alerts
-        (
-          alert_id,
-          source_id,
-          source_name,
-          source_type,
-          district,
-          hazard_type,
-          raw_severity,
-          mapped_severity,
-          title,
-          description,
-          safety_instructions,
-          affected_zones,
-          source_reference_url,
-          raw_payload,
-          issued_at,
-          expires_at,
-          is_active
-        )
-        VALUES
-        (
-          $1,
-          $2,
-          $3,
-          $4,
-          $5,
-          $6,
-          $7,
-          $8,
-          $9,
-          $10,
-          $11,
-          $12,
-          $13,
-          $14,
-          $15,
-          $16,
-          TRUE
-        )
-        `,
-
-        [
-
-          alert.alert_id,
-
-          successSource.id,
-
-          successSource.name,
-
-          successSource.source_type,
-
-          district,
-
-          alert.hazard_type,
-
-          alert.raw_severity,
-
-          alert.mapped_severity,
-
-          alert.title,
-
-          alert.description,
-
-          alert.safety_instructions,
-
-          alert.affected_zones,
-
-          alert.source_reference_url,
-
-          JSON.stringify(
-            alert.raw_payload
-          ),
-
-          alert.issued_at,
-
-          alert.expires_at
-
-        ]
-
-      );
-
-    }
-
-
-    /* ========================================================
-       MANUAL DISTRICT ADVISORIES
-    ======================================================== */
-
-    const advisoryRes =
-      await pool.query(
-
         `
         SELECT *
-        FROM district_manual_advisories
+        FROM official_weather_alerts
         WHERE LOWER(district) = LOWER($1)
-          AND is_active = TRUE
-          AND
-          (
+          AND (
             expires_at IS NULL
             OR expires_at > NOW()
           )
         ORDER BY issued_at DESC
         `,
-
-        [district]
-
+        [districtName]
       );
 
-
-    /* ========================================================
-       UPDATE WEATHER ZONE CACHE
-    ======================================================== */
-
-    await pool.query(
-
-      `
-      INSERT INTO weather_alert_zone_cache
-      (
-        district,
-        highest_severity,
-        active_alerts,
-        active_advisories,
-        last_successful_fetch,
-        fetch_status,
-        updated_at
-      )
-      VALUES
-      (
-        $1,
-        $2,
-        $3,
-        $4,
-        NOW(),
-        'HEALTHY',
-        NOW()
-      )
-      ON CONFLICT (district)
-      DO UPDATE SET
-
-        highest_severity =
-          EXCLUDED.highest_severity,
-
-        active_alerts =
-          EXCLUDED.active_alerts,
-
-        active_advisories =
-          EXCLUDED.active_advisories,
-
-        last_successful_fetch =
-          NOW(),
-
-        fetch_status =
-          'HEALTHY',
-
-        updated_at =
-          NOW()
-      `,
-
-      [
-
-        district,
-
-        highestSeverity,
-
-        JSON.stringify(
-          mappedAlerts
-        ),
-
-        JSON.stringify(
-          advisoryRes.rows
-        )
-
-      ]
-
+    return result.rows;
+  } catch (error) {
+    console.warn(
+      `[WeatherAlertFetcher] Could not load cached alerts for ${districtName}:`,
+      error.message
     );
 
+    return [];
+  }
+}
 
-    /* ========================================================
-       PUSH NOTIFICATIONS
-    ======================================================== */
 
-    if (
-      previousSeverity !==
-      highestSeverity
-    ) {
+// ============================================================
+// GET MANUAL ADVISORIES
+// ============================================================
 
-      console.log(
-        `⚡ Weather Alert level changed for ${district}: ${previousSeverity} ➔ ${highestSeverity}`
+async function getManualAdvisories(
+  districtName
+) {
+  try {
+    const result =
+      await pool.query(
+        `
+        SELECT *
+        FROM district_manual_advisories
+        WHERE LOWER(district) = LOWER($1)
+          AND (
+            is_active = TRUE
+            OR is_active IS NULL
+          )
+        ORDER BY created_at DESC
+        `,
+        [districtName]
       );
 
+    return result.rows;
+  } catch (error) {
+    console.warn(
+      `[WeatherAlertFetcher] Could not load manual advisories for ${districtName}:`,
+      error.message
+    );
 
-      /* ------------------------------------------------------
-         CITIZENS
-      ------------------------------------------------------ */
-
-      if (
-        ['RED', 'ORANGE']
-          .includes(highestSeverity)
-      ) {
-
-        try {
-
-          await sendDistrictRoleNotification({
-
-            district,
-
-            roles: [
-              'citizen'
-            ],
-
-            title:
-              `🚨 ${highestSeverity} Weather Alert for ${district}`,
-
-            message:
-              `Official meteorological warning issued for ${district}. Level: ${highestSeverity}. Tap to view instructions.`,
-
-            referenceType:
-              'WEATHER_ALERT',
-
-            referenceId:
-              district
-
-          });
-
-        } catch (err) {
-
-          console.error(
-            `[WeatherAlertFetcher] Citizen notification failed for ${district}:`,
-            err.message
-          );
-
-        }
-
-      }
-
-
-      /* ------------------------------------------------------
-         RESCUE TEAMS
-      ------------------------------------------------------ */
-
-      if (
-        [
-          'YELLOW',
-          'ORANGE',
-          'RED'
-        ].includes(highestSeverity)
-      ) {
-
-        try {
-
-          await sendDistrictRoleNotification({
-
-            district,
-
-            roles: [
-              'rescue_team',
-              'rescue',
-              'official'
-            ],
-
-            title:
-              `⚠️ Operational Weather Update: ${highestSeverity} Alert (${district})`,
-
-            message:
-              `Weather alert level updated to ${highestSeverity} in ${district}. Prepare team readiness.`,
-
-            referenceType:
-              'WEATHER_ALERT',
-
-            referenceId:
-              district
-
-          });
-
-        } catch (err) {
-
-          console.error(
-            `[WeatherAlertFetcher] Rescue notification failed for ${district}:`,
-            err.message
-          );
-
-        }
-
-      }
-
-    }
-
-
-    /* ========================================================
-       SUCCESS RESPONSE
-    ======================================================== */
-
-    return {
-
-      district,
-
-      highestSeverity,
-
-      activeAlerts:
-        mappedAlerts,
-
-      activeAdvisories:
-        advisoryRes.rows,
-
-      fetchStatus:
-        isFallback
-          ? 'FALLBACK'
-          : 'HEALTHY',
-
-      lastSuccessfulFetch:
-        new Date().toISOString(),
-
-      sourceName:
-        successSource.name,
-
-      sourceType:
-        successSource.source_type
-
-    };
-
+    return [];
   }
+}
 
 
-  /* ==========================================================
-     ALL SOURCES FAILED
-  ========================================================== */
+// ============================================================
+// SAVE FETCH LOG
+// ============================================================
 
+async function saveFetchLog(
+  districtName,
+  sourceName,
+  status,
+  message = null
+) {
   try {
-
     await pool.query(
-
       `
       INSERT INTO weather_alert_fetch_logs
       (
         district,
-        source_id,
         source_name,
         status,
-        http_code,
-        error_message,
-        mapped_level,
-        alerts_count
+        message,
+        fetched_at
       )
-      VALUES
-      (
-        $1,
-        NULL,
-        'ALL_SOURCES_FAILED',
-        'FAILURE',
-        500,
-        $2,
-        'UNVERIFIED',
-        0
-      )
+      VALUES ($1, $2, $3, $4, NOW())
       `,
-
       [
-        district,
-
-        fetchErrorMessage ||
-        'All weather alert sources failed to respond'
-
+        districtName,
+        sourceName,
+        status,
+        message,
       ]
-
     );
-
-  } catch (err) {
-
-    console.error(
-      `[WeatherAlertFetcher] Failed to write failure audit log for ${district}:`,
-      err.message
+  } catch (error) {
+    console.warn(
+      '[WeatherAlertFetcher] Could not save fetch log:',
+      error.message
     );
-
   }
-
-
-  /* ==========================================================
-     CHECK DATABASE CACHE
-  ========================================================== */
-
-  try {
-
-    const cacheRes =
-      await pool.query(
-
-        `
-        SELECT *
-        FROM weather_alert_zone_cache
-        WHERE LOWER(district) = LOWER($1)
-        `,
-
-        [district]
-
-      );
-
-
-    if (
-      cacheRes.rows.length > 0
-    ) {
-
-      const cached =
-        cacheRes.rows[0];
-
-
-      await pool.query(
-
-        `
-        UPDATE weather_alert_zone_cache
-        SET
-          fetch_status = 'STALE',
-          updated_at = NOW()
-        WHERE LOWER(district) = LOWER($1)
-        `,
-
-        [district]
-
-      );
-
-
-      console.warn(
-        `[WeatherAlertFetcher] Using cached weather alert for ${district}.`
-      );
-
-
-      return {
-
-        district,
-
-        highestSeverity:
-          cached.highest_severity,
-
-        activeAlerts:
-          cached.active_alerts || [],
-
-        activeAdvisories:
-          cached.active_advisories || [],
-
-        fetchStatus:
-          'STALE',
-
-        lastSuccessfulFetch:
-          cached.last_successful_fetch,
-
-        errorMessage:
-          fetchErrorMessage
-
-      };
-
-    }
-
-  } catch (err) {
-
-    console.error(
-      `[WeatherAlertFetcher] Error reading weather cache for ${district}:`,
-      err.message
-    );
-
-  }
-
-
-  /* ==========================================================
-     NO CACHE AVAILABLE
-  ========================================================== */
-
-  return {
-
-    district,
-
-    highestSeverity:
-      'UNVERIFIED',
-
-    activeAlerts:
-      [],
-
-    activeAdvisories:
-      [],
-
-    fetchStatus:
-      'UNVERIFIED',
-
-    lastSuccessfulFetch:
-      null,
-
-    errorMessage:
-      'Unable to verify current alert status'
-
-  };
-
 }
 
 
-/* ============================================================
-   POLL ALL DISTRICTS
-============================================================ */
+// ============================================================
+// DEACTIVATE OLD ALERTS
+// ============================================================
 
-async function pollAllDistricts() {
+async function deactivateOldOfficialAlerts(
+  districtName
+) {
+  try {
+    await pool.query(
+      `
+      UPDATE official_weather_alerts
+      SET is_active = FALSE
+      WHERE LOWER(district) = LOWER($1)
+        AND is_active = TRUE
+      `,
+      [districtName]
+    );
+  } catch (error) {
+    console.warn(
+      `[WeatherAlertFetcher] Could not deactivate old alerts for ${districtName}:`,
+      error.message
+    );
+  }
+}
 
-  officialFeedCache.hasLoggedFailure =
-    false;
+
+// ============================================================
+// INSERT WEATHER ALERT
+// ============================================================
+
+async function insertWeatherAlert(
+  alert,
+  sourceName
+) {
+  const severity =
+    alert.severity ||
+    'GREEN';
+
+  try {
+    const result =
+      await pool.query(
+        `
+        INSERT INTO official_weather_alerts
+        (
+          district,
+          title,
+          description,
+          severity,
+          hazard_type,
+          source,
+          source_url,
+          issued_at,
+          is_active,
+          is_official
+        )
+        VALUES
+        (
+          $1, $2, $3, $4, $5,
+          $6, $7, $8, TRUE, $9
+        )
+        RETURNING *
+        `,
+        [
+          alert.district,
+          alert.title,
+          alert.description,
+          severity,
+          alert.hazard_type ||
+            'WEATHER',
+          sourceName ||
+            alert.source ||
+            'Unknown',
+          alert.source_url ||
+            null,
+          alert.issued_at ||
+            new Date(),
+          alert.is_official === true,
+        ]
+      );
+
+    return result.rows[0];
+  } catch (error) {
+    console.error(
+      `[WeatherAlertFetcher] Could not insert alert for ${alert.district}:`,
+      error.message
+    );
+
+    return null;
+  }
+}
 
 
-  console.log(
-    '🔄 [WeatherAlertFetcher] Polling official weather alert feeds for all districts...'
+// ============================================================
+// UPDATE WEATHER ZONE CACHE
+// ============================================================
+
+async function updateWeatherZoneCache(
+  districtName,
+  severity
+) {
+  try {
+    await pool.query(
+      `
+      INSERT INTO weather_alert_zone_cache
+      (
+        district,
+        severity,
+        updated_at
+      )
+      VALUES
+      ($1, $2, NOW())
+      ON CONFLICT (district)
+      DO UPDATE SET
+        severity = EXCLUDED.severity,
+        updated_at = NOW()
+      `,
+      [
+        districtName,
+        severity,
+      ]
+    );
+  } catch (error) {
+    console.warn(
+      `[WeatherAlertFetcher] Could not update weather zone cache for ${districtName}:`,
+      error.message
+    );
+  }
+}
+
+
+// ============================================================
+// GET PREVIOUS SEVERITY
+// ============================================================
+
+async function getPreviousSeverity(
+  districtName
+) {
+  try {
+    const result =
+      await pool.query(
+        `
+        SELECT severity
+        FROM weather_alert_zone_cache
+        WHERE LOWER(district) = LOWER($1)
+        LIMIT 1
+        `,
+        [districtName]
+      );
+
+    return result.rows[0]?.severity ||
+      null;
+  } catch (error) {
+    return null;
+  }
+}
+
+
+// ============================================================
+// SEND NOTIFICATION ON SEVERITY CHANGE
+// ============================================================
+
+async function notifySeverityChange(
+  districtName,
+  previousSeverity,
+  currentSeverity
+) {
+  if (
+    !currentSeverity ||
+    currentSeverity === previousSeverity
+  ) {
+    return;
+  }
+
+  try {
+    const previousRank = {
+      GREEN: 0,
+      YELLOW: 1,
+      ORANGE: 2,
+      RED: 3,
+    };
+
+    const currentRank =
+      previousRank[currentSeverity] ?? 0;
+
+    const oldRank =
+      previousRank[previousSeverity] ?? 0;
+
+    if (currentRank <= oldRank) {
+      return;
+    }
+
+    await sendDistrictRoleNotification(
+      districtName,
+      'Weather Alert',
+      `Weather severity increased to ${currentSeverity} in ${districtName}.`,
+      {
+        district: districtName,
+        severity: currentSeverity,
+      }
+    );
+  } catch (error) {
+    console.warn(
+      `[WeatherAlertFetcher] Notification failed for ${districtName}:`,
+      error.message
+    );
+  }
+}
+
+
+// ============================================================
+// PROCESS ONE DISTRICT
+// ============================================================
+
+async function processDistrict(
+  districtName
+) {
+  const previousSeverity =
+    await getPreviousSeverity(
+      districtName
+    );
+
+  const result =
+    await fetchAlertsForDistrict(
+      districtName
+    );
+
+  let alerts =
+    result.alerts || [];
+
+  let status =
+    result.sourceType;
+
+  let sourceName =
+    result.sourceName;
+
+  // ----------------------------------------------------------
+  // FALLBACK TO CACHED OFFICIAL ALERTS
+  // ----------------------------------------------------------
+
+  if (
+    alerts.length === 0
+  ) {
+    const cached =
+      await getCachedAlerts(
+        districtName
+      );
+
+    if (cached.length > 0) {
+      alerts = cached.map(
+        (item) => ({
+          district:
+            districtName,
+          title:
+            item.title,
+          description:
+            item.description,
+          severity:
+            item.severity ||
+            'GREEN',
+          hazard_type:
+            item.hazard_type ||
+            'WEATHER',
+          source:
+            item.source ||
+            'Cached',
+          source_url:
+            item.source_url ||
+            null,
+          issued_at:
+            item.issued_at ||
+            new Date(),
+          is_official:
+            item.is_official === true,
+        })
+      );
+
+      status = 'STALE';
+      sourceName = 'Cached Alerts';
+
+      console.log(
+        `[WeatherAlertFetcher] Using cached alerts for ${districtName}`
+      );
+    }
+  }
+
+  // ----------------------------------------------------------
+  // FALLBACK TO MANUAL ADVISORIES
+  // ----------------------------------------------------------
+
+  if (
+    alerts.length === 0
+  ) {
+    const manual =
+      await getManualAdvisories(
+        districtName
+      );
+
+    if (manual.length > 0) {
+      alerts = manual.map(
+        (item) => ({
+          district:
+            districtName,
+          title:
+            item.title ||
+            'District Weather Advisory',
+          description:
+            item.description ||
+            item.advisory ||
+            'Manual weather advisory',
+          severity:
+            item.severity ||
+            'YELLOW',
+          hazard_type:
+            item.hazard_type ||
+            'WEATHER',
+          source:
+            item.source ||
+            'Manual Advisory',
+          source_url:
+            item.source_url ||
+            null,
+          issued_at:
+            item.created_at ||
+            new Date(),
+          is_official:
+            item.is_official === true,
+        })
+      );
+
+      status = 'MANUAL';
+      sourceName =
+        'District Manual Advisory';
+
+      console.log(
+        `[WeatherAlertFetcher] Using manual advisory for ${districtName}`
+      );
+    }
+  }
+
+  // ----------------------------------------------------------
+  // NO DATA
+  // ----------------------------------------------------------
+
+  if (
+    alerts.length === 0
+  ) {
+    await saveFetchLog(
+      districtName,
+      sourceName ||
+        'Weather Sources',
+      'UNVERIFIED',
+      'No official, secondary, cached, or manual weather data available.'
+    );
+
+    return {
+      district:
+        districtName,
+      status:
+        'UNVERIFIED',
+      severity:
+        'GREEN',
+      alerts: [],
+    };
+  }
+
+  // ----------------------------------------------------------
+  // DEACTIVATE PREVIOUS ALERTS
+  // ----------------------------------------------------------
+
+  await deactivateOldOfficialAlerts(
+    districtName
   );
 
+  // ----------------------------------------------------------
+  // INSERT CURRENT ALERTS
+  // ----------------------------------------------------------
+
+  const insertedAlerts = [];
+
+  for (const alert of alerts) {
+    const inserted =
+      await insertWeatherAlert(
+        alert,
+        sourceName ||
+          alert.source
+      );
+
+    if (inserted) {
+      insertedAlerts.push(
+        inserted
+      );
+    }
+  }
+
+  // ----------------------------------------------------------
+  // CALCULATE HIGHEST SEVERITY
+  // ----------------------------------------------------------
+
+  const severityValues =
+    insertedAlerts
+      .map(
+        (alert) =>
+          alert.severity
+      )
+      .filter(Boolean);
+
+  let highestSeverity =
+    'GREEN';
+
+  if (
+    severityValues.length > 0
+  ) {
+    try {
+      highestSeverity =
+        getHighestSeverityLevel(
+          severityValues
+        ) ||
+        'GREEN';
+    } catch (error) {
+      highestSeverity =
+        severityValues.includes('RED')
+          ? 'RED'
+          : severityValues.includes(
+              'ORANGE'
+            )
+          ? 'ORANGE'
+          : severityValues.includes(
+              'YELLOW'
+            )
+          ? 'YELLOW'
+          : 'GREEN';
+    }
+  }
+
+  // ----------------------------------------------------------
+  // UPDATE ZONE CACHE
+  // ----------------------------------------------------------
+
+  await updateWeatherZoneCache(
+    districtName,
+    highestSeverity
+  );
+
+  // ----------------------------------------------------------
+  // NOTIFICATION
+  // ----------------------------------------------------------
+
+  await notifySeverityChange(
+    districtName,
+    previousSeverity,
+    highestSeverity
+  );
+
+  // ----------------------------------------------------------
+  // FETCH LOG
+  // ----------------------------------------------------------
+
+  await saveFetchLog(
+    districtName,
+    sourceName ||
+      'Weather Sources',
+    status === 'OFFICIAL'
+      ? 'SUCCESS'
+      : status === 'SECONDARY'
+      ? 'SECONDARY'
+      : status,
+    `${insertedAlerts.length} weather alert/observation record(s) processed.`
+  );
+
+  return {
+    district:
+      districtName,
+    status,
+    source:
+      sourceName,
+    severity:
+      highestSeverity,
+    alerts:
+      insertedAlerts,
+  };
+}
+
+
+// ============================================================
+// POLL ALL KERALA DISTRICTS
+// ============================================================
+
+async function pollAllDistricts() {
+  console.log(
+    '[WeatherAlertFetcher] Polling official weather alert feeds for all districts...'
+  );
+
+  const results = [];
 
   for (
     const district of KERALA_DISTRICTS
   ) {
-
     try {
+      const result =
+        await processDistrict(
+          district
+        );
 
-      await fetchAlertsForDistrict(
-        district
-      );
-
-    } catch (err) {
-
+      results.push(result);
+    } catch (error) {
       console.error(
-        `[WeatherAlertFetcher] Error polling ${district}:`,
-        err.message
+        `[WeatherAlertFetcher] Failed processing ${district}:`,
+        error.message
       );
 
+      results.push({
+        district,
+        status: 'ERROR',
+        severity: 'GREEN',
+        alerts: [],
+      });
     }
-
   }
 
-
-  console.log(
-    '✅ [WeatherAlertFetcher] Weather alert poll completed.'
-  );
-
+  return results;
 }
 
 
-/* ============================================================
-   START BACKGROUND POLLING
-============================================================ */
+// ============================================================
+// START BACKGROUND POLLING
+// ============================================================
 
-function startPollingTimer(
-  intervalMs = 20 * 60 * 1000
-) {
+function startWeatherAlertPolling() {
+  console.log(
+    `⏰ [WeatherAlertFetcher] Background weather alert polling started (Interval: ${
+      WEATHER_POLL_INTERVAL / 60000
+    } mins)`
+  );
 
-  /*
-   * Initial poll after server startup
-   */
-  setTimeout(() => {
+  // Initial poll shortly after server startup.
+  setTimeout(async () => {
+    try {
+      await pollAllDistricts();
 
-    pollAllDistricts()
-      .catch(err => {
-
-        console.error(
-          '[WeatherAlertFetcher] Initial poll failed:',
-          err.message
-        );
-
-      });
-
+      console.log(
+        '✅ [WeatherAlertFetcher] Weather alert poll completed.'
+      );
+    } catch (error) {
+      console.error(
+        '❌ [WeatherAlertFetcher] Initial weather poll failed:',
+        error.message
+      );
+    }
   }, 5000);
 
+  // Continue polling every 20 minutes.
+  setInterval(async () => {
+    try {
+      await pollAllDistricts();
 
-  /*
-   * Periodic polling
-   */
-  setInterval(() => {
-
-    pollAllDistricts()
-      .catch(err => {
-
-        console.error(
-          '[WeatherAlertFetcher] Periodic poll failed:',
-          err.message
-        );
-
-      });
-
-  }, intervalMs);
-
-
-  console.log(
-    `⏰ [WeatherAlertFetcher] Background weather alert polling started (Interval: ${intervalMs / 60000} mins)`
-  );
-
+      console.log(
+        '✅ [WeatherAlertFetcher] Weather alert poll completed.'
+      );
+    } catch (error) {
+      console.error(
+        '❌ [WeatherAlertFetcher] Scheduled weather poll failed:',
+        error.message
+      );
+    }
+  }, WEATHER_POLL_INTERVAL);
 }
 
 
-/* ============================================================
-   EXPORTS
-============================================================ */
+// ============================================================
+// EXPORTS
+// ============================================================
 
 module.exports = {
-
-  fetchAlertsForDistrict,
-
   pollAllDistricts,
-
-  startPollingTimer,
-
-  KERALA_DISTRICTS
-
+  fetchAlertsForDistrict,
+  fetchOpenWeatherAlerts,
+  startWeatherAlertPolling,
+  KERALA_DISTRICTS,
+  DISTRICT_COORDS,
 };
