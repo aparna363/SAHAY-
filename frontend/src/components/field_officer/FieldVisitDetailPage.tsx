@@ -2,35 +2,23 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   ArrowLeft,
   Calendar,
-  Clock,
   MapPin,
   Camera,
   CheckCircle2,
   AlertTriangle,
   AlertCircle,
   User,
-  Phone,
-  Mail,
   Shield,
   Upload,
   Trash2,
-  ExternalLink,
   Navigation,
   FileText,
   Home,
-  Check,
   RotateCw,
   Send,
-  Eye,
   Info,
   Lock,
-  Scale,
-  Calculator,
-  ChevronRight,
-  TrendingUp,
-  FileCheck,
-  Percent,
-  Layers
+  Scale
 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -39,7 +27,6 @@ import {
   fetchSdrfNorms,
   uploadFieldOfficerPhotos,
   submitFieldOfficerReport,
-  completeFieldOfficerVisit,
   type SdrfNorm
 } from '../../services/api';
 
@@ -85,8 +72,6 @@ export const FieldVisitDetailPage: React.FC<FieldVisitDetailPageProps> = ({
   });
   const [actualDamageObserved, setActualDamageObserved] = useState<string>('');
   const [damageCategory, setDamageCategory] = useState<string>('Severely Damaged');
-  const [estimatedLoss, setEstimatedLoss] = useState<string>('0');
-  const [recommendedAssistance, setRecommendedAssistance] = useState<string>('0');
   const [officerRemarks, setOfficerRemarks] = useState<string>('');
 
   // SDRF Normative Assessment Fields (Configurable Rules)
@@ -217,7 +202,6 @@ export const FieldVisitDetailPage: React.FC<FieldVisitDetailPageProps> = ({
         }
 
         if (vr.recommended_assistance && parseFloat(vr.recommended_assistance) > 0) {
-          setRecommendedAssistance(String(vr.recommended_assistance));
           setCalculatedAssistance(parseFloat(vr.recommended_assistance));
         }
         if (vr.calculation_basis) setCalculationBasis(vr.calculation_basis);
@@ -373,8 +357,6 @@ export const FieldVisitDetailPage: React.FC<FieldVisitDetailPageProps> = ({
     if (damagePercentage < minThreshold) {
       setIsEligible(false);
       setCalculatedAssistance(0);
-      setRecommendedAssistance('0');
-      setEstimatedLoss('0');
       setCalculationBasis(
         `${bestNorm.norm_code} (${bestNorm.norm_title}) → Eligibility: NOT MET (${damagePercentage}% is below minimum statutory threshold of ${minThreshold}%) → Prescribed Rate: ₹${rate.toLocaleString('en-IN')}/${unit} → Eligible Quantity: 0 ${unit} → Recommended Assistance: ₹0`
       );
@@ -385,8 +367,6 @@ export const FieldVisitDetailPage: React.FC<FieldVisitDetailPageProps> = ({
         total = maxCeiling;
       }
       setCalculatedAssistance(total);
-      setRecommendedAssistance(String(total));
-      setEstimatedLoss(String(total));
 
       const capInfo = maxUnits && rawQty > maxUnits ? ` (Capped from ${rawQty} to max ${maxUnits} statutory limit)` : '';
       const ceilingInfo = maxCeiling && effectiveQty * rate > maxCeiling ? ` (Capped to statutory ceiling ₹${maxCeiling.toLocaleString('en-IN')})` : '';
@@ -1407,6 +1387,19 @@ export const FieldVisitDetailPage: React.FC<FieldVisitDetailPageProps> = ({
                     className="hidden"
                   />
                 </label>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                  Photo Caption / Evidence Description:
+                </label>
+                <input
+                  type="text"
+                  value={photoDescription}
+                  onChange={(e) => setPhotoDescription(e.target.value)}
+                  placeholder="e.g. Ground structural damage verified"
+                  className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-emerald-500"
+                />
               </div>
 
               {/* Uploaded Photos Grid */}

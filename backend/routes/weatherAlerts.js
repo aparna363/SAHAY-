@@ -13,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'sahay_disaster_portal_secret_key_2
 const optionalAuth = async (req, res, next) => {
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (!token) {
+  if (!token || token === 'null' || token === 'undefined' || token === '""') {
     req.user = { role: 'citizen', district: 'Ernakulam' };
     return next();
   }

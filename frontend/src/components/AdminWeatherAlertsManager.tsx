@@ -13,6 +13,7 @@ import {
   Sliders,
   Database
 } from 'lucide-react';
+import { getAuthToken } from '../services/api';
 
 export const AdminWeatherAlertsManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'sources' | 'mappings' | 'health' | 'audit'>('overview');
@@ -31,24 +32,27 @@ export const AdminWeatherAlertsManager: React.FC = () => {
 
   const fetchAllAdminData = async () => {
     setLoading(true);
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
+    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
     try {
       const [sourcesRes, mappingsRes, healthRes, auditRes] = await Promise.all([
-        fetch('/api/weather-alerts/admin/sources', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/weather-alerts/admin/mappings', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/weather-alerts/admin/system-health', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/weather-alerts/admin/audit-logs', { headers: { Authorization: `Bearer ${token}` } })
+        fetch('/api/weather-alerts/admin/sources', { headers: authHeaders }),
+        fetch('/api/weather-alerts/admin/mappings', { headers: authHeaders }),
+        fetch('/api/weather-alerts/admin/system-health', { headers: authHeaders }),
+        fetch('/api/weather-alerts/admin/audit-logs', { headers: authHeaders })
       ]);
 
-      const sourcesJson = await sourcesRes.json();
-      const mappingsJson = await mappingsRes.json();
-      const healthJson = await healthRes.json();
-      const auditJson = await auditRes.json();
+      const [sourcesJson, mappingsJson, healthJson, auditJson]: any[] = await Promise.all([
+        sourcesRes.ok ? sourcesRes.json().catch(() => null) : null,
+        mappingsRes.ok ? mappingsRes.json().catch(() => null) : null,
+        healthRes.ok ? healthRes.json().catch(() => null) : null,
+        auditRes.ok ? auditRes.json().catch(() => null) : null
+      ]);
 
-      if (sourcesJson.success) setSources(sourcesJson.sources || []);
-      if (mappingsJson.success) setMappings(mappingsJson.mappings || []);
-      if (healthJson.success) setHealthData(healthJson);
-      if (auditJson.success) setAuditLogs(auditJson);
+      if (sourcesJson?.success) setSources(sourcesJson.sources || []);
+      if (mappingsJson?.success) setMappings(mappingsJson.mappings || []);
+      if (healthJson?.success) setHealthData(healthJson);
+      if (auditJson?.success) setAuditLogs(auditJson);
     } catch (err: any) {
       console.error('Error fetching admin weather data:', err);
     } finally {
@@ -66,12 +70,12 @@ export const AdminWeatherAlertsManager: React.FC = () => {
 
     setSavingMapping(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       const res = await fetch('/api/weather-alerts/admin/mappings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
           id: editingMapping.id,

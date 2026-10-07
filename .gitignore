@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Uploads / user evidence
+backend/uploads/
+frontend/uploads/
+
+# Build output
+dist/
+build/
+
+# Local test/cache files
+.pytest_cache/
+__pycache__/

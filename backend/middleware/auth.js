@@ -12,7 +12,7 @@ const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
+  if (!token || token === 'null' || token === 'undefined' || token === '""') {
     return res.status(401).json({ success: false, error: 'Authentication required. Access token missing.' });
   }
 
@@ -40,6 +40,9 @@ const authenticateToken = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, error: 'Invalid or expired authentication token. Please log in again.' });
+    }
     console.error('JWT Authentication Error:', error.message);
     return res.status(401).json({ success: false, error: 'Invalid or expired authentication token. Please log in again.' });
   }

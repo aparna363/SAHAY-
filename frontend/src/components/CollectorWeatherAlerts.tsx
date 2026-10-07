@@ -15,6 +15,7 @@ import {
   Info,
   Megaphone
 } from 'lucide-react';
+import { getAuthToken } from '../services/api';
 
 interface Props {
   district: string;
@@ -42,13 +43,15 @@ export const CollectorWeatherAlerts: React.FC<Props> = ({ district }) => {
   const fetchDistrictView = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       const res = await fetch(`/api/weather-alerts/collector/district-view?district=${encodeURIComponent(district)}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
-      const json = await res.json();
-      if (json.success) {
-        setData(json);
+      if (res.ok) {
+        const json = await res.json().catch(() => null);
+        if (json?.success) {
+          setData(json);
+        }
       }
     } catch (err: any) {
       console.error('Error fetching collector district view:', err);
@@ -59,13 +62,15 @@ export const CollectorWeatherAlerts: React.FC<Props> = ({ district }) => {
 
   const fetchHistory = async (days: number) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       const res = await fetch(`/api/weather-alerts/history?district=${encodeURIComponent(district)}&days=${days}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
-      const json = await res.json();
-      if (json.success) {
-        setHistory(json.history || []);
+      if (res.ok) {
+        const json = await res.json().catch(() => null);
+        if (json?.success) {
+          setHistory(json.history || []);
+        }
       }
     } catch (err) {
       console.error('Error fetching alert history:', err);
@@ -80,12 +85,12 @@ export const CollectorWeatherAlerts: React.FC<Props> = ({ district }) => {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       await fetch('/api/weather-alerts/refresh', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({ district })
       });
@@ -105,12 +110,12 @@ export const CollectorWeatherAlerts: React.FC<Props> = ({ district }) => {
 
     setIssuingAdvisory(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       const res = await fetch('/api/weather-alerts/collector/advisory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
           district,
@@ -119,15 +124,15 @@ export const CollectorWeatherAlerts: React.FC<Props> = ({ district }) => {
           expiresHours
         })
       });
-      const json = await res.json();
-      if (json.success) {
+      const json = await res.json().catch(() => ({}));
+      if (json && json.success) {
         setFeedback({ type: 'success', msg: 'Local advisory broadcasted and pushed to citizens & rescue teams!' });
         setShowAdvisoryModal(false);
         setAdvisoryTitle('');
         setAdvisoryInstruction('');
         fetchDistrictView();
       } else {
-        setFeedback({ type: 'error', msg: json.message || 'Failed to issue advisory' });
+        setFeedback({ type: 'error', msg: json?.message || 'Failed to issue advisory' });
       }
     } catch (err: any) {
       setFeedback({ type: 'error', msg: err.message });

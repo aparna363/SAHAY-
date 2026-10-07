@@ -39,6 +39,15 @@ const DISTRICT_COORDS = {
   kasaragod: { lat: 12.5102, lon: 74.9852 }
 };
 
+// In-memory cache for state-wide official feeds to avoid redundant HTTP calls & repeated timeouts per poll cycle
+const officialFeedCache = {
+  url: null,
+  text: null,
+  error: null,
+  timestamp: 0,
+  hasLoggedFailure: false
+};
+
 /**
  * Normalizes district name
  */
@@ -138,20 +147,53 @@ async function fetchAlertsForDistrict(districtName, force = false) {
   for (const source of sources) {
     try {
       if (source.source_type === 'OFFICIAL') {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
-        
-        const response = await fetch(source.api_endpoint, { signal: controller.signal });
-        clearTimeout(timeoutId);
+        const now = Date.now();
+        let text = null;
 
-        if (response.ok) {
-          const text = await response.text();
+        // Use cached text if fetched within the last 3 minutes
+        if (officialFeedCache.url === source.api_endpoint && (now - officialFeedCache.timestamp < 180000)) {
+          if (officialFeedCache.error) {
+            throw new Error(officialFeedCache.error);
+          }
+          text = officialFeedCache.text;
+        } else {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const response = await fetch(source.api_endpoint, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+              text = await response.text();
+              officialFeedCache.url = source.api_endpoint;
+              officialFeedCache.text = text;
+              officialFeedCache.error = null;
+              officialFeedCache.timestamp = now;
+              officialFeedCache.hasLoggedFailure = false;
+            } else {
+              const errMsg = `HTTP ${response.status} from ${source.name}`;
+              officialFeedCache.url = source.api_endpoint;
+              officialFeedCache.text = null;
+              officialFeedCache.error = errMsg;
+              officialFeedCache.timestamp = now;
+              fetchErrorMessage = errMsg;
+              throw new Error(errMsg);
+            }
+          } catch (netErr) {
+            officialFeedCache.url = source.api_endpoint;
+            officialFeedCache.text = null;
+            officialFeedCache.error = netErr.message;
+            officialFeedCache.timestamp = now;
+            throw netErr;
+          }
+        }
+
+        if (text) {
           const parsed = parseRSSFeedText(text, district);
           fetchedAlerts = parsed;
           successSource = source;
           break;
-        } else {
-          fetchErrorMessage = `HTTP ${response.status} from ${source.name}`;
         }
       } else if (source.source_type === 'SECONDARY') {
         // OpenWeatherMap fallback
@@ -191,7 +233,14 @@ async function fetchAlertsForDistrict(districtName, force = false) {
       }
     } catch (err) {
       fetchErrorMessage = err.message;
-      console.warn(`[WeatherAlertFetcher] Source '${source.name}' fetch failed for ${district}:`, err.message);
+      if (source.source_type === 'OFFICIAL') {
+        if (!officialFeedCache.hasLoggedFailure) {
+          console.warn(`[WeatherAlertFetcher] Source '${source.name}' feed unreachable: ${err.message}. (Using local cached / manual advisories)`);
+          officialFeedCache.hasLoggedFailure = true;
+        }
+      } else {
+        console.warn(`[WeatherAlertFetcher] Source '${source.name}' fetch failed for ${district}:`, err.message);
+      }
     }
   }
 
@@ -375,6 +424,7 @@ async function fetchAlertsForDistrict(districtName, force = false) {
  * Polls all districts in Kerala every 15-30 minutes.
  */
 async function pollAllDistricts() {
+  officialFeedCache.hasLoggedFailure = false;
   console.log('🔄 [WeatherAlertFetcher] Polling official weather alert feeds for all districts...');
   for (const district of KERALA_DISTRICTS) {
     try {

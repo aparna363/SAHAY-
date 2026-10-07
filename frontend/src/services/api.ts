@@ -1,7 +1,8 @@
 // SAHAY Frontend API Service
 // Connects React Frontend to Node.js / Express Backend + PostgreSQL Database
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const RAW_API_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
+const API_BASE_URL = `${RAW_API_URL}/api`;
 const API_FALLBACK_URL = 'http://127.0.0.1:5000/api';
 
 export type UserRole = 'citizen' | 'rescue_team' | 'collector' | 'station' | 'station_admin';
@@ -2754,7 +2755,7 @@ export async function uploadFieldOfficerPhotos(
   if (meta?.damageCategory) formData.append('damageCategory', meta.damageCategory);
   if (meta?.description) formData.append('description', meta.description);
 
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const token = getAuthToken();
   const res = await fetch(`http://localhost:5000/api/field-officer/relief/claims/${encodeURIComponent(claimId)}/photos`, {
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : {},

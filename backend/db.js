@@ -20,6 +20,12 @@ function createPool(pass) {
     database: process.env.PGDATABASE || 'sahay_db',
     password: pass,
     port: parseInt(process.env.PGPORT || '5432', 10),
+
+    ssl: process.env.PGHOST?.includes('supabase.com')
+      ? {
+        rejectUnauthorized: false,
+      }
+      : undefined,
   });
 }
 
